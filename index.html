@@ -491,12 +491,10 @@ body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;o
     <button class="mclose" onclick="closeAdminLogin()">✕</button>
     <div class="m-eyebrow">Restricted Access</div>
     <div class="m-title">Admin <em>Login</em></div>
-    <div class="fg"><label class="fl">Username</label><input class="fi" id="admUser" type="text" placeholder="admin" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
+    <div class="fg"><label class="fl">Username</label><input class="fi" id="admUser" type="text" placeholder="for store owner only" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
     <div class="fg"><label class="fl">Password</label><input class="fi" id="admPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
     <div class="ferr" id="admErr"></div>
     <button class="fsub" onclick="doAdminLogin()">🔐 Enter Dashboard</button>
-    <p style="text-align:center;font-size:10px;color:var(--text-dim);margin-top:14px;">Default: <b style="color:var(--gold)">admin</b> / <b style="color:var(--gold)">noir2024</b></p>
-  </div>
 </div>
 
 <!-- ============ ADMIN DASHBOARD ============ -->
