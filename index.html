@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Website</title>
+
+  <style>
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:#111;
+      color:white;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+    }
+
+    .card{
+      background:#1e1e1e;
+      padding:40px;
+      border-radius:20px;
+      text-align:center;
+      box-shadow:0 0 20px rgba(0,255,150,0.3);
+    }
+
+    h1{
+      color:#00ff99;
+      margin-bottom:10px;
+    }
+
+    p{
+      color:#ccc;
+    }
+
+    button{
+      margin-top:20px;
+      padding:12px 25px;
+      border:none;
+      border-radius:10px;
+      background:#00ff99;
+      color:black;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    button:hover{
+      transform:scale(1.05);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <h1>Website Working ✅</h1>
+    <p>Your Vercel deployment is successful.</p>
+
+    <button onclick="showMessage()">
+      Click Me
+    </button>
+  </div>
+
+  <script>
+    function showMessage(){
+      alert("Your Website is Live 🚀");
+    }
+  </script>
+
+</body>
+</html>
