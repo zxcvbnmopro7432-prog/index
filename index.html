@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOIR — Premium Coffee House</title>
+<title>COLD CORNER — Premium Ice Cream & Coffee</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -21,11 +21,11 @@ nav.scrolled{padding:12px 40px;border-bottom-color:rgba(201,151,90,.25);}
 .nav-links{display:flex;gap:32px;}
 .nav-links a{color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:.18em;text-transform:uppercase;transition:color .3s;}
 .nav-links a:hover{color:var(--gold);}
-.nav-actions{display:flex;gap:12px;align-items:center;}
+.nav-actions{display:flex;gap:16px;align-items:center;}
 .nav-user-btn{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:11px;letter-spacing:.14em;text-transform:uppercase;transition:color .3s;font-family:'Jost',sans-serif;}
 .nav-user-btn:hover{color:var(--gold);}
-.nav-admin-btn{background:rgba(201,151,90,.08);border:1px solid var(--gold-dim);color:var(--gold);cursor:pointer;font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-family:'Jost',sans-serif;padding:7px 16px;transition:all .3s;}
-.nav-admin-btn:hover{background:var(--gold);color:var(--black);}
+.nav-admin-link{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:11px;letter-spacing:.14em;text-transform:uppercase;transition:color .3s;font-family:'Jost',sans-serif;text-decoration:none;}
+.nav-admin-link:hover{color:var(--gold);}
 .cart-btn{background:none;border:1px solid var(--gold-dim);color:var(--gold);padding:7px 18px;font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .3s;position:relative;}
 .cart-btn:hover{background:var(--gold);color:var(--black);}
 .cart-count{position:absolute;top:-7px;right:-7px;background:var(--gold);color:var(--black);width:18px;height:18px;border-radius:50%;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(0);transition:all .3s;}
@@ -48,12 +48,6 @@ nav.scrolled{padding:12px 40px;border-bottom-color:rgba(201,151,90,.25);}
 .hring:nth-child(2){width:750px;height:750px;animation:rot 35s linear infinite;border-style:dashed;}
 .hring:nth-child(3){width:1000px;height:1000px;animation:rot 55s linear infinite reverse;}
 @keyframes rot{to{transform:translate(-50%,-50%) rotate(360deg);}}
-.steam-c{position:absolute;bottom:28%;left:50%;transform:translateX(-50%);}
-.stm{position:absolute;width:3px;background:linear-gradient(to top,rgba(201,151,90,.35),transparent);border-radius:2px;animation:stmA 3s ease-in-out infinite;}
-.stm:nth-child(1){height:80px;left:-20px;animation-delay:0s;}
-.stm:nth-child(2){height:60px;left:0;animation-delay:.9s;}
-.stm:nth-child(3){height:90px;left:20px;animation-delay:1.8s;}
-@keyframes stmA{0%{opacity:0;transform:translateY(0);}35%{opacity:.7;}100%{opacity:0;transform:translateY(-80px) scaleX(2);}}
 .hero-content{position:relative;z-index:2;text-align:center;padding:0 24px;animation:fadeUp 1.2s cubic-bezier(.16,1,.3,1) both;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
 .hero-eyebrow{font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);margin-bottom:24px;}
@@ -85,6 +79,10 @@ section{padding:96px 40px;}
 .feat-title{font-family:'Cormorant Garamond',serif;font-size:21px;color:var(--cream);margin-bottom:8px;}
 .feat-text{font-size:12px;color:var(--text-dim);line-height:1.7;}
 
+/* PICKUP BADGE */
+.pickup-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(201,151,90,.1);border:1px solid rgba(201,151,90,.3);padding:8px 18px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:36px;}
+.pickup-badge::before{content:'🛍';font-size:14px;}
+
 /* MENU */
 #menu{background:var(--dark);}
 .menu-filters{display:inline-flex;border:1px solid var(--border);position:relative;left:50%;transform:translateX(-50%);margin-bottom:52px;}
@@ -95,7 +93,9 @@ section{padding:96px 40px;}
 .menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:22px;max-width:1200px;margin:0 auto;}
 .menu-item{background:var(--surface);border:1px solid var(--border);overflow:hidden;transition:all .4s;animation:fadeUp .5s ease both;}
 .menu-item:hover{border-color:var(--gold-dim);transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.4);}
-.item-img{width:100%;height:180px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:68px;position:relative;}
+.item-img{width:100%;height:180px;background:var(--surface2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.item-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.item-img .item-emoji-fallback{font-size:68px;}
 .item-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(17,14,10,.8));}
 .item-body{padding:18px;}
 .item-cat{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:5px;}
@@ -121,7 +121,8 @@ section{padding:96px 40px;}
 .cart-empty{text-align:center;padding:60px 20px;color:var(--text-dim);}
 .cart-empty .ei{font-size:44px;margin-bottom:14px;opacity:.5;}
 .cart-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);animation:fadeUp .3s ease both;}
-.ci-img{width:52px;height:52px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:26px;border:1px solid var(--border);flex-shrink:0;}
+.ci-img{width:52px;height:52px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:26px;border:1px solid var(--border);flex-shrink:0;overflow:hidden;}
+.ci-img img{width:100%;height:100%;object-fit:cover;}
 .ci-info{flex:1;}
 .ci-name{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--cream);margin-bottom:3px;}
 .ci-price{font-size:12px;color:var(--gold);margin-bottom:8px;}
@@ -179,6 +180,23 @@ select.fi{cursor:pointer;}
 .success-box p{color:var(--text-dim);font-size:13px;line-height:1.7;}
 .oid{color:var(--gold);font-weight:500;}
 
+/* PICKUP NOTICE */
+.pickup-notice{background:rgba(201,151,90,.08);border:1px solid rgba(201,151,90,.25);padding:14px 18px;margin-bottom:20px;display:flex;align-items:flex-start;gap:10px;}
+.pickup-notice-icon{font-size:20px;flex-shrink:0;}
+.pickup-notice-text{font-size:12px;color:var(--gold);line-height:1.6;}
+.pickup-notice-text strong{display:block;font-size:13px;margin-bottom:3px;letter-spacing:.05em;}
+
+/* ORDER READY MODAL */
+.ready-overlay{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .4s;}
+.ready-overlay.open{opacity:1;pointer-events:all;}
+.ready-modal{background:var(--surface);border:2px solid var(--green);padding:48px 40px;max-width:420px;width:100%;text-align:center;animation:popIn .5s cubic-bezier(.16,1,.3,1);}
+.ready-pulse{width:90px;height:90px;background:rgba(76,175,130,.15);border:3px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:38px;animation:pulse 1.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(76,175,130,.4);}50%{box-shadow:0 0 0 14px rgba(76,175,130,0);}}
+.ready-modal h2{font-family:'Cormorant Garamond',serif;font-size:40px;color:var(--green);margin-bottom:10px;}
+.ready-modal p{color:var(--text-dim);font-size:14px;line-height:1.7;margin-bottom:8px;}
+.ready-order-id{font-size:12px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:24px;}
+.ready-instruction{background:rgba(76,175,130,.08);border:1px solid rgba(76,175,130,.25);padding:14px;font-size:13px;color:var(--cream);line-height:1.7;}
+
 /* MY ORDERS */
 #orders{background:var(--black);}
 .orders-wrap{max-width:860px;margin:0 auto;}
@@ -191,6 +209,7 @@ select.fi{cursor:pointer;}
 .status-confirmed{background:rgba(201,151,90,.1);color:var(--gold);border-color:rgba(201,151,90,.3);}
 .status-preparing{background:rgba(91,155,213,.1);color:var(--blue);border-color:rgba(91,155,213,.3);}
 .status-ready{background:rgba(76,175,130,.1);color:var(--green);border-color:rgba(76,175,130,.3);}
+.status-pickedup{background:rgba(120,120,120,.1);color:#888;border-color:rgba(120,120,120,.2);}
 .status-delivered{background:rgba(120,120,120,.1);color:#888;border-color:rgba(120,120,120,.2);}
 .status-cancelled{background:rgba(217,96,96,.1);color:var(--red);border-color:rgba(217,96,96,.3);}
 .oc-items{font-size:12px;color:var(--text-dim);line-height:1.9;margin-bottom:10px;}
@@ -245,21 +264,18 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:60px 4
 .adm-page-title{font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--cream);font-weight:300;margin-bottom:4px;}
 .adm-page-title em{font-style:italic;color:var(--gold-light);}
 .adm-page-sub{font-size:12px;color:var(--text-dim);margin-bottom:28px;}
-/* stats */
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px;}
 .stat-card{background:var(--surface);border:1px solid var(--border);padding:18px 20px;transition:border-color .3s;}
 .stat-card:hover{border-color:var(--gold-dim);}
 .stat-lbl{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--text-dim);margin-bottom:7px;}
 .stat-val{font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--gold-light);font-weight:300;}
 .stat-sub{font-size:10px;color:var(--text-dim);margin-top:3px;}
-/* chart */
 .chart-wrap{background:var(--surface);border:1px solid var(--border);padding:18px 22px;margin-bottom:22px;}
 .chart-title{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
 .chart-bars{display:flex;align-items:flex-end;gap:6px;height:90px;}
 .chart-bw{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
 .chart-b{width:100%;background:linear-gradient(to top,var(--gold-dim),var(--gold));border-radius:2px 2px 0 0;min-height:4px;}
 .chart-bl{font-size:9px;color:var(--text-dim);}
-/* table */
 .tbl-wrap{background:var(--surface);border:1px solid var(--border);overflow:hidden;margin-bottom:20px;}
 .tbl-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
 .tbl-title{font-size:12px;letter-spacing:.1em;color:var(--cream);}
@@ -280,7 +296,6 @@ tbody td{padding:11px 14px;font-size:12px;color:var(--text);vertical-align:middl
 .act-btn.green:hover{border-color:var(--green);color:var(--green);}
 .status-sel{background:var(--surface2);border:1px solid var(--border);color:var(--cream);padding:4px 7px;font-family:'Jost',sans-serif;font-size:10px;outline:none;cursor:pointer;}
 .status-sel:focus{border-color:var(--gold-dim);}
-/* live queue */
 .lq-card{background:var(--surface);border:1px solid var(--border);padding:18px 22px;margin-bottom:14px;transition:border-color .3s;}
 .lq-card:hover{border-color:var(--gold-dim);}
 .lq-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
@@ -294,22 +309,26 @@ tbody td{padding:11px 14px;font-size:12px;color:var(--text);vertical-align:middl
 .lq-prep:hover{background:rgba(91,155,213,.15);}
 .lq-ready{border-color:rgba(76,175,130,.5);color:var(--green);}
 .lq-ready:hover{background:rgba(76,175,130,.15);}
-.lq-deliv{border-color:rgba(201,151,90,.5);color:var(--gold);}
-.lq-deliv:hover{background:rgba(201,151,90,.15);}
+.lq-pickup{border-color:rgba(201,151,90,.5);color:var(--gold);}
+.lq-pickup:hover{background:rgba(201,151,90,.15);}
 .lq-cancel{border-color:rgba(217,96,96,.4);color:var(--red);}
 .lq-cancel:hover{background:rgba(217,96,96,.12);}
-/* menu editor */
 .mec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;}
 .mec{background:var(--surface);border:1px solid var(--border);padding:16px 18px;transition:border-color .3s;}
 .mec:hover{border-color:var(--gold-dim);}
 .mec-top{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-.mec-emoji{font-size:26px;}
+.mec-thumb{width:48px;height:48px;object-fit:cover;border:1px solid var(--border);flex-shrink:0;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;}
+.mec-thumb img{width:100%;height:100%;object-fit:cover;}
 .mec-nm{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--cream);}
 .mec-cat{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-dim);}
 .il{display:block;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px;}
 .ii{background:var(--surface2);border:1px solid var(--border);color:var(--cream);padding:6px 9px;font-family:'Jost',sans-serif;font-size:11px;outline:none;width:100%;margin-bottom:7px;transition:border-color .3s;}
 .ii:focus{border-color:var(--gold-dim);}
-/* settings */
+.img-upload-area{border:1px dashed var(--gold-dim);padding:12px;text-align:center;cursor:pointer;margin-bottom:7px;transition:all .3s;position:relative;}
+.img-upload-area:hover{border-color:var(--gold);background:rgba(201,151,90,.04);}
+.img-upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.img-upload-area p{font-size:10px;color:var(--text-dim);letter-spacing:.1em;}
+.img-preview{width:100%;height:100px;object-fit:cover;display:none;margin-bottom:7px;border:1px solid var(--border);}
 .sgrp{background:var(--surface);border:1px solid var(--border);padding:22px;margin-bottom:18px;}
 .sgrp-title{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--border);}
 .srow{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);gap:18px;flex-wrap:wrap;}
@@ -348,18 +367,18 @@ tbody td{padding:11px 14px;font-size:12px;color:var(--text);vertical-align:middl
   .adm-main{padding:18px 14px;}
   .stats-grid{grid-template-columns:1fr 1fr;}
   .ai-grid{grid-template-columns:1fr;}
+  .ready-modal{padding:32px 22px;}
 }
 @media(max-width:480px){.footer-grid{grid-template-columns:1fr;}.hero-title{font-size:44px;}}
 
-/* grain */
 body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;opacity:.022;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px;}
 </style>
 </head>
 <body>
 
-<!-- ============ NAV ============ -->
+<!-- NAV -->
 <nav id="mainNav">
-  <a href="#hero" class="nav-logo">N<span>oir</span></a>
+  <a href="#hero" class="nav-logo">Cold <span>Corner</span></a>
   <div class="nav-links">
     <a href="#features">About</a>
     <a href="#menu">Menu</a>
@@ -367,7 +386,7 @@ body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;o
   </div>
   <div class="nav-actions">
     <button class="nav-user-btn" id="userNavBtn" onclick="openUserModal()">Sign In</button>
-    <button class="nav-admin-btn" id="adminNavBtn" onclick="openAdminLogin()">⚙ Admin</button>
+    <button class="nav-admin-link" onclick="openAdminLogin()">Admin</button>
     <button class="cart-btn" onclick="toggleCart()">Cart <span class="cart-count" id="cartCount">0</span></button>
     <button class="hamburger" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
   </div>
@@ -379,16 +398,18 @@ body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;o
   <a href="#orders" onclick="closeMobileNav()">My Orders</a>
 </div>
 
-<!-- ============ HERO ============ -->
+<!-- HERO -->
 <section id="hero">
   <div class="hero-bg">
     <div class="hring"></div><div class="hring"></div><div class="hring"></div>
   </div>
-  <div class="steam-c"><div class="stm"></div><div class="stm"></div><div class="stm"></div></div>
   <div class="hero-content">
-    <div class="hero-eyebrow">Est. 2019 · Premium Coffee House</div>
-    <h1 class="hero-title">Where Every Cup<em>Tells a Story</em></h1>
-    <p class="hero-sub">Crafted with intention. Served with elegance. A sanctuary for the senses.</p>
+    <div class="hero-eyebrow">Est. 2019 · Premium Ice Cream & Coffee</div>
+    <h1 class="hero-title">Where Every Scoop<em>Tells a Story</em></h1>
+    <p class="hero-sub" id="heroSub">Crafted with intention. Served with elegance. A sanctuary for the senses.</p>
+    <div style="margin-bottom:28px;">
+      <div class="pickup-badge">Pick Up Only — No Delivery Available</div>
+    </div>
     <div class="hero-cta">
       <a href="#menu" class="btn-gold">Explore Menu</a>
       <a href="#features" class="btn-outline">Our Story</a>
@@ -397,22 +418,22 @@ body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;o
   <div class="scroll-hint">Scroll</div>
 </section>
 
-<!-- ============ FEATURES ============ -->
+<!-- FEATURES -->
 <section id="features">
   <div class="sec-header reveal">
-    <span class="sec-tag">The Noir Experience</span>
+    <span class="sec-tag">The Cold Corner Experience</span>
     <h2 class="sec-title">Crafted With <em>Passion</em></h2>
     <div class="sec-line"></div>
   </div>
   <div class="feat-grid">
-    <div class="feat-card reveal"><span class="feat-icon">☕</span><h3 class="feat-title">Single Origin Beans</h3><p class="feat-text">Sourced from the world's finest estates in Ethiopia, Colombia, and Guatemala.</p></div>
-    <div class="feat-card reveal"><span class="feat-icon">🫖</span><h3 class="feat-title">Master Baristas</h3><p class="feat-text">Our team trains for years, perfecting every extraction and pour.</p></div>
+    <div class="feat-card reveal"><span class="feat-icon">🍦</span><h3 class="feat-title">Artisan Ice Cream</h3><p class="feat-text">House-made gelatos and scoops from premium ingredients, churned fresh daily.</p></div>
+    <div class="feat-card reveal"><span class="feat-icon">☕</span><h3 class="feat-title">Master Baristas</h3><p class="feat-text">Our team trains for years, perfecting every extraction and pour.</p></div>
     <div class="feat-card reveal"><span class="feat-icon">🍃</span><h3 class="feat-title">Organic Ingredients</h3><p class="feat-text">Every ingredient is organic, locally sourced where possible.</p></div>
-    <div class="feat-card reveal"><span class="feat-icon">🌙</span><h3 class="feat-title">Ambient Atmosphere</h3><p class="feat-text">A serene escape from the city's rhythm. Open from dawn to midnight.</p></div>
+    <div class="feat-card reveal"><span class="feat-icon">🛍</span><h3 class="feat-title">Pick Up Orders</h3><p class="feat-text">Order online and pick up fresh at our store. Quick, easy, no waiting.</p></div>
   </div>
 </section>
 
-<!-- ============ MENU ============ -->
+<!-- MENU -->
 <section id="menu">
   <div class="sec-header reveal">
     <span class="sec-tag">Our Offerings</span>
@@ -422,14 +443,13 @@ body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;o
   <div style="text-align:center;">
     <div class="menu-filters">
       <button class="filter-btn active" data-cat="coffee">Coffee</button>
-      <button class="filter-btn" data-cat="food">Food</button>
-      <button class="filter-btn" data-cat="desserts">Desserts</button>
+      <button class="filter-btn" data-cat="icecream">Ice Cream</button>
     </div>
   </div>
   <div class="menu-grid" id="menuGrid"></div>
 </section>
 
-<!-- ============ MY ORDERS ============ -->
+<!-- MY ORDERS -->
 <section id="orders">
   <div class="sec-header reveal">
     <span class="sec-tag">Your History</span>
@@ -439,27 +459,27 @@ body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;o
   <div class="orders-wrap" id="ordersContainer"></div>
 </section>
 
-<!-- ============ FOOTER ============ -->
+<!-- FOOTER -->
 <footer>
   <div class="footer-grid">
     <div class="footer-brand">
-      <div class="bn">NOIR</div>
-      <p>A premium coffee house where every detail is curated for an extraordinary experience.</p>
+      <div class="bn">COLD CORNER</div>
+      <p>A premium ice cream & coffee shop where every detail is curated for an extraordinary experience. Pick up orders only.</p>
     </div>
     <div class="footer-col"><h4>Navigate</h4><ul>
       <li><a href="#hero">Home</a></li><li><a href="#features">About</a></li>
       <li><a href="#menu">Menu</a></li><li><a href="#orders">Orders</a></li>
     </ul></div>
-    <div class="footer-col"><h4>Hours</h4><p>Mon–Fri: 7am – 11pm<br>Saturday: 8am – Midnight<br>Sunday: 9am – 10pm</p></div>
-    <div class="footer-col"><h4>Find Us</h4><p>12 Roast Street<br>Artisan Quarter<br>New York, NY 10001<br><br>hello@noircafe.com</p></div>
+    <div class="footer-col"><h4>Hours</h4><p>Mon–Fri: 10am – 10pm<br>Saturday: 10am – Midnight<br>Sunday: 11am – 9pm</p></div>
+    <div class="footer-col"><h4>Find Us</h4><p>12 Frost Street<br>Artisan Quarter<br>New York, NY 10001<br><br>hello@coldcorner.com</p></div>
   </div>
   <div class="footer-bottom">
-    <p>© 2026 NOIR Coffee House. All rights reserved.</p>
-    <p>Crafted with ♥ for coffee lovers</p>
+    <p>© 2026 Cold Corner. All rights reserved.</p>
+    <p>Pick Up Only 🛍 No Delivery</p>
   </div>
 </footer>
 
-<!-- ============ CART PANEL ============ -->
+<!-- CART PANEL -->
 <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
 <div class="cart-panel" id="cartPanel">
   <div class="cart-head">
@@ -475,39 +495,40 @@ body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;o
   </div>
 </div>
 
-<!-- ============ USER MODAL ============ -->
+<!-- USER MODAL -->
 <div class="modal-overlay" id="userModal" onclick="if(event.target===this)closeUserModal()">
   <div class="modal"><button class="mclose" onclick="closeUserModal()">✕</button><div id="userModalBody"></div></div>
 </div>
 
-<!-- ============ CHECKOUT MODAL ============ -->
+<!-- CHECKOUT MODAL -->
 <div class="modal-overlay" id="checkoutModal" onclick="if(event.target===this)closeCheckout()">
   <div class="modal"><button class="mclose" onclick="closeCheckout()">✕</button><div id="checkoutBody"></div></div>
 </div>
 
-<!-- ============ ADMIN LOGIN MODAL ============ -->
+<!-- ADMIN LOGIN MODAL -->
 <div class="modal-overlay" id="adminLoginModal" onclick="if(event.target===this)closeAdminLogin()">
   <div class="modal" style="max-width:360px;">
     <button class="mclose" onclick="closeAdminLogin()">✕</button>
     <div class="m-eyebrow">Restricted Access</div>
     <div class="m-title">Admin <em>Login</em></div>
-    <div class="fg"><label class="fl">Username</label><input class="fi" id="admUser" type="text" placeholder="for store owner only" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
+    <div class="fg"><label class="fl">Username</label><input class="fi" id="admUser" type="text" placeholder="admin" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
     <div class="fg"><label class="fl">Password</label><input class="fi" id="admPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
     <div class="ferr" id="admErr"></div>
-    <button class="fsub" onclick="doAdminLogin()">🔐 Enter Dashboard</button>
+    <button class="fsub" onclick="doAdminLogin()">Enter Dashboard</button>
+    <p style="text-align:center;font-size:10px;color:var(--text-dim);margin-top:14px;">Default: <b style="color:var(--gold)">admin</b> / <b style="color:var(--gold)">coldcorner2024</b></p>
+  </div>
 </div>
 
-<!-- ============ ADMIN DASHBOARD ============ -->
+<!-- ADMIN DASHBOARD -->
 <div class="adm-screen" id="admScreen">
   <div class="adm-top">
-    <div class="adm-brand">NOIR <span class="adm-brand-sub">Admin Dashboard</span></div>
+    <div class="adm-brand">COLD CORNER <span class="adm-brand-sub">Admin Dashboard</span></div>
     <div class="adm-topright">
       <span class="adm-who" id="admWho"></span>
       <button class="adm-exit-btn" onclick="exitAdmin()">✕ Exit Dashboard</button>
     </div>
   </div>
   <div class="adm-body">
-    <!-- Sidebar -->
     <div class="adm-sidebar">
       <div class="sb-sec">
         <span class="sb-lbl">Overview</span>
@@ -518,7 +539,7 @@ body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;o
         <span class="sb-lbl">Orders</span>
         <button class="sb-btn" data-panel="allorders"><span class="sb-icon">📋</span>All Orders</button>
         <button class="sb-btn" data-panel="livequeue"><span class="sb-icon">🔴</span>Live Queue</button>
-        <button class="sb-btn" data-panel="delivered"><span class="sb-icon">✅</span>Delivered</button>
+        <button class="sb-btn" data-panel="pickedup"><span class="sb-icon">✅</span>Picked Up</button>
         <button class="sb-btn" data-panel="cancelled"><span class="sb-icon">❌</span>Cancelled</button>
       </div>
       <div class="sb-div"></div>
@@ -534,18 +555,30 @@ body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;o
         <button class="sb-btn" data-panel="settings"><span class="sb-icon">⚙️</span>Settings</button>
       </div>
     </div>
-    <!-- Main content area -->
     <div class="adm-main" id="admMain">
-      <!-- Panels injected by JS -->
       <div class="adm-panel active" id="panel-dashboard"></div>
       <div class="adm-panel" id="panel-allorders"></div>
       <div class="adm-panel" id="panel-livequeue"></div>
-      <div class="adm-panel" id="panel-delivered"></div>
+      <div class="adm-panel" id="panel-pickedup"></div>
       <div class="adm-panel" id="panel-cancelled"></div>
       <div class="adm-panel" id="panel-editmenu"></div>
       <div class="adm-panel" id="panel-additem"></div>
       <div class="adm-panel" id="panel-customers"></div>
       <div class="adm-panel" id="panel-settings"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER READY POPUP -->
+<div class="ready-overlay" id="readyOverlay">
+  <div class="ready-modal">
+    <div class="ready-pulse">🛍</div>
+    <h2>Order Ready!</h2>
+    <p>Your order is ready for pick up.</p>
+    <div class="ready-order-id" id="readyOrderId"></div>
+    <div class="ready-instruction">
+      Please come to the counter to collect your order.<br>
+      <strong style="color:var(--green)">Pick Up Only — No Delivery</strong>
     </div>
   </div>
 </div>
@@ -557,48 +590,50 @@ body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;o
 'use strict';
 
 // ================================================================
-// MENU DATA
+// MENU DATA (images stored as data URLs or URLs in localStorage)
 // ================================================================
-const menuData = {
+const defaultMenuData = {
   coffee:[
-    {id:'c1',name:'Signature Espresso',price:4.50,emoji:'☕',desc:'Double shot, dark roast, rich crema'},
-    {id:'c2',name:'Noir Latte',price:6.00,emoji:'🥛',desc:'Silky steamed milk, single origin espresso'},
-    {id:'c3',name:'Velvet Cappuccino',price:5.50,emoji:'☕',desc:'Equal parts espresso, foam and milk'},
-    {id:'c4',name:'Cold Brew Reserve',price:6.50,emoji:'🧊',desc:'24-hour steep, smooth and bold'},
-    {id:'c5',name:'Cardamom Cortado',price:5.00,emoji:'🫖',desc:'Espresso with warm-spiced steamed milk'},
-    {id:'c6',name:'Honey Flat White',price:5.75,emoji:'🍯',desc:'Ristretto, whole milk, raw honeycomb'},
-    {id:'c7',name:'Mocha Noir',price:6.25,emoji:'🍫',desc:'Belgian dark chocolate, double espresso'},
-    {id:'c8',name:'Iced Americano',price:4.75,emoji:'🧊',desc:'Bold espresso over ice, house water'},
+    {id:'c1',name:'Signature Espresso',price:4.50,emoji:'☕',desc:'Double shot, dark roast, rich crema',image:''},
+    {id:'c2',name:'Cold Corner Latte',price:6.00,emoji:'🥛',desc:'Silky steamed milk, single origin espresso',image:''},
+    {id:'c3',name:'Velvet Cappuccino',price:5.50,emoji:'☕',desc:'Equal parts espresso, foam and milk',image:''},
+    {id:'c4',name:'Cold Brew Reserve',price:6.50,emoji:'🧊',desc:'24-hour steep, smooth and bold',image:''},
+    {id:'c5',name:'Cardamom Cortado',price:5.00,emoji:'🫖',desc:'Espresso with warm-spiced steamed milk',image:''},
+    {id:'c6',name:'Honey Flat White',price:5.75,emoji:'🍯',desc:'Ristretto, whole milk, raw honeycomb',image:''},
+    {id:'c7',name:'Mocha Dark',price:6.25,emoji:'🍫',desc:'Belgian dark chocolate, double espresso',image:''},
+    {id:'c8',name:'Iced Americano',price:4.75,emoji:'🧊',desc:'Bold espresso over ice, house water',image:''},
   ],
-  food:[
-    {id:'f1',name:'Truffle Avocado Toast',price:14.00,emoji:'🥑',desc:'Sourdough, truffle oil, micro greens'},
-    {id:'f2',name:'Noir Club Sandwich',price:16.50,emoji:'🥪',desc:'Roast chicken, brie, fig jam, brioche'},
-    {id:'f3',name:'Wagyu Burger',price:22.00,emoji:'🍔',desc:'Japanese wagyu, caramelised onion, aioli'},
-    {id:'f4',name:'Truffle Fries',price:9.50,emoji:'🍟',desc:'Hand-cut, parmesan, black truffle oil'},
-    {id:'f5',name:'Mushroom Pasta',price:18.00,emoji:'🍝',desc:'Porcini, tagliatelle, aged pecorino'},
-    {id:'f6',name:'Eggs Royale',price:15.50,emoji:'🍳',desc:'Poached eggs, smoked salmon, hollandaise'},
-    {id:'f7',name:'Caprese Bruschetta',price:11.00,emoji:'🍅',desc:'Heirloom tomato, buffalo mozzarella, basil'},
-    {id:'f8',name:'Caesar Salad',price:13.50,emoji:'🥗',desc:'Romaine, anchovies, house dressing, parmesan'},
-  ],
-  desserts:[
-    {id:'d1',name:'Dark Chocolate Fondant',price:10.50,emoji:'🍫',desc:'Valrhona chocolate, molten centre, vanilla ice cream'},
-    {id:'d2',name:'Crème Brûlée',price:9.00,emoji:'🍮',desc:'Madagascan vanilla, caramelised sugar crust'},
-    {id:'d3',name:'Tiramisu Noir',price:9.50,emoji:'☕',desc:'Espresso-soaked ladyfingers, mascarpone cream'},
-    {id:'d4',name:'Opera Cake',price:11.00,emoji:'🎂',desc:'Coffee buttercream, almond joconde, ganache'},
-    {id:'d5',name:'Croissant au Beurre',price:6.00,emoji:'🥐',desc:'French butter, 72-hour laminated dough'},
-    {id:'d6',name:'Lavender Panna Cotta',price:8.50,emoji:'🌸',desc:'Organic lavender, berry coulis, mint'},
+  icecream:[
+    {id:'i1',name:'Classic Vanilla Bean',price:5.50,emoji:'🍦',desc:'Madagascar vanilla, double scoop',image:''},
+    {id:'i2',name:'Dark Chocolate Gelato',price:6.00,emoji:'🍫',desc:'Belgian 72% dark chocolate, velvety smooth',image:''},
+    {id:'i3',name:'Salted Caramel Scoop',price:6.50,emoji:'🍮',desc:'House-made caramel, fleur de sel, rich cream',image:''},
+    {id:'i4',name:'Pistachio Premium',price:7.00,emoji:'🌿',desc:'Sicilian pistachios, house churned gelato',image:''},
+    {id:'i5',name:'Strawberry Sorbet',price:5.00,emoji:'🍓',desc:'Fresh strawberries, light and refreshing',image:''},
+    {id:'i6',name:'Matcha Green Tea',price:6.75,emoji:'🍵',desc:'Ceremonial grade matcha, creamy gelato',image:''},
+    {id:'i7',name:'Affogato',price:7.50,emoji:'☕',desc:'Vanilla gelato, hot espresso shot poured over',image:''},
+    {id:'i8',name:'Waffle Cone Sundae',price:8.50,emoji:'🍧',desc:'Choice of 2 scoops, warm waffle cone, toppings',image:''},
   ]
 };
+
+function getMenuData(){
+  const saved = localStorage.getItem('cc_menu');
+  if(saved) try{ return JSON.parse(saved); }catch(e){}
+  return JSON.parse(JSON.stringify(defaultMenuData));
+}
+function setMenuData(data){ localStorage.setItem('cc_menu', JSON.stringify(data)); }
+let menuData = getMenuData();
 
 // ================================================================
 // APP STATE
 // ================================================================
-let cart        = JSON.parse(localStorage.getItem('noir_cart')  || '[]');
-let currentUser = JSON.parse(localStorage.getItem('noir_user')  || 'null');
+let cart        = JSON.parse(localStorage.getItem('cc_cart')  || '[]');
+let currentUser = JSON.parse(localStorage.getItem('cc_user')  || 'null');
 let activeCat   = 'coffee';
 let adminIn     = false;
-let admCreds    = JSON.parse(localStorage.getItem('noir_admin_creds') || '{"user":"admin","pass":"noir2024"}');
+let admCreds    = JSON.parse(localStorage.getItem('cc_admin_creds') || '{"user":"admin","pass":"coldcorner2024"}');
 let admPanel    = 'dashboard';
+let readyCheckInterval = null;
+let shownReadyOrders = JSON.parse(localStorage.getItem('cc_shown_ready') || '[]');
 
 // ================================================================
 // UTILS
@@ -613,23 +648,65 @@ function toast(msg, dur=3000){
   setTimeout(()=>{ t.classList.add('out'); setTimeout(()=>t.remove(),300); }, dur);
 }
 
-function getOrders(){ return JSON.parse(localStorage.getItem('noir_orders')||'[]'); }
-function setOrders(arr){ localStorage.setItem('noir_orders', JSON.stringify(arr)); }
-function getUsers(){  return JSON.parse(localStorage.getItem('noir_users') ||'[]'); }
-function setUsers(arr){ localStorage.setItem('noir_users',  JSON.stringify(arr)); }
+function getOrders(){ return JSON.parse(localStorage.getItem('cc_orders')||'[]'); }
+function setOrders(arr){ localStorage.setItem('cc_orders', JSON.stringify(arr)); }
+function getUsers(){  return JSON.parse(localStorage.getItem('cc_users') ||'[]'); }
+function setUsers(arr){ localStorage.setItem('cc_users',  JSON.stringify(arr)); }
 
 function getSettings(){
-  return JSON.parse(localStorage.getItem('noir_settings')||JSON.stringify({
-    cafeName:'NOIR Coffee House', tagline:'Crafted with intention. Served with elegance.',
-    address:'12 Roast Street, New York, NY 10001', email:'hello@noircafe.com',
-    phone:'+1 (212) 555-0190', taxRate:8, ordersOpen:true, delivery:true
+  return JSON.parse(localStorage.getItem('cc_settings')||JSON.stringify({
+    cafeName:'Cold Corner', tagline:'Crafted with intention. Served with elegance.',
+    address:'12 Frost Street, New York, NY 10001', email:'hello@coldcorner.com',
+    phone:'+1 (212) 555-0190', taxRate:8, ordersOpen:true
   }));
+}
+
+// ================================================================
+// ORDER READY REAL-TIME POLL
+// ================================================================
+function startReadyPoll(){
+  if(readyCheckInterval) clearInterval(readyCheckInterval);
+  readyCheckInterval = setInterval(checkForReadyOrders, 3000);
+}
+
+function checkForReadyOrders(){
+  if(!currentUser) return;
+  const orders = getOrders();
+  const myReadyOrders = orders.filter(o =>
+    o.email === currentUser.email &&
+    o.status === 'Ready' &&
+    !shownReadyOrders.includes(o.id)
+  );
+  if(myReadyOrders.length > 0){
+    const o = myReadyOrders[0];
+    showReadyPopup(o.id);
+    shownReadyOrders.push(o.id);
+    localStorage.setItem('cc_shown_ready', JSON.stringify(shownReadyOrders));
+  }
+  // Hide popup if order is no longer "Ready"
+  const overlay = $('readyOverlay');
+  if(overlay.classList.contains('open')){
+    const shownId = $('readyOrderId').dataset.orderId;
+    if(shownId){
+      const o = orders.find(o => o.id === shownId);
+      if(!o || o.status === 'Picked Up' || o.status === 'Delivered' || o.status === 'Cancelled'){
+        overlay.classList.remove('open');
+      }
+    }
+  }
+}
+
+function showReadyPopup(orderId){
+  $('readyOrderId').textContent = 'Order #' + orderId;
+  $('readyOrderId').dataset.orderId = orderId;
+  $('readyOverlay').classList.add('open');
+  renderOrders();
 }
 
 // ================================================================
 // CART
 // ================================================================
-function saveCart(){ localStorage.setItem('noir_cart', JSON.stringify(cart)); }
+function saveCart(){ localStorage.setItem('cc_cart', JSON.stringify(cart)); }
 
 function updateCartBadge(){
   const n = cart.reduce((s,i)=>s+i.qty, 0);
@@ -644,18 +721,23 @@ function toggleCart(){
   $('cartPanel').classList.toggle('open');
 }
 
+function itemImgHtml(item, size=68){
+  if(item.image) return `<img src="${item.image}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;">`;
+  return `<span style="font-size:${size}px">${item.emoji||'☕'}</span>`;
+}
+
 function renderCartItems(){
   const body = $('cartBody');
   const foot = $('cartFoot');
   if(!cart.length){
-    body.innerHTML = `<div class="cart-empty"><div class="ei">☕</div><p>Your cart is empty.<br>Add something delicious.</p></div>`;
+    body.innerHTML = `<div class="cart-empty"><div class="ei">🛍</div><p>Your cart is empty.<br>Add something delicious.</p></div>`;
     foot.style.display = 'none';
     return;
   }
   foot.style.display = 'block';
   body.innerHTML = cart.map(i => `
     <div class="cart-item">
-      <div class="ci-img">${i.emoji}</div>
+      <div class="ci-img">${i.image?`<img src="${i.image}" alt="${i.name}">`:`<span>${i.emoji}</span>`}</div>
       <div class="ci-info">
         <div class="ci-name">${i.name}</div>
         <div class="ci-price">${fp(i.price)}</div>
@@ -675,7 +757,7 @@ function renderCartItems(){
 }
 
 function addToCart(id, cat){
-  const item = menuData[cat].find(i=>i.id===id);
+  const item = menuData[cat] && menuData[cat].find(i=>i.id===id);
   if(!item) return;
   const ex = cart.find(i=>i.id===id);
   ex ? (ex.qty++, toast(`Added another ${item.name}`)) : (cart.push({...item,qty:1}), toast(`${item.name} added ✓`));
@@ -697,11 +779,12 @@ function changeQty(id, d){
 // ================================================================
 function renderMenu(cat){
   activeCat = cat;
-  $('menuGrid').innerHTML = menuData[cat].map((item,idx) => `
+  const items = menuData[cat] || [];
+  $('menuGrid').innerHTML = items.map((item,idx) => `
     <div class="menu-item" style="animation-delay:${idx*.06}s">
-      <div class="item-img">${item.emoji}</div>
+      <div class="item-img">${itemImgHtml(item)}</div>
       <div class="item-body">
-        <div class="item-cat">${cat}</div>
+        <div class="item-cat">${cat === 'icecream' ? 'Ice Cream' : 'Coffee'}</div>
         <div class="item-name">${item.name}</div>
         <div class="item-desc">${item.desc}</div>
         <div class="item-foot">
@@ -787,10 +870,10 @@ function doLogin(){
   const users=getUsers(), u=users.find(u=>u.email===email&&u.password===pass);
   if(!u){err.textContent='Invalid email or password.';return;}
   currentUser={name:u.name,email:u.email};
-  localStorage.setItem('noir_user',JSON.stringify(currentUser));
+  localStorage.setItem('cc_user',JSON.stringify(currentUser));
   $('userNavBtn').textContent=currentUser.name.split(' ')[0];
   toast(`Welcome back, ${currentUser.name.split(' ')[0]}! ☕`);
-  closeUserModal(); renderOrders();
+  closeUserModal(); renderOrders(); startReadyPoll();
 }
 
 function doSignup(){
@@ -802,15 +885,17 @@ function doSignup(){
   users.push({name,email,password:pass});
   setUsers(users);
   currentUser={name,email};
-  localStorage.setItem('noir_user',JSON.stringify(currentUser));
+  localStorage.setItem('cc_user',JSON.stringify(currentUser));
   $('userNavBtn').textContent=name.split(' ')[0];
-  toast(`Welcome, ${name.split(' ')[0]}! ☕`);
-  closeUserModal(); renderOrders();
+  toast(`Welcome, ${name.split(' ')[0]}! 🍦`);
+  closeUserModal(); renderOrders(); startReadyPoll();
 }
 
 function doLogout(){
-  currentUser=null; localStorage.removeItem('noir_user');
+  currentUser=null; localStorage.removeItem('cc_user');
   $('userNavBtn').textContent='Sign In';
+  if(readyCheckInterval) clearInterval(readyCheckInterval);
+  $('readyOverlay').classList.remove('open');
   closeUserModal(); toast('Signed out. See you soon!'); renderOrders();
 }
 
@@ -830,45 +915,49 @@ function renderCheckout(){
   $('checkoutBody').innerHTML=`
     <div class="m-eyebrow">Checkout</div>
     <div class="m-title">Your <em>Order</em></div>
-    ${cart.map(i=>`<div class="os-row"><span>${i.emoji} ${i.name} ×${i.qty}</span><span>${fp(i.price*i.qty)}</span></div>`).join('')}
+    <div class="pickup-notice">
+      <div class="pickup-notice-icon">🛍</div>
+      <div class="pickup-notice-text">
+        <strong>Pick Up Only — No Home Delivery</strong>
+        Orders must be collected in person at our store. We do not offer delivery.
+      </div>
+    </div>
+    ${cart.map(i=>`<div class="os-row"><span>${i.emoji||'•'} ${i.name} ×${i.qty}</span><span>${fp(i.price*i.qty)}</span></div>`).join('')}
     <div class="os-row" style="color:var(--text-dim)"><span>Tax (8%)</span><span>${fp(tax)}</span></div>
     <div class="os-total"><span>Total</span><span>${fp(total)}</span></div>
     <br>
-    <div class="fg"><label class="fl">Delivery Address / Table No. *</label><input class="fi" id="coAddr" placeholder="Table 4 or your address"></div>
+    <div class="fg"><label class="fl">Your Name / Table No. *</label><input class="fi" id="coAddr" placeholder="e.g. Table 4 or John Smith"></div>
     <div class="fg"><label class="fl">Special Instructions (optional)</label><input class="fi" id="coNote" placeholder="Allergies, preferences…"></div>
     <div class="ferr" id="coErr"></div>
-    <button class="fsub" id="coBtn" onclick="submitOrder()">☕ Place Order</button>`;
+    <button class="fsub" id="coBtn" onclick="submitOrder()">🛍 Place Pick Up Order</button>`;
 }
 
 async function submitOrder(){
   const addr=$('coAddr').value.trim(), note=$('coNote').value.trim(), err=$('coErr');
-  if(!addr){err.textContent='Please enter a delivery address or table number.';return;}
+  if(!addr){err.textContent='Please enter your name or table number.';return;}
   const btn=$('coBtn'); btn.textContent='Placing order…'; btn.disabled=true;
 
-  const orderId='NOI'+Date.now().toString().slice(-6);
+  const orderId='CC'+Date.now().toString().slice(-6);
   const sub=cart.reduce((s,i)=>s+i.price*i.qty,0), tax=sub*.08, total=sub+tax;
 
-  // ---- Formspree email (replace FORMSPREE_ID with your ID from formspree.io) ----
   const FORMSPREE_ID='xzzbbkwa';
-  let emailSent=false;
   try{
-    const res=await fetch(`https://formspree.io/f/${FORMSPREE_ID}`,{
+    await fetch(`https://formspree.io/f/${FORMSPREE_ID}`,{
       method:'POST',headers:{'Accept':'application/json','Content-Type':'application/json'},
       body:JSON.stringify({
-        _subject:`🍵 New Order #${orderId} — NOIR`,
+        _subject:`🛍 New Pick Up Order #${orderId} — Cold Corner`,
         _replyto:currentUser.email,
         Order_ID:orderId, Customer:`${currentUser.name} (${currentUser.email})`,
-        Date:new Date().toLocaleString(), Address:addr, Note:note||'—',
-        Items:cart.map(i=>`${i.emoji} ${i.name} x${i.qty} — ${fp(i.price*i.qty)}`).join(' | '),
-        Subtotal:fp(sub), Tax:fp(tax), TOTAL:fp(total)
+        Date:new Date().toLocaleString(), Table_or_Name:addr, Note:note||'—',
+        Items:cart.map(i=>`${i.name} x${i.qty} — ${fp(i.price*i.qty)}`).join(' | '),
+        Subtotal:fp(sub), Tax:fp(tax), TOTAL:fp(total), Type:'PICK UP ONLY'
       })
     });
-    const d=await res.json(); emailSent=res.ok&&!d.errors;
-  }catch(e){ emailSent=false; }
+  }catch(e){}
 
   const order={
     id:orderId, date:new Date().toLocaleString(),
-    items:cart.map(i=>({name:i.name,emoji:i.emoji,qty:i.qty,price:i.price})),
+    items:cart.map(i=>({name:i.name,emoji:i.emoji||'•',qty:i.qty,price:i.price})),
     total, address:addr, note, status:'Confirmed',
     customer:currentUser.name, email:currentUser.email
   };
@@ -880,7 +969,8 @@ async function submitOrder(){
       <div class="success-icon-wrap">✓</div>
       <h3>Order Placed!</h3>
       <p>Order <span class="oid">#${orderId}</span> confirmed.<br>
-      ${emailSent?'✅ Confirmation email sent to cafe.':'📋 Order saved. Add your Formspree ID to enable email notifications.'}</p><br>
+      We'll notify you when your order is <strong style="color:var(--green)">Ready for Pick Up</strong>.<br><br>
+      <span style="color:var(--gold)">🛍 Remember: Pick Up Only — please come to our counter.</span></p><br>
       <button class="fsub" onclick="closeCheckout();document.getElementById('orders').scrollIntoView({behavior:'smooth'});renderOrders()">View My Orders</button>
     </div>`;
   renderOrders();
@@ -896,18 +986,24 @@ function renderOrders(){
     c.innerHTML=`<div class="no-orders"><div class="ni">🔐</div><p style="font-size:13px;">Sign in to view your order history.</p><br><button class="btn-outline" style="font-size:11px;padding:10px 24px;" onclick="openUserModal()">Sign In</button></div>`;
     return;
   }
-  if(!orders.length){
+  const myOrders = orders.filter(o => o.email === currentUser.email);
+  if(!myOrders.length){
     c.innerHTML=`<div class="no-orders"><div class="ni">📋</div><p style="font-size:13px;">No orders yet. Explore the menu!</p></div>`;
     return;
   }
-  c.innerHTML=orders.map(o=>`
-    <div class="order-card">
+  const statusClass = s => {
+    const map = {confirmed:'confirmed',preparing:'preparing',ready:'ready','picked up':'pickedup',delivered:'pickedup',cancelled:'cancelled'};
+    return map[(s||'').toLowerCase()] || 'confirmed';
+  };
+  c.innerHTML=myOrders.map(o=>`
+    <div class="order-card${o.status==='Ready'?' ':''}" style="${o.status==='Ready'?'border-color:var(--green);':''}" >
       <div class="oc-head">
         <div><div class="oc-id">Order #${o.id}</div><div class="oc-date">${o.date}</div></div>
-        <div class="oc-status status-${(o.status||'confirmed').toLowerCase()}">${o.status}</div>
+        <div class="oc-status status-${statusClass(o.status)}">${o.status}</div>
       </div>
+      ${o.status==='Ready'?`<div style="background:rgba(76,175,130,.08);border:1px solid rgba(76,175,130,.25);padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--green);">🛍 Your order is ready! Please come to the counter to collect it.</div>`:''}
       <div class="oc-items">${o.items.map(i=>`${i.emoji} ${i.name} ×${i.qty}`).join(' · ')}</div>
-      ${o.address?`<div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;">📍 ${o.address}</div>`:''}
+      ${o.address?`<div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;">👤 ${o.address}</div>`:''}
       <div class="oc-foot"><span class="oc-total-lbl">Total</span><span class="oc-total">${fp(o.total)}</span></div>
     </div>`).join('');
 }
@@ -933,7 +1029,6 @@ function doAdminLogin(){
   if(u===admCreds.user && p===admCreds.pass){
     adminIn=true;
     closeAdminLogin();
-    $('adminNavBtn').innerHTML='⚙ Dashboard';
     openAdminDashboard();
     toast('Welcome to Admin Dashboard 👑');
   } else {
@@ -955,7 +1050,6 @@ function exitAdmin(){
   document.body.style.overflow='';
 }
 
-// Sidebar clicks
 document.querySelectorAll('.sb-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{
     admPanel = btn.dataset.panel;
@@ -965,9 +1059,7 @@ document.querySelectorAll('.sb-btn').forEach(btn=>{
 
 function switchAdmPanel(name){
   admPanel = name;
-  // update sidebar
   document.querySelectorAll('.sb-btn').forEach(b=>b.classList.toggle('active', b.dataset.panel===name));
-  // hide all panels, show target
   document.querySelectorAll('.adm-panel').forEach(p=>p.classList.remove('active'));
   const target = $('panel-'+name);
   if(target){ target.classList.add('active'); renderPanel(name, target); }
@@ -977,19 +1069,20 @@ function switchAdmPanel(name){
 // ADMIN PANEL RENDERERS
 // ================================================================
 function renderPanel(name, el){
+  menuData = getMenuData();
   const orders  = getOrders();
   const users   = getUsers();
 
   if(name==='dashboard'){
     const totalRev = orders.reduce((s,o)=>s+o.total,0);
-    const active   = orders.filter(o=>!['Delivered','Cancelled'].includes(o.status)).length;
+    const active   = orders.filter(o=>!['Picked Up','Delivered','Cancelled'].includes(o.status)).length;
     const allItems = getAllItems().length;
     const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
     const rev=[320,480,390,560,720,890,650];
     const maxR=Math.max(...rev);
     el.innerHTML=`
       <div class="adm-page-title">Good ${greeting()}, <em>Admin</em></div>
-      <div class="adm-page-sub">Your NOIR overview at a glance.</div>
+      <div class="adm-page-sub">Your Cold Corner overview at a glance.</div>
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-lbl">Total Orders</div><div class="stat-val">${orders.length}</div><div class="stat-sub">All time</div></div>
         <div class="stat-card"><div class="stat-lbl">Revenue</div><div class="stat-val">${fp(totalRev)}</div><div class="stat-sub">All time</div></div>
@@ -1015,28 +1108,28 @@ function renderPanel(name, el){
       <div class="tbl-wrap">
         <div class="tbl-head">
           <div class="tbl-title">Orders (${orders.length})</div>
-          <input class="tbl-search" id="oSearch" placeholder="Search ID, customer, address…" oninput="filterOrdersTable(this.value)">
+          <input class="tbl-search" id="oSearch" placeholder="Search ID, customer…" oninput="filterOrdersTable(this.value)">
         </div>
         <div id="oTableBody">${ordersTable(orders)}</div>
       </div>`;
   }
 
   else if(name==='livequeue'){
-    const live=orders.filter(o=>!['Delivered','Cancelled'].includes(o.status));
+    const live=orders.filter(o=>!['Picked Up','Delivered','Cancelled'].includes(o.status));
     el.innerHTML=`
       <div class="adm-page-title">Live <em>Queue</em></div>
-      <div class="adm-page-sub">Update active orders in real time.</div>
+      <div class="adm-page-sub">Update active pick up orders in real time.</div>
       ${!live.length
         ?`<div class="adm-empty"><div class="ei">✅</div><p>No active orders right now.</p></div>`
         :live.map(o=>lqCard(o)).join('')}`;
   }
 
-  else if(name==='delivered'){
-    const done=orders.filter(o=>o.status==='Delivered');
+  else if(name==='pickedup'){
+    const done=orders.filter(o=>o.status==='Picked Up'||o.status==='Delivered');
     el.innerHTML=`
-      <div class="adm-page-title">Delivered <em>Orders</em></div>
-      <div class="adm-page-sub">${done.length} order${done.length!==1?'s':''} completed.</div>
-      <div class="tbl-wrap"><div class="tbl-head"><div class="tbl-title">Delivered (${done.length})</div></div>${ordersTable(done)}</div>`;
+      <div class="adm-page-title">Picked Up <em>Orders</em></div>
+      <div class="adm-page-sub">${done.length} order${done.length!==1?'s':''} picked up.</div>
+      <div class="tbl-wrap"><div class="tbl-head"><div class="tbl-title">Picked Up (${done.length})</div></div>${ordersTable(done)}</div>`;
   }
 
   else if(name==='cancelled'){
@@ -1051,14 +1144,22 @@ function renderPanel(name, el){
     const items=getAllItems();
     el.innerHTML=`
       <div class="adm-page-title">Edit <em>Menu</em></div>
-      <div class="adm-page-sub">Update names, prices, descriptions and emojis. Save each card individually.</div>
+      <div class="adm-page-sub">Update names, prices, descriptions, images and emojis. Save each card individually.</div>
       <div class="mec-grid">${items.map(item=>`
         <div class="mec" id="mec-${item.id}">
-          <div class="mec-top"><div class="mec-emoji">${item.emoji}</div><div><div class="mec-nm">${item.name}</div><div class="mec-cat">${item.category}</div></div></div>
+          <div class="mec-top">
+            <div class="mec-thumb">${item.image?`<img src="${item.image}" alt="${item.name}">`:`<span>${item.emoji||'☕'}</span>`}</div>
+            <div><div class="mec-nm">${item.name}</div><div class="mec-cat">${item.category==='icecream'?'Ice Cream':'Coffee'}</div></div>
+          </div>
           <label class="il">Name</label><input class="ii" id="mn-${item.id}" value="${item.name}">
           <label class="il">Price ($)</label><input class="ii" id="mp-${item.id}" type="number" step="0.01" value="${item.price.toFixed(2)}">
           <label class="il">Description</label><input class="ii" id="md-${item.id}" value="${item.desc}">
-          <label class="il">Emoji</label><input class="ii" id="me-${item.id}" value="${item.emoji}">
+          <label class="il">Emoji (fallback)</label><input class="ii" id="me-${item.id}" value="${item.emoji||'☕'}">
+          <label class="il">Product Image</label>
+          <div class="img-upload-area" onclick="document.getElementById('mimg-${item.id}').click()">
+            <input type="file" id="mimg-${item.id}" accept="image/*" style="display:none" onchange="previewMenuImg('${item.id}',this)">
+            ${item.image?`<img src="${item.image}" style="width:100%;height:80px;object-fit:cover;margin-bottom:6px;"><p>Click to change image</p>`:`<p>📷 Click to upload image</p>`}
+          </div>
           <div style="display:flex;gap:8px;margin-top:8px;">
             <button class="act-btn green" onclick="saveMenuItem('${item.id}','${item.category}')">✓ Save</button>
             <button class="act-btn red" onclick="deleteMenuItem('${item.id}','${item.category}')">✕ Remove</button>
@@ -1073,17 +1174,24 @@ function renderPanel(name, el){
       <div class="adm-page-sub">New items appear on the customer menu immediately.</div>
       <div class="tbl-wrap" style="padding:24px;">
         <div class="ai-grid">
-          <div><label class="il">Item Name *</label><input class="ii" id="ni-name" placeholder="e.g. Matcha Latte"></div>
+          <div><label class="il">Item Name *</label><input class="ii" id="ni-name" placeholder="e.g. Mango Sorbet"></div>
           <div><label class="il">Price ($) *</label><input class="ii" id="ni-price" type="number" step="0.01" placeholder="0.00"></div>
-          <div><label class="il">Emoji</label><input class="ii" id="ni-emoji" placeholder="☕"></div>
+          <div><label class="il">Emoji (fallback)</label><input class="ii" id="ni-emoji" placeholder="🍦"></div>
         </div>
         <div style="margin-bottom:12px;"><label class="il">Description *</label><input class="ii" id="ni-desc" placeholder="Short description"></div>
+        <div style="margin-bottom:12px;">
+          <label class="il">Product Image</label>
+          <div class="img-upload-area" onclick="document.getElementById('ni-img').click()" style="height:80px;display:flex;align-items:center;justify-content:center;">
+            <input type="file" id="ni-img" accept="image/*" style="display:none" onchange="previewNewImg(this)">
+            <p id="ni-img-label">📷 Click to upload image</p>
+          </div>
+          <img id="ni-img-preview" style="width:100%;max-height:120px;object-fit:cover;display:none;margin-top:6px;border:1px solid var(--border);">
+        </div>
         <div style="display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;">
           <div><label class="il">Category *</label>
             <select class="ii" id="ni-cat" style="cursor:pointer;">
               <option value="coffee">Coffee</option>
-              <option value="food">Food</option>
-              <option value="desserts">Desserts</option>
+              <option value="icecream">Ice Cream</option>
             </select>
           </div>
           <button class="save-btn" style="margin-top:0;" onclick="addMenuItem()">+ Add to Menu</button>
@@ -1114,20 +1222,19 @@ function renderPanel(name, el){
     const s=getSettings();
     el.innerHTML=`
       <div class="adm-page-title">Website <em>Settings</em></div>
-      <div class="adm-page-sub">Configure your cafe. Changes apply live after saving.</div>
+      <div class="adm-page-sub">Configure your store. Changes apply live after saving.</div>
       <div class="sgrp">
-        <div class="sgrp-title">Cafe Information</div>
-        <div class="srow"><div><div class="srow-lbl">Cafe Name</div><div class="srow-sub">Browser title &amp; display name</div></div><input class="si" id="s-name" value="${s.cafeName}"></div>
-        <div class="srow"><div><div class="srow-lbl">Hero Tagline</div><div class="srow-sub">Subtitle on the hero section</div></div><input class="si" id="s-tag" value="${s.tagline}"></div>
+        <div class="sgrp-title">Store Information</div>
+        <div class="srow"><div><div class="srow-lbl">Store Name</div><div class="srow-sub">Displayed in nav and footer</div></div><input class="si" id="s-name" value="${s.cafeName}"></div>
+        <div class="srow"><div><div class="srow-lbl">Hero Tagline</div></div><input class="si" id="s-tag" value="${s.tagline}"></div>
         <div class="srow"><div><div class="srow-lbl">Address</div></div><input class="si" id="s-addr" value="${s.address}"></div>
         <div class="srow"><div><div class="srow-lbl">Contact Email</div></div><input class="si" id="s-email" value="${s.email}"></div>
         <div class="srow"><div><div class="srow-lbl">Phone</div></div><input class="si" id="s-phone" value="${s.phone}"></div>
       </div>
       <div class="sgrp">
         <div class="sgrp-title">Order Settings</div>
-        <div class="srow"><div><div class="srow-lbl">Tax Rate (%)</div><div class="srow-sub">Applied at checkout</div></div><input class="si" id="s-tax" type="number" value="${s.taxRate}" style="max-width:90px;"></div>
+        <div class="srow"><div><div class="srow-lbl">Tax Rate (%)</div></div><input class="si" id="s-tax" type="number" value="${s.taxRate}" style="max-width:90px;"></div>
         <div class="srow"><div><div class="srow-lbl">Accept Orders</div><div class="srow-sub">Toggle ordering on/off</div></div><label class="tgl"><input type="checkbox" id="s-orders" ${s.ordersOpen?'checked':''}><span class="tgl-sl"></span></label></div>
-        <div class="srow"><div><div class="srow-lbl">Delivery Available</div></div><label class="tgl"><input type="checkbox" id="s-delivery" ${s.delivery?'checked':''}><span class="tgl-sl"></span></label></div>
       </div>
       <div class="sgrp">
         <div class="sgrp-title">Change Admin Credentials</div>
@@ -1136,9 +1243,9 @@ function renderPanel(name, el){
       </div>
       <div class="sgrp">
         <div class="sgrp-title">Danger Zone</div>
-        <div class="srow"><div><div class="srow-lbl">Clear All Orders</div><div class="srow-sub">Permanently delete order history</div></div><button class="danger-btn" onclick="clearAllOrders()">Clear All Orders</button></div>
-        <div class="srow"><div><div class="srow-lbl">Clear All Customers</div><div class="srow-sub">Delete all registered accounts</div></div><button class="danger-btn" onclick="clearAllCustomers()">Clear Customers</button></div>
-        <div class="srow"><div><div class="srow-lbl">Reset Menu</div><div class="srow-sub">Reload page to restore defaults</div></div><button class="danger-btn" onclick="if(confirm('Reset menu to defaults? Page will reload.'))location.reload()">Reset Menu</button></div>
+        <div class="srow"><div><div class="srow-lbl">Clear All Orders</div></div><button class="danger-btn" onclick="clearAllOrders()">Clear All Orders</button></div>
+        <div class="srow"><div><div class="srow-lbl">Clear All Customers</div></div><button class="danger-btn" onclick="clearAllCustomers()">Clear Customers</button></div>
+        <div class="srow"><div><div class="srow-lbl">Reset Menu</div></div><button class="danger-btn" onclick="if(confirm('Reset menu to defaults?')){localStorage.removeItem('cc_menu');location.reload();}">Reset Menu</button></div>
       </div>
       <button class="save-btn" onclick="saveSettings()">✓ Save All Settings</button>`;
   }
@@ -1148,12 +1255,14 @@ function renderPanel(name, el){
 // ADMIN HELPERS
 // ================================================================
 function greeting(){ const h=new Date().getHours(); return h<12?'Morning':h<17?'Afternoon':'Evening'; }
-function getAllItems(){ return ['coffee','food','desserts'].flatMap(cat=>menuData[cat].map(i=>({...i,category:cat}))); }
+function getAllItems(){ return ['coffee','icecream'].flatMap(cat=>(menuData[cat]||[]).map(i=>({...i,category:cat}))); }
+
+const STATUS_OPTIONS = ['Confirmed','Preparing','Ready','Picked Up','Cancelled'];
 
 function ordersTable(list){
   if(!list.length) return `<div class="adm-empty"><div class="ei">📋</div><p>No orders found.</p></div>`;
   return `<div style="overflow-x:auto;"><table><thead><tr>
-    <th>ID</th><th>Date</th><th>Customer</th><th>Address</th><th>Total</th><th>Status</th><th>Actions</th>
+    <th>ID</th><th>Date</th><th>Customer</th><th>Name/Table</th><th>Total</th><th>Status</th><th>Actions</th>
   </tr></thead><tbody>${list.map(o=>`
     <tr>
       <td class="td-name">#${o.id}</td>
@@ -1163,7 +1272,7 @@ function ordersTable(list){
       <td class="td-gold">${fp(o.total)}</td>
       <td>
         <select class="status-sel" onchange="updateStatus('${o.id}',this.value)">
-          ${['Confirmed','Preparing','Ready','Delivered','Cancelled'].map(s=>`<option value="${s}"${o.status===s?' selected':''}>${s}</option>`).join('')}
+          ${STATUS_OPTIONS.map(s=>`<option value="${s}"${o.status===s?' selected':''}>${s}</option>`).join('')}
         </select>
       </td>
       <td><button class="act-btn red" onclick="deleteOrder('${o.id}')">✕ Delete</button></td>
@@ -1179,15 +1288,15 @@ function ordersTable(list){
 function lqCard(o){
   return `<div class="lq-card">
     <div class="lq-top">
-      <div><div class="lq-id">#${o.id}</div><div class="lq-addr">${o.address||'No address'}</div><div class="lq-date">${o.date}</div></div>
-      <div style="text-align:right;"><div class="td-gold" style="margin-bottom:6px;">${fp(o.total)}</div><span class="oc-status status-${(o.status||'confirmed').toLowerCase()}">${o.status}</span></div>
+      <div><div class="lq-id">#${o.id}</div><div class="lq-addr">${o.address||'No name'}</div><div class="lq-date">${o.date}</div></div>
+      <div style="text-align:right;"><div class="td-gold" style="margin-bottom:6px;">${fp(o.total)}</div><span class="oc-status status-${(o.status||'confirmed').toLowerCase().replace(' ','')}">${o.status}</span></div>
     </div>
     <div class="lq-items">${o.items.map(i=>`${i.emoji} ${i.name} ×${i.qty}`).join(' · ')}</div>
     ${o.note?`<div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;">📝 ${o.note}</div>`:''}
     <div class="lq-actions">
       <button class="lq-btn lq-prep"   onclick="updateStatus('${o.id}','Preparing');switchAdmPanel('livequeue')">🔵 Preparing</button>
       <button class="lq-btn lq-ready"  onclick="updateStatus('${o.id}','Ready');switchAdmPanel('livequeue')">🟢 Ready</button>
-      <button class="lq-btn lq-deliv"  onclick="updateStatus('${o.id}','Delivered');switchAdmPanel('livequeue')">✅ Delivered</button>
+      <button class="lq-btn lq-pickup" onclick="updateStatus('${o.id}','Picked Up');switchAdmPanel('livequeue')">🛍 Picked Up</button>
       <button class="lq-btn lq-cancel" onclick="updateStatus('${o.id}','Cancelled');switchAdmPanel('livequeue')">❌ Cancel</button>
     </div>
   </div>`;
@@ -1210,7 +1319,6 @@ function updateStatus(id, status){
   if(o){ o.status=status; setOrders(orders); }
   toast(`Order #${id} → ${status}`);
   renderOrders();
-  // refresh current panel
   const panel=$('panel-'+admPanel);
   if(panel) renderPanel(admPanel, panel);
 }
@@ -1224,14 +1332,54 @@ function deleteOrder(id){
   if(panel) renderPanel(admPanel, panel);
 }
 
+// Image preview for edit menu
+function previewMenuImg(id, input){
+  if(!input.files||!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    // Store temporarily in a data attribute for save
+    const el = document.getElementById('mimg-'+id);
+    if(el) el.dataset.imgData = e.target.result;
+    // Show preview
+    const area = el.closest('.img-upload-area');
+    if(area){
+      let prev = area.querySelector('img.upload-prev');
+      if(!prev){ prev = document.createElement('img'); prev.className='upload-prev'; prev.style.cssText='width:100%;height:80px;object-fit:cover;margin-bottom:6px;'; area.prepend(prev); }
+      prev.src = e.target.result;
+    }
+    toast('Image ready — click Save to apply');
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function previewNewImg(input){
+  if(!input.files||!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const prev = $('ni-img-preview');
+    if(prev){ prev.src=e.target.result; prev.style.display='block'; }
+    const lbl = $('ni-img-label');
+    if(lbl) lbl.textContent = '✓ Image selected';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
 function saveMenuItem(id, cat){
   const name=($('mn-'+id)||{}).value?.trim();
   const price=parseFloat(($('mp-'+id)||{}).value);
   const desc=($('md-'+id)||{}).value?.trim();
   const emoji=($('me-'+id)||{}).value?.trim();
+  const imgInput = document.getElementById('mimg-'+id);
+  const imgData = imgInput ? imgInput.dataset.imgData || '' : '';
   if(!name||isNaN(price)){ toast('Invalid values'); return; }
-  const item=menuData[cat].find(i=>i.id===id);
-  if(item){ item.name=name; item.price=price; item.desc=desc||item.desc; item.emoji=emoji||item.emoji; }
+  menuData = getMenuData();
+  const item=menuData[cat] && menuData[cat].find(i=>i.id===id);
+  if(item){
+    item.name=name; item.price=price; item.desc=desc||item.desc;
+    item.emoji=emoji||item.emoji;
+    if(imgData) item.image=imgData;
+  }
+  setMenuData(menuData);
   renderMenu(activeCat);
   toast(`✓ "${name}" updated`);
   const mec=$('mec-'+id);
@@ -1240,7 +1388,9 @@ function saveMenuItem(id, cat){
 
 function deleteMenuItem(id, cat){
   if(!confirm('Remove this item from the menu?')) return;
+  menuData = getMenuData();
   menuData[cat]=menuData[cat].filter(i=>i.id!==id);
+  setMenuData(menuData);
   renderMenu(activeCat);
   toast('Item removed from menu');
   switchAdmPanel('editmenu');
@@ -1249,17 +1399,25 @@ function deleteMenuItem(id, cat){
 function addMenuItem(){
   const name=($('ni-name')||{}).value?.trim();
   const price=parseFloat(($('ni-price')||{}).value);
-  const emoji=($('ni-emoji')||{}).value?.trim()||'☕';
+  const emoji=($('ni-emoji')||{}).value?.trim()||'🍦';
   const desc=($('ni-desc')||{}).value?.trim();
   const cat=($('ni-cat')||{}).value;
   const err=$('addErr');
+  const imgPrev=$('ni-img-preview');
+  const imgData=imgPrev&&imgPrev.src&&imgPrev.style.display!=='none'?imgPrev.src:'';
   if(!name||isNaN(price)||!desc){ err.textContent='Please fill all required fields.'; return; }
   err.textContent='';
+  menuData = getMenuData();
   const id=cat[0]+Date.now().toString().slice(-5);
-  menuData[cat].push({id,name,price,emoji,desc});
+  if(!menuData[cat]) menuData[cat]=[];
+  menuData[cat].push({id,name,price,emoji,desc,image:imgData});
+  setMenuData(menuData);
   renderMenu(activeCat);
-  toast(`✓ "${name}" added to ${cat}`);
+  toast(`✓ "${name}" added to ${cat==='icecream'?'Ice Cream':'Coffee'}`);
   ['ni-name','ni-price','ni-emoji','ni-desc'].forEach(i=>{ const el=$(i); if(el) el.value=''; });
+  if(imgPrev){ imgPrev.style.display='none'; imgPrev.src=''; }
+  const lbl=$('ni-img-label');
+  if(lbl) lbl.textContent='📷 Click to upload image';
 }
 
 function deleteCustomer(email){
@@ -1275,37 +1433,38 @@ function saveSettings(){
   if(newPass && newPass.length<6){ toast('Password must be 6+ characters'); return; }
   if(newUser) admCreds.user=newUser;
   if(newPass) admCreds.pass=newPass;
-  localStorage.setItem('noir_admin_creds', JSON.stringify(admCreds));
+  localStorage.setItem('cc_admin_creds', JSON.stringify(admCreds));
   const s={
-    cafeName:($('s-name')||{}).value||'NOIR Coffee House',
+    cafeName:($('s-name')||{}).value||'Cold Corner',
     tagline:($('s-tag')||{}).value||'',
     address:($('s-addr')||{}).value||'',
     email:($('s-email')||{}).value||'',
     phone:($('s-phone')||{}).value||'',
     taxRate:parseFloat(($('s-tax')||{}).value)||8,
     ordersOpen:($('s-orders')||{}).checked!==false,
-    delivery:($('s-delivery')||{}).checked!==false
   };
-  localStorage.setItem('noir_settings', JSON.stringify(s));
-  document.title=s.cafeName;
-  const heroSub=document.querySelector('.hero-sub');
-  if(heroSub) heroSub.textContent=s.tagline;
-  toast('✓ Settings saved successfully!');
+  localStorage.setItem('cc_settings', JSON.stringify(s));
+  document.title=s.cafeName+' — Premium Ice Cream & Coffee';
+  const heroSub=$('heroSub'); if(heroSub) heroSub.textContent=s.tagline;
+  toast('✓ Settings saved!');
 }
 
 function clearAllOrders(){
-  if(!confirm('Delete ALL orders permanently? This cannot be undone.')) return;
+  if(!confirm('Delete ALL orders permanently?')) return;
   setOrders([]);
+  localStorage.setItem('cc_shown_ready','[]');
+  shownReadyOrders=[];
   toast('All orders cleared');
   renderOrders();
   switchAdmPanel('allorders');
 }
 
 function clearAllCustomers(){
-  if(!confirm('Delete ALL customer accounts? They will be logged out.')) return;
+  if(!confirm('Delete ALL customer accounts?')) return;
   setUsers([]);
-  localStorage.removeItem('noir_user');
+  localStorage.removeItem('cc_user');
   currentUser=null; $('userNavBtn').textContent='Sign In';
+  if(readyCheckInterval) clearInterval(readyCheckInterval);
   toast('All customers cleared');
   renderOrders();
   switchAdmPanel('customers');
@@ -1329,9 +1488,11 @@ document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
 renderMenu('coffee');
 updateCartBadge();
 renderOrders();
-if(currentUser) $('userNavBtn').textContent=currentUser.name.split(' ')[0];
-// Apply saved settings on load
-(()=>{ const s=getSettings(); document.title=s.cafeName; const h=document.querySelector('.hero-sub'); if(h)h.textContent=s.tagline; })();
+if(currentUser){
+  $('userNavBtn').textContent=currentUser.name.split(' ')[0];
+  startReadyPoll();
+}
+(()=>{ const s=getSettings(); document.title=s.cafeName+' — Premium Ice Cream & Coffee'; const h=$('heroSub'); if(h)h.textContent=s.tagline; })();
 </script>
 </body>
 </html>
