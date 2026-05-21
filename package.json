@@ -1,0 +1,12 @@
+{
+  "name": "cold-corner-ice-cream",
+  "version": "1.0.0",
+  "description": "Premium Ice Cream Website",
+  "private": true,
+  "scripts": {
+    "test": "echo \"No tests specified\""
+  },
+  "dependencies": {
+    "@vercel/speed-insights": "^1.0.0"
+  }
+}
