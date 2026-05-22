@@ -1539,5 +1539,44 @@ document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
   }
 })();
 </script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  onSnapshot,
+  updateDoc,
+  doc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDo104XBowolAeBeR8fTNrlRvdDijsvNqs",
+  authDomain: "index-dfe14.firebaseapp.com",
+  projectId: "index-dfe14",
+  storageBucket: "index-dfe14.firebasestorage.app",
+  messagingSenderId: "653064904619",
+  appId: "1:653064904619:web:19e5888fbec25695b1bcee",
+  measurementId: "G-KVSV1T4LDN"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.db = db;
+window.firebaseTools = {
+  collection,
+  addDoc,
+  onSnapshot,
+  updateDoc,
+  doc,
+  serverTimestamp
+};
+
+console.log("Firebase Connected Successfully");
+</script>
+
 </body>
 </html>
