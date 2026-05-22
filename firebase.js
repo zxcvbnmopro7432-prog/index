@@ -42,3 +42,12 @@ export {
   query,
   orderBy
 };
+const auth = getAuth(app);
+
+export {
+  auth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+};
