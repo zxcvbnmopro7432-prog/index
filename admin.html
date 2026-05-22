@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cold Corner — Admin Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0a0704;--dark:#110e0a;--surface:#1a1410;--surface2:#221c16;--gold:#c9975a;--gold-light:#e8c080;--gold-dim:#8a6535;--cream:#f0e6d3;--text:#d4c4a8;--text-dim:#7a6a55;--border:#2e2318;--green:#4caf82;--blue:#5b9bd5;--red:#d96060;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;font-family:'Jost',sans-serif;font-weight:300;background:var(--black);color:var(--text);overflow:hidden;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--dark);}::-webkit-scrollbar-thumb{background:var(--gold-dim);}
+
+/* LOGIN SCREEN */
+.login-screen{position:fixed;inset:0;z-index:100;background:var(--black);display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-screen.hidden{display:none;}
+.login-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,#2a1a0a,#0a0704 65%);}
+.login-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 80%,rgba(201,151,90,.07),transparent 50%);}
+.hring{position:absolute;border:1px solid rgba(201,151,90,.07);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);}
+.hring:nth-child(1){width:400px;height:400px;}
+.hring:nth-child(2){width:650px;height:650px;animation:rot 35s linear infinite;border-style:dashed;}
+.hring:nth-child(3){width:900px;height:900px;animation:rot 55s linear infinite reverse;}
+@keyframes rot{to{transform:translate(-50%,-50%) rotate(360deg);}}
+.login-box{position:relative;z-index:2;background:var(--surface);border:1px solid var(--border);padding:48px 44px;width:100%;max-width:400px;animation:fadeUp .8s cubic-bezier(.16,1,.3,1) both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+.login-logo{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold-light);text-align:center;margin-bottom:6px;}
+.login-logo span{color:var(--gold);font-style:italic;}
+.login-sub{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-dim);text-align:center;margin-bottom:36px;}
+.fg{margin-bottom:18px;}
+.fl{display:block;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);margin-bottom:7px;}
+.fi{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--cream);padding:12px 14px;font-family:'Jost',sans-serif;font-size:13px;transition:border-color .3s;outline:none;}
+.fi:focus{border-color:var(--gold-dim);}
+.fi::placeholder{color:var(--text-dim);}
+.login-btn{width:100%;background:var(--gold);color:var(--black);border:none;padding:14px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;cursor:pointer;transition:all .3s;margin-top:4px;}
+.login-btn:hover{background:var(--gold-light);}
+.login-btn:disabled{opacity:.6;cursor:not-allowed;}
+.ferr{color:var(--red);font-size:12px;margin-top:10px;text-align:center;min-height:16px;}
+.login-hint{text-align:center;font-size:10px;color:var(--text-dim);margin-top:18px;}
+.login-hint b{color:var(--gold);}
+.back-link{display:block;text-align:center;font-size:11px;color:var(--text-dim);text-decoration:none;margin-top:16px;letter-spacing:.1em;transition:color .3s;}
+.back-link:hover{color:var(--gold);}
+
+/* DASHBOARD LAYOUT */
+.dashboard{display:flex;flex-direction:column;height:100vh;opacity:0;pointer-events:none;transition:opacity .4s;}
+.dashboard.visible{opacity:1;pointer-events:all;}
+
+/* TOP BAR */
+.top-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:58px;flex-shrink:0;}
+.top-brand{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold-light);display:flex;align-items:center;gap:10px;}
+.top-brand-sub{font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-dim);}
+.top-right{display:flex;align-items:center;gap:10px;}
+.top-who{font-size:11px;color:var(--text-dim);}
+.live-dot{width:8px;height:8px;background:var(--green);border-radius:50%;display:inline-block;margin-right:6px;animation:blink 1.5s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.top-btn{background:none;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;font-family:'Jost',sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:6px 14px;transition:all .3s;}
+.top-btn:hover{border-color:var(--gold-dim);color:var(--gold);}
+.top-btn.gold{background:rgba(201,151,90,.08);border-color:var(--gold-dim);color:var(--gold);}
+.top-btn.gold:hover{background:var(--gold);color:var(--black);}
+.spin{display:inline-block;animation:spinA .6s linear infinite;}
+@keyframes spinA{to{transform:rotate(360deg);}}
+
+/* BODY */
+.dash-body{display:flex;flex:1;overflow:hidden;}
+
+/* SIDEBAR */
+.sidebar{width:215px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:20px 0;overflow-y:auto;display:flex;flex-direction:column;}
+.sb-sec{padding:0 14px 10px;}
+.sb-lbl{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--text-dim);padding:0 8px;margin-bottom:7px;display:block;}
+.sb-btn{width:100%;background:none;border:none;color:var(--text-dim);cursor:pointer;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:.04em;padding:9px 12px;text-align:left;display:flex;align-items:center;gap:8px;transition:all .2s;border-radius:2px;}
+.sb-btn:hover{color:var(--cream);background:rgba(201,151,90,.06);}
+.sb-btn.active{color:var(--gold);background:rgba(201,151,90,.1);}
+.sb-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+.sb-badge{background:var(--red);color:#fff;font-size:9px;border-radius:10px;padding:1px 7px;margin-left:auto;}
+.sb-div{height:1px;background:var(--border);margin:8px 14px 14px;}
+.sidebar-footer{margin-top:auto;padding:14px;}
+.site-link{display:block;text-align:center;font-size:10px;color:var(--text-dim);text-decoration:none;letter-spacing:.1em;padding:8px;border:1px solid var(--border);transition:all .3s;}
+.site-link:hover{color:var(--gold);border-color:var(--gold-dim);}
+
+/* MAIN CONTENT */
+.main{flex:1;overflow-y:auto;padding:28px;background:var(--dark);}
+.panel{display:none;}
+.panel.active{display:block;}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--cream);font-weight:300;margin-bottom:4px;}
+.page-title em{font-style:italic;color:var(--gold-light);}
+.page-sub{font-size:12px;color:var(--text-dim);margin-bottom:28px;}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:14px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);padding:18px 20px;transition:border-color .3s;}
+.stat-card:hover{border-color:var(--gold-dim);}
+.stat-lbl{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--text-dim);margin-bottom:7px;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--gold-light);font-weight:300;}
+.stat-sub{font-size:10px;color:var(--text-dim);margin-top:3px;}
+
+/* TABLE */
+.tbl-wrap{background:var(--surface);border:1px solid var(--border);overflow:hidden;margin-bottom:20px;}
+.tbl-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.tbl-title{font-size:12px;letter-spacing:.1em;color:var(--cream);}
+.tbl-search{background:var(--surface2);border:1px solid var(--border);color:var(--cream);padding:6px 12px;font-family:'Jost',sans-serif;font-size:11px;outline:none;width:210px;transition:border-color .3s;}
+.tbl-search:focus{border-color:var(--gold-dim);}
+.tbl-search::placeholder{color:var(--text-dim);}
+table{width:100%;border-collapse:collapse;}
+thead th{padding:9px 14px;text-align:left;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim);border-bottom:1px solid var(--border);background:var(--surface2);white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border);transition:background .2s;}
+tbody tr:hover{background:rgba(201,151,90,.04);}
+tbody td{padding:11px 14px;font-size:12px;color:var(--text);vertical-align:middle;}
+.td-name{color:var(--cream);font-size:13px;}
+.td-gold{color:var(--gold-light);font-family:'Cormorant Garamond',serif;font-size:15px;}
+.act-btn{background:none;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.12em;padding:4px 10px;transition:all .2s;text-transform:uppercase;margin-right:4px;}
+.act-btn.red:hover{border-color:var(--red);color:var(--red);}
+.act-btn.grn{border-color:rgba(76,175,130,.4);color:var(--green);}
+.status-sel{background:var(--surface2);border:1px solid var(--border);color:var(--cream);padding:4px 8px;font-family:'Jost',sans-serif;font-size:10px;outline:none;cursor:pointer;}
+.status-sel:focus{border-color:var(--gold-dim);}
+
+/* STATUS BADGES */
+.s-confirmed{background:rgba(201,151,90,.1);color:var(--gold);border:1px solid rgba(201,151,90,.3);}
+.s-preparing{background:rgba(91,155,213,.1);color:var(--blue);border:1px solid rgba(91,155,213,.3);}
+.s-ready{background:rgba(76,175,130,.1);color:var(--green);border:1px solid rgba(76,175,130,.3);}
+.s-pickedup{background:rgba(120,120,120,.1);color:#888;border:1px solid rgba(120,120,120,.2);}
+.s-cancelled{background:rgba(217,96,96,.1);color:var(--red);border:1px solid rgba(217,96,96,.3);}
+.status-pill{font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:3px 10px;display:inline-block;}
+
+/* LIVE QUEUE */
+.lq-card{background:var(--surface);border:1px solid var(--border);padding:18px 22px;margin-bottom:14px;transition:border-color .3s;}
+.lq-card:hover{border-color:var(--gold-dim);}
+.lq-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
+.lq-id{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:3px;}
+.lq-name{font-size:14px;color:var(--cream);}
+.lq-time{font-size:11px;color:var(--text-dim);}
+.lq-items{font-size:12px;color:var(--text-dim);line-height:1.8;margin:8px 0;}
+.lq-note{font-size:11px;color:var(--text-dim);margin-bottom:8px;}
+.lq-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.lq-btn{background:none;border:1px solid;padding:7px 16px;font-family:'Jost',sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .25s;}
+.lq-prep{border-color:rgba(91,155,213,.5);color:var(--blue);}
+.lq-prep:hover{background:rgba(91,155,213,.15);}
+.lq-ready{border-color:rgba(76,175,130,.5);color:var(--green);}
+.lq-ready:hover{background:rgba(76,175,130,.15);}
+.lq-pickup{border-color:rgba(201,151,90,.5);color:var(--gold);}
+.lq-pickup:hover{background:rgba(201,151,90,.15);}
+.lq-cancel{border-color:rgba(217,96,96,.4);color:var(--red);}
+.lq-cancel:hover{background:rgba(217,96,96,.12);}
+
+/* MENU EDITOR */
+.mec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;}
+.mec{background:var(--surface);border:1px solid var(--border);padding:16px 18px;transition:border-color .3s;}
+.mec:hover{border-color:var(--gold-dim);}
+.mec-top{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.mec-thumb{width:52px;height:52px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;border:1px solid var(--border);flex-shrink:0;}
+.mec-thumb img{width:100%;height:100%;object-fit:cover;}
+.mec-nm{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--cream);}
+.mec-cat{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-dim);}
+.il{display:block;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px;}
+.ii{background:var(--surface2);border:1px solid var(--border);color:var(--cream);padding:6px 9px;font-family:'Jost',sans-serif;font-size:11px;outline:none;width:100%;margin-bottom:7px;transition:border-color .3s;}
+.ii:focus{border-color:var(--gold-dim);}
+.img-zone{border:1px dashed var(--gold-dim);padding:8px;text-align:center;cursor:pointer;position:relative;min-height:48px;display:flex;align-items:center;justify-content:center;margin-bottom:7px;overflow:hidden;transition:all .3s;}
+.img-zone:hover{border-color:var(--gold);background:rgba(201,151,90,.04);}
+.img-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.img-zone p{font-size:10px;color:var(--text-dim);pointer-events:none;}
+.img-zone img.zprev{width:100%;height:80px;object-fit:cover;pointer-events:none;}
+.mec-btns{display:flex;gap:8px;margin-top:8px;}
+
+/* ADD ITEM */
+.add-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+.form-box{background:var(--surface);border:1px solid var(--border);padding:24px;}
+
+/* SETTINGS */
+.sgrp{background:var(--surface);border:1px solid var(--border);padding:22px;margin-bottom:18px;}
+.sgrp-title{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.srow{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);gap:18px;flex-wrap:wrap;}
+.srow:last-child{border-bottom:none;}
+.srow-lbl{font-size:13px;color:var(--cream);}
+.srow-sub{font-size:11px;color:var(--text-dim);margin-top:2px;}
+.si{background:var(--surface2);border:1px solid var(--border);color:var(--cream);padding:7px 11px;font-family:'Jost',sans-serif;font-size:12px;outline:none;min-width:200px;transition:border-color .3s;}
+.si:focus{border-color:var(--gold-dim);}
+.tgl{position:relative;width:42px;height:22px;flex-shrink:0;}
+.tgl input{opacity:0;width:0;height:0;}
+.tgl-sl{position:absolute;inset:0;cursor:pointer;background:var(--surface2);border:1px solid var(--border);transition:all .3s;border-radius:22px;}
+.tgl-sl::before{content:'';position:absolute;width:14px;height:14px;left:3px;bottom:3px;background:var(--text-dim);transition:all .3s;border-radius:50%;}
+.tgl input:checked+.tgl-sl{background:rgba(201,151,90,.2);border-color:var(--gold-dim);}
+.tgl input:checked+.tgl-sl::before{transform:translateX(20px);background:var(--gold);}
+.save-btn{background:var(--gold);color:var(--black);border:none;padding:11px 30px;font-family:'Jost',sans-serif;font-size:10px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;cursor:pointer;transition:all .3s;margin-top:14px;}
+.save-btn:hover{background:var(--gold-light);}
+.danger-btn{background:none;border:1px solid rgba(217,96,96,.4);color:var(--red);padding:8px 18px;font-family:'Jost',sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .3s;}
+.danger-btn:hover{background:rgba(217,96,96,.1);}
+
+/* MISC */
+.adm-empty{text-align:center;padding:50px 20px;color:var(--text-dim);}
+.adm-empty .ei{font-size:36px;margin-bottom:10px;opacity:.4;}
+.ferr-inline{color:var(--red);font-size:12px;margin-top:8px;}
+.fok-inline{color:var(--green);font-size:12px;margin-top:8px;}
+
+/* TOAST */
+.toast-c{position:fixed;bottom:22px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+.toast{background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--gold);padding:13px 18px;font-size:12px;color:var(--cream);min-width:240px;max-width:300px;animation:tIn .4s cubic-bezier(.16,1,.3,1);box-shadow:0 8px 24px rgba(0,0,0,.4);}
+@keyframes tIn{from{transform:translateX(20px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.toast.out{animation:tOut .3s ease forwards;}
+@keyframes tOut{to{transform:translateX(20px);opacity:0;}}
+
+@media(max-width:768px){
+  .sidebar{display:none;}
+  .main{padding:16px 12px;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .add-grid{grid-template-columns:1fr;}
+  .top-who{display:none;}
+}
+@media(max-width:480px){.stats-grid{grid-template-columns:1fr;}}
+body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;opacity:.02;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-bg">
+    <div class="hring"></div><div class="hring"></div><div class="hring"></div>
+  </div>
+  <div class="login-box">
+    <div class="login-logo">Cold <span>Corner</span></div>
+    <div class="login-sub">Admin Dashboard</div>
+    <div class="fg"><label class="fl">Username</label><input class="fi" id="admUser" type="text" placeholder="admin" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="fg"><label class="fl">Password</label><input class="fi" id="admPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="ferr" id="loginErr"></div>
+    <button class="login-btn" id="loginBtn" onclick="doLogin()">Enter Dashboard</button>
+    <div class="login-hint" style="margin-top:16px;">Default: <b>admin</b> / <b>coldcorner2024</b></div>
+    <a href="index.html" class="back-link">← Back to Website</a>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-brand">
+      Cold Corner <span class="top-brand-sub">Admin Panel</span>
+    </div>
+    <div class="top-right">
+      <span class="top-who"><span class="live-dot"></span><span id="topWho">Admin</span></span>
+      <button class="top-btn gold" id="refBtn" onclick="doRefresh()">↻ Refresh</button>
+      <button class="top-btn" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="dash-body">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-sec">
+        <span class="sb-lbl">Overview</span>
+        <button class="sb-btn active" data-panel="dashboard"><span class="sb-icon">📊</span>Dashboard</button>
+      </div>
+      <div class="sb-div"></div>
+      <div class="sb-sec">
+        <span class="sb-lbl">Orders</span>
+        <button class="sb-btn" data-panel="allorders"><span class="sb-icon">📋</span>All Orders</button>
+        <button class="sb-btn" data-panel="livequeue">
+          <span class="sb-icon">🔴</span>Live Queue
+          <span class="sb-badge" id="liveBadge" style="display:none">0</span>
+        </button>
+        <button class="sb-btn" data-panel="pickedup"><span class="sb-icon">✅</span>Picked Up</button>
+        <button class="sb-btn" data-panel="cancelled"><span class="sb-icon">❌</span>Cancelled</button>
+      </div>
+      <div class="sb-div"></div>
+      <div class="sb-sec">
+        <span class="sb-lbl">Menu</span>
+        <button class="sb-btn" data-panel="editmenu"><span class="sb-icon">☕</span>Edit Menu</button>
+        <button class="sb-btn" data-panel="additem"><span class="sb-icon">➕</span>Add Item</button>
+      </div>
+      <div class="sb-div"></div>
+      <div class="sb-sec">
+        <span class="sb-lbl">Manage</span>
+        <button class="sb-btn" data-panel="customers"><span class="sb-icon">👥</span>Customers</button>
+        <button class="sb-btn" data-panel="settings"><span class="sb-icon">⚙️</span>Settings</button>
+      </div>
+      <div class="sidebar-footer">
+        <a href="index.html" class="site-link">← Back to Website</a>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+      <div class="panel active" id="panel-dashboard"></div>
+      <div class="panel" id="panel-allorders"></div>
+      <div class="panel" id="panel-livequeue"></div>
+      <div class="panel" id="panel-pickedup"></div>
+      <div class="panel" id="panel-cancelled"></div>
+      <div class="panel" id="panel-editmenu"></div>
+      <div class="panel" id="panel-additem"></div>
+      <div class="panel" id="panel-customers"></div>
+      <div class="panel" id="panel-settings"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-c" id="toastC"></div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+import { getFirestore, collection, doc, addDoc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot, serverTimestamp, query, orderBy, where } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBekejSLchhN9OGdOkNQRhE4kWpCI7h4M8",
+  authDomain: "cold-corner.firebaseapp.com",
+  projectId: "cold-corner",
+  storageBucket: "cold-corner.firebasestorage.app",
+  messagingSenderId: "516947780452",
+  appId: "1:516947780452:web:3d840b357c45ca22dc5071"
+};
+
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+const auth = getAuth(app);
+signInAnonymously(auth).catch(e=>console.warn('Auth:',e));
+
+window._db  = db;
+window._fns = { collection, doc, addDoc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot, serverTimestamp, query, orderBy, where };
+window.dispatchEvent(new Event('fb-ready'));
+</script>
+
+<script>
+'use strict';
+
+const $  = id => document.getElementById(id);
+const fp = n  => '$'+Number(n).toFixed(2);
+
+const DEFAULT_MENU = {
+  coffee:[
+    {id:'c1',name:'Signature Espresso',price:4.50,emoji:'☕',desc:'Double shot, dark roast, rich crema',image:''},
+    {id:'c2',name:'Cold Corner Latte',price:6.00,emoji:'🥛',desc:'Silky steamed milk, single origin espresso',image:''},
+    {id:'c3',name:'Velvet Cappuccino',price:5.50,emoji:'☕',desc:'Equal parts espresso, foam and milk',image:''},
+    {id:'c4',name:'Cold Brew Reserve',price:6.50,emoji:'🧊',desc:'24-hour steep, smooth and bold',image:''},
+    {id:'c5',name:'Cardamom Cortado',price:5.00,emoji:'🫖',desc:'Espresso with warm-spiced steamed milk',image:''},
+    {id:'c6',name:'Honey Flat White',price:5.75,emoji:'🍯',desc:'Ristretto, whole milk, raw honeycomb',image:''},
+    {id:'c7',name:'Mocha Dark',price:6.25,emoji:'🍫',desc:'Belgian dark chocolate, double espresso',image:''},
+    {id:'c8',name:'Iced Americano',price:4.75,emoji:'🧊',desc:'Bold espresso over ice, house water',image:''},
+  ],
+  icecream:[
+    {id:'i1',name:'Classic Vanilla Bean',price:5.50,emoji:'🍦',desc:'Madagascar vanilla, double scoop',image:''},
+    {id:'i2',name:'Dark Chocolate Gelato',price:6.00,emoji:'🍫',desc:'Belgian 72% dark chocolate, velvety smooth',image:''},
+    {id:'i3',name:'Salted Caramel Scoop',price:6.50,emoji:'🍮',desc:'House-made caramel, fleur de sel',image:''},
+    {id:'i4',name:'Pistachio Premium',price:7.00,emoji:'🌿',desc:'Sicilian pistachios, house churned gelato',image:''},
+    {id:'i5',name:'Strawberry Sorbet',price:5.00,emoji:'🍓',desc:'Fresh strawberries, light and refreshing',image:''},
+    {id:'i6',name:'Matcha Green Tea',price:6.75,emoji:'🍵',desc:'Ceremonial grade matcha, creamy gelato',image:''},
+    {id:'i7',name:'Affogato',price:7.50,emoji:'☕',desc:'Vanilla gelato, hot espresso shot poured over',image:''},
+    {id:'i8',name:'Waffle Cone Sundae',price:8.50,emoji:'🍧',desc:'Choice of 2 scoops, warm waffle cone',image:''},
+  ]
+};
+
+let db, fns;
+let menuData   = JSON.parse(JSON.stringify(DEFAULT_MENU));
+let allOrders  = [];
+let unsubOrders= null;
+let curPanel   = 'dashboard';
+let newImgData = '';
+let admCreds   = JSON.parse(localStorage.getItem('cc_adm_creds')||'{"user":"admin","pass":"coldcorner2024"}');
+let loggedIn   = sessionStorage.getItem('cc_adm')==='1';
+
+window.addEventListener('fb-ready', ()=>{
+  db  = window._db;
+  fns = window._fns;
+  if(loggedIn) showDashboard();
+  else { $('loginScreen').classList.remove('hidden'); setTimeout(()=>$('admUser').focus(),200); }
+});
+
+/* ── TOAST ── */
+function toast(msg,dur=3000){
+  const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+  $('toastC').appendChild(t);
+  setTimeout(()=>{ t.classList.add('out'); setTimeout(()=>t.remove(),300); },dur);
+}
+
+/* ── LOGIN ── */
+function doLogin(){
+  const u=$('admUser').value.trim(), p=$('admPass').value, err=$('loginErr');
+  if(!u||!p){ err.textContent='Please fill both fields.'; return; }
+  if(u===admCreds.user && p===admCreds.pass){
+    sessionStorage.setItem('cc_adm','1');
+    loggedIn=true;
+    $('loginScreen').classList.add('hidden');
+    showDashboard();
+  } else {
+    err.textContent='Invalid username or password.';
+    $('admPass').value=''; $('admPass').focus();
+  }
+}
+
+function doLogout(){
+  if(!confirm('Sign out of admin panel?')) return;
+  sessionStorage.removeItem('cc_adm');
+  loggedIn=false;
+  if(unsubOrders){ unsubOrders(); unsubOrders=null; }
+  $('dashboard').classList.remove('visible');
+  $('loginScreen').classList.remove('hidden');
+  $('admUser').value=''; $('admPass').value='';
+  $('loginErr').textContent='';
+  setTimeout(()=>$('admUser').focus(),200);
+}
+
+/* ── DASHBOARD ── */
+function showDashboard(){
+  $('topWho').textContent='Admin: '+admCreds.user;
+  $('dashboard').classList.add('visible');
+  startOrdersListener();
+  switchPanel('dashboard');
+  loadMenu();
+}
+
+function startOrdersListener(){
+  if(unsubOrders){ unsubOrders(); unsubOrders=null; }
+  const q=fns.query(fns.collection(db,'orders'), fns.orderBy('createdAt','desc'));
+  unsubOrders=fns.onSnapshot(q, snap=>{
+    allOrders=snap.docs.map(d=>({...d.data(),_id:d.id}));
+    const live=allOrders.filter(o=>!['Picked Up','Delivered','Cancelled'].includes(o.status));
+    const badge=$('liveBadge');
+    if(live.length){ badge.textContent=live.length; badge.style.display=''; }
+    else badge.style.display='none';
+    // Auto-update current panel
+    const el=$('panel-'+curPanel);
+    if(el&&el.classList.contains('active')) renderPanel(curPanel,el);
+  }, e=>console.error('Listener error:',e));
+}
+
+async function loadMenu(){
+  try{
+    const snap=await fns.getDoc(fns.doc(db,'config','menu'));
+    if(snap.exists()) menuData=snap.data();
+  }catch(e){}
+}
+
+async function doRefresh(){
+  const btn=$('refBtn');
+  btn.innerHTML='<span class="spin">↻</span> Refreshing…'; btn.disabled=true;
+  await loadMenu();
+  const el=$('panel-'+curPanel);
+  if(el) await renderPanel(curPanel,el);
+  setTimeout(()=>{ btn.innerHTML='↻ Refresh'; btn.disabled=false; },700);
+  toast('Refreshed ✓');
+}
+
+/* SIDEBAR */
+document.querySelectorAll('.sb-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{ curPanel=btn.dataset.panel; switchPanel(curPanel); });
+});
+
+function switchPanel(name){
+  curPanel=name;
+  document.querySelectorAll('.sb-btn').forEach(b=>b.classList.toggle('active',b.dataset.panel===name));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  const el=$('panel-'+name);
+  if(el){ el.classList.add('active'); renderPanel(name,el); }
+}
+
+/* ── PANELS ── */
+async function renderPanel(name,el){
+
+  if(name==='dashboard'){
+    const rev=allOrders.reduce((s,o)=>s+(o.total||0),0);
+    const active=allOrders.filter(o=>!['Picked Up','Delivered','Cancelled'].includes(o.status)).length;
+    let uCount='…';
+    try{ const s=await fns.getDocs(fns.collection(db,'users')); uCount=s.size; }catch(e){}
+    const items=getAllItems().length;
+    const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const vals=[320,480,390,560,720,890,650]; const mx=Math.max(...vals);
+    el.innerHTML=`
+      <div class="page-title">Good ${greet()}, <em>Admin</em></div>
+      <div class="page-sub"><span class="live-dot"></span> Live Firebase data — all devices synced.</div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-lbl">Total Orders</div><div class="stat-val">${allOrders.length}</div><div class="stat-sub">All devices</div></div>
+        <div class="stat-card"><div class="stat-lbl">Revenue</div><div class="stat-val">${fp(rev)}</div><div class="stat-sub">All time</div></div>
+        <div class="stat-card"><div class="stat-lbl">Active</div><div class="stat-val">${active}</div><div class="stat-sub">In progress</div></div>
+        <div class="stat-card"><div class="stat-lbl">Customers</div><div class="stat-val">${uCount}</div><div class="stat-sub">Registered</div></div>
+        <div class="stat-card"><div class="stat-lbl">Menu Items</div><div class="stat-val">${items}</div><div class="stat-sub">Active</div></div>
+        <div class="stat-card"><div class="stat-lbl">Avg Order</div><div class="stat-val">${allOrders.length?fp(rev/allOrders.length):'$0'}</div><div class="stat-sub">Per order</div></div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);padding:18px 22px;margin-bottom:22px;">
+        <div style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;">Weekly Revenue (Sample)</div>
+        <div style="display:flex;align-items:flex-end;gap:6px;height:90px;">
+          ${vals.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <div style="width:100%;height:${Math.round(v/mx*84)}px;background:linear-gradient(to top,var(--gold-dim),var(--gold));border-radius:2px 2px 0 0;min-height:4px;"></div>
+            <div style="font-size:9px;color:var(--text-dim);">${days[i]}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-head"><div class="tbl-title">Recent Orders (Live)</div><button class="act-btn" onclick="switchPanel('allorders')">View All →</button></div>
+        ${ordersTable(allOrders.slice(0,6))}
+      </div>`;
+  }
+
+  else if(name==='allorders'){
+    el.innerHTML=`
+      <div class="page-title">All <em>Orders</em></div>
+      <div class="page-sub">Every order from every device — live synced from Firebase.</div>
+      <div class="tbl-wrap">
+        <div class="tbl-head">
+          <div class="tbl-title">Orders (${allOrders.length})</div>
+          <input class="tbl-search" id="oSearch" placeholder="Search ID, customer, name…" oninput="filterOrders(this.value)">
+        </div>
+        <div id="oTbl">${ordersTable(allOrders)}</div>
+      </div>`;
+  }
+
+  else if(name==='livequeue'){
+    const live=allOrders.filter(o=>!['Picked Up','Delivered','Cancelled'].includes(o.status));
+    el.innerHTML=`
+      <div class="page-title">Live <em>Queue</em></div>
+      <div class="page-sub">Active pick up orders — auto-updates in real time.</div>
+      ${!live.length
+        ?`<div class="adm-empty"><div class="ei">✅</div><p>No active orders right now.</p></div>`
+        :live.map(o=>lqCard(o)).join('')}`;
+  }
+
+  else if(name==='pickedup'){
+    const done=allOrders.filter(o=>['Picked Up','Delivered'].includes(o.status));
+    el.innerHTML=`
+      <div class="page-title">Picked Up <em>Orders</em></div>
+      <div class="page-sub">${done.length} order${done.length!==1?'s':''} completed.</div>
+      <div class="tbl-wrap"><div class="tbl-head"><div class="tbl-title">Picked Up (${done.length})</div></div>${ordersTable(done)}</div>`;
+  }
+
+  else if(name==='cancelled'){
+    const cxl=allOrders.filter(o=>o.status==='Cancelled');
+    el.innerHTML=`
+      <div class="page-title">Cancelled <em>Orders</em></div>
+      <div class="page-sub">${cxl.length} order${cxl.length!==1?'s':''} cancelled.</div>
+      <div class="tbl-wrap"><div class="tbl-head"><div class="tbl-title">Cancelled (${cxl.length})</div></div>${ordersTable(cxl)}</div>`;
+  }
+
+  else if(name==='editmenu'){
+    await loadMenu();
+    const items=getAllItems();
+    el.innerHTML=`
+      <div class="page-title">Edit <em>Menu</em></div>
+      <div class="page-sub">Changes sync to all devices instantly after saving.</div>
+      <div class="mec-grid">${items.map(item=>`
+        <div class="mec" id="mec-${item.id}">
+          <div class="mec-top">
+            <div class="mec-thumb">${item.image?`<img src="${item.image}">`:`<span>${item.emoji||'☕'}</span>`}</div>
+            <div><div class="mec-nm">${item.name}</div><div class="mec-cat">${item.category==='icecream'?'Ice Cream':'Coffee'}</div></div>
+          </div>
+          <label class="il">Name</label><input class="ii" id="mn-${item.id}" value="${item.name}">
+          <label class="il">Price ($)</label><input class="ii" id="mp-${item.id}" type="number" step="0.01" value="${item.price.toFixed(2)}">
+          <label class="il">Description</label><input class="ii" id="md-${item.id}" value="${item.desc}">
+          <label class="il">Emoji</label><input class="ii" id="me-${item.id}" value="${item.emoji||'☕'}">
+          <label class="il">Image</label>
+          <div class="img-zone" onclick="document.getElementById('mimg-${item.id}').click()">
+            <input type="file" id="mimg-${item.id}" accept="image/*" onchange="pickMenuImg('${item.id}',this)">
+            ${item.image?`<img class="zprev" src="${item.image}">`:`<p>📷 Click to upload</p>`}
+          </div>
+          <div class="mec-btns">
+            <button class="act-btn grn" onclick="saveItem('${item.id}','${item.category}')">✓ Save</button>
+            <button class="act-btn red" onclick="delItem('${item.id}','${item.category}')">✕ Remove</button>
+          </div>
+        </div>`).join('')}
+      </div>`;
+  }
+
+  else if(name==='additem'){
+    newImgData='';
+    el.innerHTML=`
+      <div class="page-title">Add Menu <em>Item</em></div>
+      <div class="page-sub">New items appear on customer website instantly after saving.</div>
+      <div class="form-box">
+        <div class="add-grid">
+          <div><label class="il">Name *</label><input class="ii" id="ni-name" placeholder="e.g. Mango Sorbet"></div>
+          <div><label class="il">Price ($) *</label><input class="ii" id="ni-price" type="number" step="0.01" placeholder="0.00"></div>
+          <div><label class="il">Emoji</label><input class="ii" id="ni-emoji" placeholder="🍦"></div>
+        </div>
+        <div style="margin-bottom:12px;"><label class="il">Description *</label><input class="ii" id="ni-desc" placeholder="Short description"></div>
+        <div style="margin-bottom:14px;">
+          <label class="il">Image</label>
+          <div class="img-zone" style="height:70px;" onclick="document.getElementById('ni-img').click()">
+            <input type="file" id="ni-img" accept="image/*" onchange="pickNewImg(this)">
+            <p id="ni-img-lbl">📷 Click to upload image</p>
+          </div>
+          <img id="ni-prev" style="width:100%;max-height:120px;object-fit:cover;display:none;margin-top:6px;border:1px solid var(--border);">
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;">
+          <div><label class="il">Category *</label>
+            <select class="ii" id="ni-cat" style="cursor:pointer;">
+              <option value="coffee">Coffee</option>
+              <option value="icecream">Ice Cream</option>
+            </select>
+          </div>
+          <button class="save-btn" style="margin-top:0;" onclick="addItem()">+ Add to Menu</button>
+        </div>
+        <div class="ferr-inline" id="addErr"></div>
+      </div>`;
+  }
+
+  else if(name==='customers'){
+    el.innerHTML=`<div class="page-title">Customer <em>Accounts</em></div><div class="page-sub">Loading from Firebase…</div>`;
+    try{
+      const snap=await fns.getDocs(fns.collection(db,'users'));
+      const users=snap.docs.map(d=>d.data());
+      el.innerHTML=`
+        <div class="page-title">Customer <em>Accounts</em></div>
+        <div class="page-sub">${users.length} registered users in database.</div>
+        <div class="tbl-wrap">
+          <div class="tbl-head"><div class="tbl-title">Users (${users.length})</div></div>
+          ${!users.length
+            ?`<div class="adm-empty"><div class="ei">👥</div><p>No registered users yet.</p></div>`
+            :`<table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Actions</th></tr></thead><tbody>
+            ${users.map((u,i)=>`<tr>
+              <td style="color:var(--text-dim)">${i+1}</td>
+              <td class="td-name">${u.name}</td>
+              <td style="color:var(--text-dim)">${u.email}</td>
+              <td><button class="act-btn red" onclick="delCustomer('${u.email}')">Delete</button></td>
+            </tr>`).join('')}</tbody></table>`}
+        </div>`;
+    }catch(e){ el.innerHTML+=`<p style="color:var(--red);font-size:12px;margin-top:10px;">Error: ${e.message}</p>`; }
+  }
+
+  else if(name==='settings'){
+    let s={cafeName:'Cold Corner',tagline:'Crafted with intention.',address:'12 Frost Street, New York',email:'hello@coldcorner.com',phone:'+1 (212) 555-0190',taxRate:8,ordersOpen:true};
+    try{ const snap=await fns.getDoc(fns.doc(db,'config','settings')); if(snap.exists()) s={...s,...snap.data()}; }catch(e){}
+    el.innerHTML=`
+      <div class="page-title">Website <em>Settings</em></div>
+      <div class="page-sub">All changes saved to Firebase — applies on customer site instantly.</div>
+      <div class="sgrp">
+        <div class="sgrp-title">Store Information</div>
+        <div class="srow"><div><div class="srow-lbl">Store Name</div></div><input class="si" id="s-name" value="${s.cafeName}"></div>
+        <div class="srow"><div><div class="srow-lbl">Tagline</div></div><input class="si" id="s-tag" value="${s.tagline}"></div>
+        <div class="srow"><div><div class="srow-lbl">Address</div></div><input class="si" id="s-addr" value="${s.address}"></div>
+        <div class="srow"><div><div class="srow-lbl">Email</div></div><input class="si" id="s-email" value="${s.email}"></div>
+        <div class="srow"><div><div class="srow-lbl">Phone</div></div><input class="si" id="s-phone" value="${s.phone}"></div>
+      </div>
+      <div class="sgrp">
+        <div class="sgrp-title">Order Settings</div>
+        <div class="srow"><div><div class="srow-lbl">Tax Rate (%)</div></div><input class="si" id="s-tax" type="number" value="${s.taxRate}" style="max-width:90px;"></div>
+        <div class="srow"><div><div class="srow-lbl">Accept Orders</div><div class="srow-sub">Toggle ordering on/off</div></div><label class="tgl"><input type="checkbox" id="s-orders" ${s.ordersOpen?'checked':''}><span class="tgl-sl"></span></label></div>
+      </div>
+      <div class="sgrp">
+        <div class="sgrp-title">Change Admin Credentials</div>
+        <div class="srow"><div><div class="srow-lbl">New Username</div></div><input class="si" id="s-auser" value="${admCreds.user}"></div>
+        <div class="srow"><div><div class="srow-lbl">New Password</div><div class="srow-sub">Leave blank to keep current</div></div><input class="si" id="s-apass" type="password" placeholder="New password (min 6 chars)"></div>
+      </div>
+      <div class="sgrp">
+        <div class="sgrp-title">Danger Zone</div>
+        <div class="srow"><div><div class="srow-lbl">Clear All Orders</div><div class="srow-sub">Permanently delete from Firebase</div></div><button class="danger-btn" onclick="clearOrders()">Clear All Orders</button></div>
+        <div class="srow"><div><div class="srow-lbl">Clear All Customers</div></div><button class="danger-btn" onclick="clearCustomers()">Clear Customers</button></div>
+        <div class="srow"><div><div class="srow-lbl">Reset Menu to Defaults</div></div><button class="danger-btn" onclick="resetMenu()">Reset Menu</button></div>
+      </div>
+      <button class="save-btn" onclick="saveSettings()">✓ Save All Settings</button>
+      <div class="fok-inline" id="settingsOk"></div>`;
+  }
+}
+
+/* ── HELPERS ── */
+function greet(){ const h=new Date().getHours(); return h<12?'Morning':h<17?'Afternoon':'Evening'; }
+function getAllItems(){ return ['coffee','icecream'].flatMap(cat=>(menuData[cat]||[]).map(i=>({...i,category:cat}))); }
+
+const STATUSES=['Confirmed','Preparing','Ready','Picked Up','Cancelled'];
+
+function scls(s){ return {'confirmed':'s-confirmed','preparing':'s-preparing','ready':'s-ready','picked up':'s-pickedup','cancelled':'s-cancelled'}[(s||'').toLowerCase()]||'s-confirmed'; }
+
+function ordersTable(list){
+  if(!list||!list.length) return `<div class="adm-empty"><div class="ei">📋</div><p>No orders found.</p></div>`;
+  return `<div style="overflow-x:auto;"><table><thead><tr>
+    <th>Order ID</th><th>Date</th><th>Customer</th><th>Name/Table</th><th>Total</th><th>Status</th><th>Action</th>
+  </tr></thead><tbody>${list.map(o=>{
+    const id=o._id;
+    return `<tr>
+      <td class="td-name">#${o.orderId||id}</td>
+      <td style="color:var(--text-dim);font-size:11px;white-space:nowrap">${o.dateStr||''}</td>
+      <td style="color:var(--text-dim)">${o.customer||'Guest'}</td>
+      <td style="color:var(--text-dim);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${o.address||'—'}</td>
+      <td class="td-gold">${fp(o.total||0)}</td>
+      <td><select class="status-sel" onchange="updateStatus('${id}',this.value)">
+        ${STATUSES.map(s=>`<option value="${s}"${o.status===s?' selected':''}>${s}</option>`).join('')}
+      </select></td>
+      <td><button class="act-btn red" onclick="delOrder('${id}')">✕</button></td>
+    </tr>
+    <tr style="background:var(--surface2);">
+      <td colspan="7" style="padding:7px 14px;font-size:11px;color:var(--text-dim);">
+        ${(o.items||[]).map(i=>`${i.emoji||''} <b style="color:var(--cream)">${i.name}</b> ×${i.qty}`).join(' | ')}
+        ${o.note?` 📝 <i>${o.note}</i>`:''}
+      </td>
+    </tr>`;
+  }).join('')}</tbody></table></div>`;
+}
+
+function lqCard(o){
+  const id=o._id;
+  return `<div class="lq-card">
+    <div class="lq-top">
+      <div>
+        <div class="lq-id">#${o.orderId||id}</div>
+        <div class="lq-name">${o.address||'—'}</div>
+        <div class="lq-time">${o.dateStr||''}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold-light);margin-bottom:6px;">${fp(o.total||0)}</div>
+        <span class="status-pill ${scls(o.status)}">${o.status||'Confirmed'}</span>
+      </div>
+    </div>
+    <div class="lq-items">${(o.items||[]).map(i=>`${i.emoji||''} <b style="color:var(--cream)">${i.name}</b> ×${i.qty}`).join(' · ')}</div>
+    ${o.note?`<div class="lq-note">📝 ${o.note}</div>`:''}
+    <div style="font-size:11px;color:var(--text-dim);margin-bottom:4px;">👤 Customer: ${o.customer||'Guest'} · ${o.email||''}</div>
+    <div class="lq-actions">
+      <button class="lq-btn lq-prep"   onclick="updateStatus('${id}','Preparing')">🔵 Preparing</button>
+      <button class="lq-btn lq-ready"  onclick="updateStatus('${id}','Ready')">🟢 Ready</button>
+      <button class="lq-btn lq-pickup" onclick="updateStatus('${id}','Picked Up')">🛍 Picked Up</button>
+      <button class="lq-btn lq-cancel" onclick="updateStatus('${id}','Cancelled')">❌ Cancel</button>
+    </div>
+  </div>`;
+}
+
+function filterOrders(val){
+  const f=val?allOrders.filter(o=>
+    (o.orderId||'').toLowerCase().includes(val.toLowerCase())||
+    (o.address||'').toLowerCase().includes(val.toLowerCase())||
+    (o.customer||'').toLowerCase().includes(val.toLowerCase())||
+    (o.email||'').toLowerCase().includes(val.toLowerCase())
+  ):allOrders;
+  const el=$('oTbl'); if(el) el.innerHTML=ordersTable(f);
+}
+
+async function updateStatus(docId,status){
+  try{
+    await fns.updateDoc(fns.doc(db,'orders',docId),{status});
+    toast(`Order → ${status}`);
+  }catch(e){ toast('Update failed: '+e.message); }
+}
+
+async function delOrder(docId){
+  if(!confirm('Delete this order permanently?')) return;
+  try{ await fns.deleteDoc(fns.doc(db,'orders',docId)); toast('Order deleted'); }
+  catch(e){ toast('Delete failed: '+e.message); }
+}
+
+function pickMenuImg(id,input){
+  if(!input.files||!input.files[0]) return;
+  const r=new FileReader();
+  r.onload=e=>{
+    input.dataset.img=e.target.result;
+    const zone=input.closest('.img-zone');
+    let img=zone.querySelector('img.zprev');
+    if(!img){ img=document.createElement('img'); img.className='zprev'; zone.appendChild(img); }
+    img.src=e.target.result;
+    const p=zone.querySelector('p'); if(p) p.textContent='✓ Ready — click Save';
+    toast('Image ready — click Save');
+  };
+  r.readAsDataURL(input.files[0]);
+}
+
+function pickNewImg(input){
+  if(!input.files||!input.files[0]) return;
+  const r=new FileReader();
+  r.onload=e=>{
+    newImgData=e.target.result;
+    const prev=$('ni-prev'); if(prev){ prev.src=e.target.result; prev.style.display='block'; }
+    const lbl=$('ni-img-lbl'); if(lbl) lbl.textContent='✓ Image selected';
+  };
+  r.readAsDataURL(input.files[0]);
+}
+
+async function saveItem(id,cat){
+  const name=($('mn-'+id)||{}).value?.trim();
+  const price=parseFloat(($('mp-'+id)||{}).value);
+  const desc=($('md-'+id)||{}).value?.trim();
+  const emoji=($('me-'+id)||{}).value?.trim();
+  const imgInput=document.getElementById('mimg-'+id);
+  const imgData=imgInput?.dataset.img||'';
+  if(!name||isNaN(price)){ toast('Invalid values'); return; }
+  const item=(menuData[cat]||[]).find(i=>i.id===id);
+  if(item){ item.name=name; item.price=price; item.desc=desc||item.desc; item.emoji=emoji||item.emoji; if(imgData) item.image=imgData; }
+  try{
+    await fns.setDoc(fns.doc(db,'config','menu'),menuData);
+    toast(`✓ "${name}" saved`);
+    const mec=$('mec-'+id);
+    if(mec){ mec.style.borderColor='var(--gold)'; setTimeout(()=>mec.style.borderColor='',1500); }
+  }catch(e){ toast('Save failed: '+e.message); }
+}
+
+async function delItem(id,cat){
+  if(!confirm('Remove this item from menu?')) return;
+  menuData[cat]=(menuData[cat]||[]).filter(i=>i.id!==id);
+  try{
+    await fns.setDoc(fns.doc(db,'config','menu'),menuData);
+    toast('Item removed'); switchPanel('editmenu');
+  }catch(e){ toast('Delete failed: '+e.message); }
+}
+
+async function addItem(){
+  const name=($('ni-name')||{}).value?.trim();
+  const price=parseFloat(($('ni-price')||{}).value);
+  const emoji=($('ni-emoji')||{}).value?.trim()||'🍦';
+  const desc=($('ni-desc')||{}).value?.trim();
+  const cat=($('ni-cat')||{}).value;
+  const err=$('addErr');
+  if(!name||isNaN(price)||!desc){ err.textContent='Please fill all required fields.'; return; }
+  err.textContent='Saving…';
+  if(!menuData[cat]) menuData[cat]=[];
+  menuData[cat].push({id:cat[0]+Date.now().toString().slice(-5),name,price,emoji,desc,image:newImgData});
+  try{
+    await fns.setDoc(fns.doc(db,'config','menu'),menuData);
+    toast(`✓ "${name}" added to menu`);
+    err.textContent='';
+    ['ni-name','ni-price','ni-emoji','ni-desc'].forEach(i=>{ const el=$(i); if(el) el.value=''; });
+    newImgData='';
+    const prev=$('ni-prev'); if(prev){ prev.style.display='none'; prev.src=''; }
+    const lbl=$('ni-img-lbl'); if(lbl) lbl.textContent='📷 Click to upload image';
+  }catch(e){ err.textContent='Failed: '+e.message; }
+}
+
+async function delCustomer(email){
+  if(!confirm(`Delete user ${email}?`)) return;
+  try{
+    await fns.deleteDoc(fns.doc(db,'users',email.replace(/[@.]/g,'_')));
+    toast('Customer deleted'); switchPanel('customers');
+  }catch(e){ toast('Failed: '+e.message); }
+}
+
+async function saveSettings(){
+  const newU=($('s-auser')||{}).value?.trim();
+  const newP=($('s-apass')||{}).value||'';
+  if(newP&&newP.length<6){ toast('Password must be 6+ characters'); return; }
+  if(newU) admCreds.user=newU;
+  if(newP) admCreds.pass=newP;
+  localStorage.setItem('cc_adm_creds',JSON.stringify(admCreds));
+  $('topWho').textContent='Admin: '+admCreds.user;
+  const s={
+    cafeName:($('s-name')||{}).value||'Cold Corner',
+    tagline:($('s-tag')||{}).value||'',
+    address:($('s-addr')||{}).value||'',
+    email:($('s-email')||{}).value||'',
+    phone:($('s-phone')||{}).value||'',
+    taxRate:parseFloat(($('s-tax')||{}).value)||8,
+    ordersOpen:!!($('s-orders')||{}).checked
+  };
+  try{
+    await fns.setDoc(fns.doc(db,'config','settings'),s);
+    const ok=$('settingsOk'); if(ok){ ok.textContent='✓ Settings saved to Firebase!'; setTimeout(()=>ok.textContent='',3000); }
+    toast('✓ Settings saved!');
+  }catch(e){ toast('Save failed: '+e.message); }
+}
+
+async function clearOrders(){
+  if(!confirm('Delete ALL orders from Firebase? Cannot be undone.')) return;
+  try{
+    for(const o of allOrders) await fns.deleteDoc(fns.doc(db,'orders',o._id));
+    toast('All orders cleared');
+  }catch(e){ toast('Failed: '+e.message); }
+}
+
+async function clearCustomers(){
+  if(!confirm('Delete ALL customer accounts?')) return;
+  try{
+    const snap=await fns.getDocs(fns.collection(db,'users'));
+    for(const d of snap.docs) await fns.deleteDoc(d.ref);
+    toast('All customers cleared'); switchPanel('customers');
+  }catch(e){ toast('Failed: '+e.message); }
+}
+
+async function resetMenu(){
+  if(!confirm('Reset menu to defaults?')) return;
+  menuData=JSON.parse(JSON.stringify(DEFAULT_MENU));
+  try{
+    await fns.setDoc(fns.doc(db,'config','menu'),menuData);
+    toast('Menu reset to defaults'); switchPanel('editmenu');
+  }catch(e){ toast('Failed: '+e.message); }
+}
+</script>
+</body>
+</html>
