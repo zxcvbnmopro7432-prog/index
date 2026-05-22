@@ -1546,10 +1546,10 @@ import {
   getFirestore,
   collection,
   addDoc,
+  getDocs,
   onSnapshot,
-  updateDoc,
-  doc,
-  serverTimestamp
+  query,
+  orderBy
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -1565,17 +1565,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-window.db = db;
-window.firebaseTools = {
+window.ccDB = db;
+window.ccFirebase = {
   collection,
   addDoc,
+  getDocs,
   onSnapshot,
-  updateDoc,
-  doc,
-  serverTimestamp
+  query,
+  orderBy
 };
 
-console.log("Firebase Connected Successfully");
+console.log("Firebase Connected");
 </script>
 
 </body>
