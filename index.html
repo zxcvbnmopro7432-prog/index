@@ -5,10 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cold Corner — Premium Ice Cream</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
-<!-- Firebase SDK v9 compat - reliable CDN -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
 <style>
 :root{--black:#07090f;--dark:#0d1018;--surface:#141820;--surface2:#1c2130;--blue:#4a7fd4;--blue-light:#89b4f0;--blue-dim:#2a4a80;--cream:#dce8f5;--text:#b8c8e0;--text-dim:#5a6a80;--border:#1e2840;--green:#3db882;--amber:#d4a44a;--red:#d96060;}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
@@ -22,8 +20,8 @@ nav.scrolled{padding:12px 40px;border-bottom-color:rgba(74,127,212,.25);}
 .nav-links a{color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:.18em;text-transform:uppercase;transition:color .3s;}
 .nav-links a:hover{color:var(--blue);}
 .nav-actions{display:flex;gap:16px;align-items:center;}
-.nav-user-btn,.nav-admin-link{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:11px;letter-spacing:.1em;font-family:'Jost',sans-serif;transition:color .3s;padding:0;text-transform:uppercase;}
-.nav-user-btn:hover,.nav-admin-link:hover{color:var(--blue-light);}
+.nav-user-btn{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:11px;letter-spacing:.1em;font-family:'Jost',sans-serif;transition:color .3s;padding:0;text-transform:uppercase;}
+.nav-user-btn:hover{color:var(--blue-light);}
 .cart-btn{background:none;border:1px solid var(--blue-dim);color:var(--blue);padding:7px 18px;font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .3s;position:relative;}
 .cart-btn:hover{background:var(--blue);color:#fff;}
 .cart-count{position:absolute;top:-7px;right:-7px;background:var(--blue);color:#fff;width:18px;height:18px;border-radius:50%;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(0);transition:all .3s;}
@@ -102,14 +100,14 @@ section{padding:96px 40px;}
 .cart-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);}
 .ci-img{width:52px;height:52px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:26px;border:1px solid var(--border);flex-shrink:0;overflow:hidden;}
 .ci-img img{width:100%;height:100%;object-fit:cover;}
-.ci-info{flex:1;}
+.ci-info{flex:1;min-width:0;}
 .ci-name{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--cream);margin-bottom:3px;}
 .ci-price{font-size:12px;color:var(--blue);margin-bottom:8px;}
 .ci-qty{display:flex;align-items:center;gap:10px;}
 .qty-btn{width:22px;height:22px;background:var(--surface2);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 .qty-btn:hover{border-color:var(--blue);color:var(--blue);}
 .qty-val{font-size:12px;color:var(--cream);min-width:18px;text-align:center;}
-.ci-del{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:15px;align-self:flex-start;padding:4px;transition:color .2s;}
+.ci-del{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:15px;align-self:flex-start;padding:4px;transition:color .2s;flex-shrink:0;}
 .ci-del:hover{color:var(--red);}
 .cart-foot{padding:18px 24px 24px;border-top:1px solid var(--border);flex-shrink:0;}
 .cart-row{display:flex;justify-content:space-between;font-size:12px;color:var(--text-dim);margin-bottom:6px;}
@@ -156,9 +154,9 @@ section{padding:96px 40px;}
 .success-box p{color:var(--text-dim);font-size:13px;line-height:1.7;}.oid{color:var(--blue);font-weight:500;}
 .ready-overlay{position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.93);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .4s;}
 .ready-overlay.open{opacity:1;pointer-events:all;}
-.ready-card{background:var(--surface);border:2px solid var(--green);max-width:480px;width:100%;padding:52px 44px;text-align:center;animation:popIn .5s cubic-bezier(.16,1,.3,1);}
-.ready-pulse-circle{width:96px;height:96px;background:rgba(61,184,130,.12);border:2px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:44px;animation:pg 2s ease-in-out infinite;}
-@keyframes pg{0%,100%{box-shadow:0 0 0 0 rgba(61,184,130,.3);}50%{box-shadow:0 0 0 18px rgba(61,184,130,0);}}
+.ready-card{background:var(--surface);border:2px solid var(--green);max-width:480px;width:100%;padding:52px 44px;text-align:center;}
+.ready-pulse-circle{width:96px;height:96px;background:rgba(61,184,130,.12);border:2px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:44px;animation:rPulse 2s ease-in-out infinite;}
+@keyframes rPulse{0%,100%{box-shadow:0 0 0 0 rgba(61,184,130,.3);}50%{box-shadow:0 0 0 18px rgba(61,184,130,0);}}
 .ready-card h2{font-family:'Cormorant Garamond',serif;font-size:42px;color:var(--cream);margin-bottom:6px;}
 .ready-card h2 em{color:var(--green);font-style:italic;}
 .ready-order-id{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--green);margin-bottom:16px;}
@@ -175,8 +173,8 @@ section{padding:96px 40px;}
 .oc-status{font-size:9px;letter-spacing:.2em;text-transform:uppercase;padding:4px 12px;border:1px solid;}
 .status-confirmed{background:rgba(74,127,212,.1);color:var(--blue);border-color:rgba(74,127,212,.3);}
 .status-preparing{background:rgba(212,164,74,.1);color:var(--amber);border-color:rgba(212,164,74,.3);}
-.status-ready{background:rgba(61,184,130,.15);color:var(--green);border-color:rgba(61,184,130,.4);animation:sp 1.5s ease-in-out infinite;}
-@keyframes sp{0%,100%{opacity:1;}50%{opacity:.5;}}
+.status-ready{background:rgba(61,184,130,.15);color:var(--green);border-color:rgba(61,184,130,.4);animation:sPulse 1.5s ease-in-out infinite;}
+@keyframes sPulse{0%,100%{opacity:1;}50%{opacity:.5;}}
 .status-pickedup{background:rgba(100,100,100,.1);color:#888;border-color:rgba(100,100,100,.2);}
 .status-cancelled{background:rgba(217,96,96,.1);color:var(--red);border-color:rgba(217,96,96,.3);}
 .oc-items{font-size:12px;color:var(--text-dim);line-height:1.9;margin-bottom:8px;}
@@ -195,17 +193,19 @@ footer{background:var(--black);border-top:1px solid var(--border);padding:60px 4
 .footer-col ul li a:hover{color:var(--cream);}.footer-col p{font-size:12px;color:var(--text-dim);line-height:1.8;}
 .footer-bottom{max-width:1200px;margin:0 auto;padding-top:22px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
 .footer-bottom p{font-size:10px;color:var(--text-dim);}
+/* Hidden admin trigger — invisible in footer, accessible by keyboard/click */
+.admin-secret-trigger{opacity:0;font-size:8px;color:transparent;cursor:default;user-select:none;position:absolute;width:1px;height:1px;overflow:hidden;}
 .toast-c{position:fixed;bottom:22px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
 .toast{background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--blue);padding:13px 18px;font-size:12px;color:var(--cream);min-width:240px;max-width:300px;animation:fadeUp .4s cubic-bezier(.16,1,.3,1);box-shadow:0 8px 24px rgba(0,0,0,.5);}
 .toast.out{animation:toOut .3s ease forwards;}@keyframes toOut{to{transform:translateX(20px);opacity:0;}}
 .db-banner{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:800;background:rgba(212,164,74,.1);border:1px solid rgba(212,164,74,.4);color:var(--amber);padding:10px 20px;font-size:12px;text-align:center;max-width:600px;width:90%;display:none;line-height:1.6;}
-.db-banner a{color:var(--blue-light);cursor:pointer;text-decoration:underline;}
+/* ════ ADMIN DASHBOARD ════ */
 .adm-screen{position:fixed;inset:0;z-index:8000;background:var(--black);display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .4s;}
 .adm-screen.open{opacity:1;pointer-events:all;}
 .adm-top{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:58px;flex-shrink:0;}
 .adm-brand{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--blue-light);display:flex;align-items:center;gap:12px;}
 .adm-brand-sub{font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--text-dim);}
-.live-dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pg 1.5s ease-in-out infinite;}
+.live-dot{width:8px;height:8px;border-radius:50%;animation:rPulse 1.5s ease-in-out infinite;}
 .adm-topright{display:flex;align-items:center;gap:16px;}
 .adm-who{font-size:11px;color:var(--text-dim);}
 .adm-exit-btn{background:none;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;font-family:'Jost',sans-serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:7px 16px;transition:all .3s;}
@@ -255,8 +255,7 @@ tbody td{padding:11px 14px;font-size:12px;color:var(--text);vertical-align:middl
 .status-sel:focus{border-color:var(--blue-dim);}
 .lq-card{background:var(--surface);border:1px solid var(--border);padding:20px 24px;margin-bottom:14px;transition:all .3s;}
 .lq-card:hover{border-color:var(--blue-dim);}
-.lq-card.ready-glow{border-color:var(--green);}
-.lq-card.ready-glow .lq-id{color:var(--green);}
+.lq-card.lq-ready-hl{border-color:var(--green);}
 .lq-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
 .lq-id{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--blue);margin-bottom:3px;}
 .lq-name{font-size:15px;color:var(--cream);font-family:'Cormorant Garamond',serif;}
@@ -278,7 +277,7 @@ tbody td{padding:11px 14px;font-size:12px;color:var(--text);vertical-align:middl
 .mec-cat{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--blue-dim);}
 .il{display:block;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px;}
 .ii{background:var(--surface2);border:1px solid var(--border);color:var(--cream);padding:6px 9px;font-family:'Jost',sans-serif;font-size:11px;outline:none;width:100%;margin-bottom:7px;transition:border-color .3s;}
-.ii:focus{border-color:var(--blue-dim);}
+.ii:focus{border-color:var(--blue-dim);}select.ii{cursor:pointer;}
 .img-upload-area{border:1px dashed var(--border);padding:12px;text-align:center;cursor:pointer;transition:border-color .3s;margin-bottom:7px;position:relative;overflow:hidden;}
 .img-upload-area:hover{border-color:var(--blue-dim);}
 .img-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
@@ -307,6 +306,9 @@ tbody td{padding:11px 14px;font-size:12px;color:var(--text);vertical-align:middl
 .danger-btn:hover{background:rgba(217,96,96,.1);}
 .adm-empty{text-align:center;padding:50px 20px;color:var(--text-dim);}
 .adm-empty .ei{font-size:36px;margin-bottom:10px;opacity:.4;}
+/* Admin login hidden modal */
+#adminLoginModal{display:none;}
+#adminLoginModal.open{display:flex;}
 .reveal{opacity:0;transform:translateY(22px);transition:all .7s cubic-bezier(.16,1,.3,1);}
 .reveal.visible{opacity:1;transform:translateY(0);}
 @media(max-width:768px){
@@ -326,13 +328,12 @@ body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;o
 </style>
 </head>
 <body>
-<div class="db-banner" id="dbBanner">⚠️ Firebase not configured — running in <b>offline mode</b>. Orders only visible on this device. <a onclick="showFBHelp()">Setup Firebase →</a></div>
+<div class="db-banner" id="dbBanner"></div>
 <nav id="mainNav">
   <a href="#hero" class="nav-logo">Cold <span>Corner</span></a>
   <div class="nav-links"><a href="#features">About</a><a href="#menu">Menu</a><a href="#orders">My Orders</a></div>
   <div class="nav-actions">
     <button class="nav-user-btn" id="userNavBtn" onclick="openUserModal()">Sign In</button>
-    <button class="nav-admin-link" onclick="openAdminLogin()">Admin</button>
     <button class="cart-btn" onclick="toggleCart()">Cart <span class="cart-count" id="cartCount">0</span></button>
     <button class="hamburger" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
   </div>
@@ -345,7 +346,7 @@ body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;o
 <section id="hero">
   <div class="hero-bg"><div class="hring"></div><div class="hring"></div><div class="hring"></div></div>
   <div class="hero-content">
-    <div class="hero-eyebrow">Est. 2019 · Premium Ice Cream Shop</div>
+    <div class="hero-eyebrow">Since 2019 · Premium Ice Cream Shop · Mumbai</div>
     <h1 class="hero-title">Every Scoop<em>A Masterpiece</em></h1>
     <p class="hero-sub" id="heroSub">Crafted with the finest ingredients. Served with elegance.</p>
     <div class="pickup-badge">🧊 Pick Up Only — No Home Delivery</div>
@@ -356,7 +357,7 @@ body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;o
 <section id="features">
   <div class="sec-header reveal"><span class="sec-tag">The Experience</span><h2 class="sec-title">Crafted With <em>Passion</em></h2><div class="sec-line"></div></div>
   <div class="feat-grid">
-    <div class="feat-card reveal"><span class="feat-icon">🍦</span><h3 class="feat-title">Premium Ingredients</h3><p class="feat-text">Sourced from the world's finest dairy farms and organic orchards.</p></div>
+    <div class="feat-card reveal"><span class="feat-icon">🍦</span><h3 class="feat-title">Premium Ingredients</h3><p class="feat-text">Sourced from India's finest dairy farms and organic orchards.</p></div>
     <div class="feat-card reveal"><span class="feat-icon">🧊</span><h3 class="feat-title">Always Fresh</h3><p class="feat-text">Made daily in small batches for peak flavour and perfect texture.</p></div>
     <div class="feat-card reveal"><span class="feat-icon">🌿</span><h3 class="feat-title">Natural Flavours</h3><p class="feat-text">Zero artificial colours or preservatives — pure, honest ingredients.</p></div>
     <div class="feat-card reveal"><span class="feat-icon">🏪</span><h3 class="feat-title">Pick Up Only</h3><p class="feat-text">Visit our counter for the freshest experience. Always worth the trip.</p></div>
@@ -373,45 +374,53 @@ body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;o
 </section>
 <footer>
   <div class="footer-grid">
-    <div class="footer-brand"><div class="bn">Cold Corner</div><p>Premium ice cream crafted daily. Pick up only — always worth the visit.</p></div>
+    <div class="footer-brand"><div class="bn">Cold Corner</div><p>Premium ice cream crafted daily in Mumbai. Pick up only — always worth the visit.</p></div>
     <div class="footer-col"><h4>Navigate</h4><ul><li><a href="#hero">Home</a></li><li><a href="#features">About</a></li><li><a href="#menu">Menu</a></li><li><a href="#orders">Orders</a></li></ul></div>
     <div class="footer-col"><h4>Hours</h4><p id="footerHours">Mon–Fri: 10am–10pm<br>Saturday: 10am–11pm<br>Sunday: 11am–9pm</p></div>
-    <div class="footer-col"><h4>Find Us</h4><p id="footerAddr">12 Frost Street<br>New York, NY 10001<br><br>hello@coldcorner.com</p></div>
+    <div class="footer-col"><h4>Find Us</h4><p id="footerAddr">Mumbai, Maharashtra<br>India — 400001<br><br>hello@coldcorner.in<br>+91 98765 43210</p></div>
   </div>
-  <div class="footer-bottom"><p>© 2026 Cold Corner. All rights reserved.</p><p>🧊 Pick Up Only</p></div>
+  <div class="footer-bottom">
+    <p>© 2026 Cold Corner. All rights reserved.</p>
+    <!-- Hidden admin access — triple click on copyright text -->
+    <p id="adminSecretTrigger" onclick="handleSecretClick()" style="cursor:default;user-select:none;font-size:10px;color:var(--text-dim)">🧊 Pick Up Only</p>
+  </div>
 </footer>
+<!-- CART -->
 <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
 <div class="cart-panel" id="cartPanel">
   <div class="cart-head"><h3>Your Cart</h3><button class="icon-btn" onclick="toggleCart()">✕</button></div>
   <div class="cart-body" id="cartBody"></div>
   <div class="cart-foot" id="cartFoot" style="display:none">
-    <div class="cart-row"><span>Subtotal</span><span id="cartSub">$0.00</span></div>
-    <div class="cart-row"><span>Tax</span><span id="cartTax">$0.00</span></div>
-    <div class="cart-total-row"><span>Total</span><span class="cart-total-val" id="cartTotal">$0.00</span></div>
+    <div class="cart-row"><span>Subtotal</span><span id="cartSub">₹0</span></div>
+    <div class="cart-row"><span>GST (5%)</span><span id="cartTax">₹0</span></div>
+    <div class="cart-total-row"><span>Total</span><span class="cart-total-val" id="cartTotal">₹0</span></div>
     <button class="checkout-btn" onclick="openCheckout()">Proceed to Pick Up Order</button>
   </div>
 </div>
+<!-- USER MODAL -->
 <div class="modal-overlay" id="userModal" onclick="if(event.target===this)closeUserModal()">
   <div class="modal"><button class="mclose" onclick="closeUserModal()">✕</button><div id="userModalBody"></div></div>
 </div>
+<!-- CHECKOUT MODAL -->
 <div class="modal-overlay" id="checkoutModal" onclick="if(event.target===this)closeCheckout()">
   <div class="modal"><button class="mclose" onclick="closeCheckout()">✕</button><div id="checkoutBody"></div></div>
 </div>
+<!-- ADMIN LOGIN — hidden, no public link -->
 <div class="modal-overlay" id="adminLoginModal" onclick="if(event.target===this)closeAdminLogin()">
   <div class="modal" style="max-width:360px">
     <button class="mclose" onclick="closeAdminLogin()">✕</button>
     <div class="m-eyebrow">Restricted Access</div>
     <div class="m-title">Admin <em>Login</em></div>
-    <div class="fg"><label class="fl">Username</label><input class="fi" id="admUser" type="text" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
-    <div class="fg"><label class="fl">Password</label><input class="fi" id="admPass" type="password" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
+    <div class="fg"><label class="fl">Username</label><input class="fi" id="admUser" type="text" onkeydown="if(event.key==='Enter')doAdminLogin()" autocomplete="off"></div>
+    <div class="fg"><label class="fl">Password</label><input class="fi" id="admPass" type="password" onkeydown="if(event.key==='Enter')doAdminLogin()" autocomplete="off"></div>
     <div class="ferr" id="admErr"></div>
-    <button class="fsub" onclick="doAdminLogin()">🔐 Enter Dashboard</button>
-    <p style="text-align:center;font-size:10px;color:var(--text-dim);margin-top:14px">Default: <b style="color:var(--blue)">admin</b> / <b style="color:var(--blue)">cold2024</b></p>
+    <button class="fsub" onclick="doAdminLogin()">Enter Dashboard</button>
   </div>
 </div>
+<!-- ADMIN DASHBOARD -->
 <div class="adm-screen" id="admScreen">
   <div class="adm-top">
-    <div class="adm-brand"><div class="live-dot" id="liveDot" style="background:var(--amber)"></div>Cold Corner <span class="adm-brand-sub">Admin Dashboard</span></div>
+    <div class="adm-brand"><div class="live-dot" id="liveDot" style="background:var(--amber)"></div>Cold Corner <span class="adm-brand-sub">Admin Panel</span></div>
     <div class="adm-topright"><span class="adm-who" id="admWho"></span><button class="adm-exit-btn" onclick="exitAdmin()">✕ Exit</button></div>
   </div>
   <div class="adm-body">
@@ -441,63 +450,23 @@ body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;o
     <div class="adm-main" id="admMain"></div>
   </div>
 </div>
+<!-- ORDER READY POPUP -->
 <div class="ready-overlay" id="readyOverlay">
   <div class="ready-card">
     <div class="ready-pulse-circle">🍦</div>
     <h2>Order <em>Ready!</em></h2>
     <div class="ready-order-id" id="readyOrderId"></div>
-    <p class="ready-msg">Your order is ready at our counter!<br>Please come collect it now.</p>
+    <p class="ready-msg">Aapka order ready hai! Kripya abhi counter par aake collect karein.</p>
     <div class="ready-pickup-badge">🧊 Please Pick Up Your Order Now</div>
-    <p class="ready-sub">This screen closes when staff marks your order as Picked Up.</p>
+    <p class="ready-sub">Yeh screen tab band hogi jab staff aapka order Picked Up mark karega.</p>
   </div>
 </div>
 <div class="toast-c" id="toastC"></div>
 <script>
 'use strict';
-// ═══════════ DEFAULT DATA ═══════════
-const DEFAULT_MENU={
-  coffee:[
-    {id:'c1',name:'Signature Espresso',price:4.50,emoji:'☕',img:'',desc:'Double shot, dark roast, rich crema'},
-    {id:'c2',name:'Cold Brew Latte',price:6.00,emoji:'🥛',img:'',desc:'Slow-steeped 24h, silky oat milk'},
-    {id:'c3',name:'Velvet Cappuccino',price:5.50,emoji:'☕',img:'',desc:'Equal parts espresso, foam and milk'},
-    {id:'c4',name:'Iced Americano',price:4.75,emoji:'🧊',img:'',desc:'Bold espresso over ice'},
-    {id:'c5',name:'Honey Flat White',price:5.75,emoji:'🍯',img:'',desc:'Ristretto, whole milk, raw honeycomb'},
-    {id:'c6',name:'Mocha Frost',price:6.25,emoji:'🍫',img:'',desc:'Dark chocolate, double espresso, iced'}
-  ],
-  icecream:[
-    {id:'i1',name:'Classic Vanilla Bean',price:5.00,emoji:'🍦',img:'',desc:'Madagascar vanilla, pure cream, two scoops'},
-    {id:'i2',name:'Dark Chocolate Swirl',price:5.50,emoji:'🍫',img:'',desc:'72% Valrhona cocoa, velvety smooth'},
-    {id:'i3',name:'Strawberry Sorbet',price:5.00,emoji:'🍓',img:'',desc:'Fresh strawberries, zero dairy'},
-    {id:'i4',name:'Matcha Zen',price:6.00,emoji:'🍵',img:'',desc:'Ceremonial matcha, white chocolate chips'},
-    {id:'i5',name:'Salted Caramel Crunch',price:6.50,emoji:'🧂',img:'',desc:'Fleur de sel, house caramel, praline'},
-    {id:'i6',name:'Mango Passion',price:5.75,emoji:'🥭',img:'',desc:'Alphonso mango, passion fruit swirl'},
-    {id:'i7',name:'Cookie & Cream',price:6.00,emoji:'🍪',img:'',desc:'Oreo crumble, cream cheese swirl'},
-    {id:'i8',name:'Pistachio Dream',price:6.50,emoji:'🌿',img:'',desc:'Sicilian pistachios, rose water cream'}
-  ]
-};
-const DEFAULT_SETTINGS={cafeName:'Cold Corner',tagline:'Crafted with the finest ingredients. Served with elegance.',address:'12 Frost Street, New York, NY 10001',email:'hello@coldcorner.com',phone:'+1 (212) 555-0191',taxRate:8,ordersOpen:true};
-// Admin email used with Firebase Auth (anonymous sign-in for customers, email/pass for admin)
-const ADMIN_PASS_KEY='cc_admin_pass'; // stored locally only
-
-// ═══════════ STATE ═══════════
-const $=id=>document.getElementById(id);
-const fp=n=>'$'+Number(n).toFixed(2);
-let menuData=JSON.parse(localStorage.getItem('cc_menu')||'null')||JSON.parse(JSON.stringify(DEFAULT_MENU));
-let cart=JSON.parse(localStorage.getItem('cc_cart')||'[]');
-let currentUser=JSON.parse(localStorage.getItem('cc_user')||'null'); // customer session (localStorage)
-let admCreds=JSON.parse(localStorage.getItem('cc_admin_creds')||'{"user":"admin","pass":"cold2024"}');
-let adminIn=false; // restored from sessionStorage on load
-let activeCat=Object.keys(menuData)[0];
-let admPanel='dashboard';
-let liveOrders=[];
-let liveSettings={...DEFAULT_SETTINGS,...JSON.parse(localStorage.getItem('cc_settings')||'{}')};
-let liveCustomers=[];
-let currentReadyId=null;
-let db=null, fbOK=false;
-// Firestore unsubscribe handles
-let unsubOrders=null, unsubSettings=null, unsubMenu=null;
-
-// ═══════════ FIREBASE CONFIG ═══════════
+// ═══════════════════════════════════════════════
+// CONSTANTS & CONFIG
+// ═══════════════════════════════════════════════
 const FB_CONFIG={
   apiKey:"AIzaSyAbKGZKW3OMFdZxfOJ1PprBlsPVxzhu6CE",
   authDomain:"coldcornerstore-fdb62.firebaseapp.com",
@@ -507,65 +476,119 @@ const FB_CONFIG={
   appId:"1:913362358296:web:511aec265741a82303336d"
 };
 
-// ═══════════ FIREBASE INIT ═══════════
+// INR formatter
+const fp=n=>'₹'+Math.round(Number(n));
+
+// GST rate for India
+const GST_RATE=5; // 5% GST on food items
+
+const DEFAULT_MENU={
+  coffee:[
+    {id:'c1',name:'Signature Espresso',price:120,emoji:'☕',img:'',desc:'Double shot, dark roast, rich crema'},
+    {id:'c2',name:'Cold Brew Latte',price:160,emoji:'🥛',img:'',desc:'Slow-steeped 24h, silky oat milk'},
+    {id:'c3',name:'Velvet Cappuccino',price:140,emoji:'☕',img:'',desc:'Equal parts espresso, foam and milk'},
+    {id:'c4',name:'Iced Americano',price:120,emoji:'🧊',img:'',desc:'Bold espresso over ice'},
+    {id:'c5',name:'Honey Flat White',price:150,emoji:'🍯',img:'',desc:'Ristretto, whole milk, raw honey'},
+    {id:'c6',name:'Mocha Frost',price:170,emoji:'🍫',img:'',desc:'Dark chocolate, double espresso, iced'}
+  ],
+  icecream:[
+    {id:'i1',name:'Classic Vanilla Bean',price:130,emoji:'🍦',img:'',desc:'Madagascar vanilla, pure cream, two scoops'},
+    {id:'i2',name:'Dark Chocolate Swirl',price:150,emoji:'🍫',img:'',desc:'72% cocoa, velvety smooth'},
+    {id:'i3',name:'Strawberry Sorbet',price:130,emoji:'🍓',img:'',desc:'Fresh strawberries, zero dairy'},
+    {id:'i4',name:'Matcha Zen',price:160,emoji:'🍵',img:'',desc:'Ceremonial matcha, white chocolate chips'},
+    {id:'i5',name:'Salted Caramel Crunch',price:170,emoji:'🧂',img:'',desc:'Sea salt, house caramel, praline'},
+    {id:'i6',name:'Mango Passion',price:150,emoji:'🥭',img:'',desc:'Alphonso mango, passion fruit swirl'},
+    {id:'i7',name:'Cookie & Cream',price:160,emoji:'🍪',img:'',desc:'Oreo crumble, cream cheese swirl'},
+    {id:'i8',name:'Pistachio Dream',price:180,emoji:'🌿',img:'',desc:'Kesar pista, rose water cream'}
+  ]
+};
+
+const DEFAULT_SETTINGS={
+  cafeName:'Cold Corner',
+  tagline:'Crafted with the finest ingredients. Served with elegance.',
+  address:'Mumbai, Maharashtra, India — 400001',
+  email:'hello@coldcorner.in',
+  phone:'+91 98765 43210',
+  gstRate:5,
+  ordersOpen:true
+};
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+const $=id=>document.getElementById(id);
+let menuData=JSON.parse(localStorage.getItem('cc_menu')||'null')||JSON.parse(JSON.stringify(DEFAULT_MENU));
+let cart=JSON.parse(localStorage.getItem('cc_cart')||'[]');
+let currentUser=JSON.parse(localStorage.getItem('cc_user')||'null');
+let admCreds=JSON.parse(localStorage.getItem('cc_admin_creds')||'{"user":"admin","pass":"cold2024"}');
+let adminIn=false;
+let activeCat=Object.keys(menuData)[0];
+let admPanel='dashboard';
+let liveOrders=[];
+let liveSettings={...DEFAULT_SETTINGS,...JSON.parse(localStorage.getItem('cc_settings')||'{}')};
+let liveCustomers=[];
+let currentReadyId=null;
+let db=null, fbOK=false;
+let unsubOrders=null, unsubSettings=null, unsubMenu=null;
+
+// Secret click counter for hidden admin access
+let secretClicks=0, secretTimer=null;
+
+// ═══════════════════════════════════════════════
+// FIREBASE INIT
+// ═══════════════════════════════════════════════
 function initFirebase(){
-  // Must be hosted (not file://) for Firebase to work
-  if(location.protocol==='file:'){
-    $('dbBanner').innerHTML='⚠️ <b>Open this file via a web server</b> — Firebase does not work with file:// protocol. Use <a onclick="showHostHelp()" style="color:var(--blue-light);cursor:pointer;text-decoration:underline">Netlify Drop</a> or VS Code Live Server.';
-    $('dbBanner').style.display='block';
-    $('liveDot').style.background='var(--red)';
-    fallbackOffline(); return;
-  }
   if(typeof firebase==='undefined'){
-    $('dbBanner').innerHTML='⚠️ Firebase SDK failed to load — check internet connection. Running offline.';
+    $('dbBanner').textContent='⚠️ Firebase SDK not loaded — running offline mode.';
     $('dbBanner').style.display='block';
     $('liveDot').style.background='var(--red)';
     fallbackOffline(); return;
   }
   try{
-    firebase.initializeApp(FB_CONFIG);
+    // Prevent duplicate init
+    if(!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
     db=firebase.firestore();
-    db.settings({merge:true});
     fbOK=true;
     $('dbBanner').style.display='none';
     $('liveDot').style.background='var(--green)';
-
-    // Start real-time listeners immediately
-    startFirestoreListeners();
-    toast('🟢 Firebase connected — real-time sync active');
-
+    startListeners();
+    toast('🟢 Live — real-time sync active');
   }catch(e){
-    console.error('Firebase init error:',e);
-    $('dbBanner').innerHTML='⚠️ Firebase init error: '+e.message+' — running offline.';
+    console.error('Firebase:',e.message);
+    $('dbBanner').textContent='⚠️ Firebase error: '+e.message;
     $('dbBanner').style.display='block';
     $('liveDot').style.background='var(--red)';
     fallbackOffline();
   }
 }
 
-function startFirestoreListeners(){
+function startListeners(){
   if(!db) return;
+  // Unsubscribe existing to prevent duplicates
+  if(unsubOrders){ unsubOrders(); unsubOrders=null; }
+  if(unsubSettings){ unsubSettings(); unsubSettings=null; }
+  if(unsubMenu){ unsubMenu(); unsubMenu=null; }
 
-  // ORDERS — real-time, all devices see all orders instantly
-  if(unsubOrders) unsubOrders();
+  // ORDERS — real-time from all devices
   unsubOrders=db.collection('orders').orderBy('createdAt','desc')
-    .onSnapshot(snap=>{
+    .onSnapshot({includeMetadataChanges:false}, snap=>{
       liveOrders=snap.docs.map(d=>({...d.data(),_id:d.id}));
       renderOrders();
       updateLiveBadge();
-      checkReadyOrders();
+      if(!adminIn) checkReadyOrders();
       if(adminIn&&$('admScreen').classList.contains('open')) renderAdmPanel(admPanel);
-    },err=>{ console.error('Orders listener:',err); });
+    },err=>console.error('Orders:',err.message));
 
   // SETTINGS — real-time
-  if(unsubSettings) unsubSettings();
   unsubSettings=db.collection('config').doc('settings')
     .onSnapshot(snap=>{
-      if(snap.exists){ liveSettings={...DEFAULT_SETTINGS,...snap.data()}; applySettings(liveSettings); }
-    },err=>console.warn('Settings listener:',err));
+      if(snap.exists){
+        liveSettings={...DEFAULT_SETTINGS,...snap.data()};
+        applySettings(liveSettings);
+      }
+    },err=>console.warn('Settings:',err.message));
 
   // MENU — real-time
-  if(unsubMenu) unsubMenu();
   unsubMenu=db.collection('config').doc('menu')
     .onSnapshot(snap=>{
       if(snap.exists){
@@ -574,58 +597,56 @@ function startFirestoreListeners(){
           menuData=m; localStorage.setItem('cc_menu',JSON.stringify(m));
           renderMenuFilters(); renderMenu(activeCat);
           if(adminIn&&admPanel==='editmenu') renderAdmPanel('editmenu');
-        }catch(e){ console.warn('Menu parse error',e); }
+        }catch(e){ console.warn('Menu parse:',e.message); }
       }
-    },err=>console.warn('Menu listener:',err));
+    },err=>console.warn('Menu:',err.message));
 
-  // CUSTOMERS — load once, refresh on demand
-  refreshCustomers();
+  loadCustomers();
 }
 
-function refreshCustomers(){
+function loadCustomers(){
   if(!db) return;
   db.collection('customers').get()
     .then(s=>{ liveCustomers=s.docs.map(d=>d.data()); })
-    .catch(e=>console.warn('Customers load:',e));
+    .catch(e=>console.warn('Customers:',e.message));
 }
 
-// ═══════════ OFFLINE FALLBACK ═══════════
+// ═══════════════════════════════════════════════
+// OFFLINE FALLBACK
+// ═══════════════════════════════════════════════
 function fallbackOffline(){
   liveOrders=JSON.parse(localStorage.getItem('cc_orders')||'[]');
-  renderOrders(); updateLiveBadge(); checkReadyOrders();
-  if(adminIn) renderAdmPanel(admPanel);
-  // Lightweight poll for same-device updates
+  renderOrders(); updateLiveBadge();
+  if(!adminIn) checkReadyOrders();
+  // Poll for same-device updates only
   setInterval(()=>{
     const fresh=JSON.parse(localStorage.getItem('cc_orders')||'[]');
-    if(JSON.stringify(fresh)!==JSON.stringify(liveOrders)){
-      liveOrders=fresh; renderOrders(); updateLiveBadge(); checkReadyOrders();
+    const changed=JSON.stringify(fresh)!==JSON.stringify(liveOrders);
+    if(changed){
+      liveOrders=fresh; renderOrders(); updateLiveBadge();
+      if(!adminIn) checkReadyOrders();
       if(adminIn) renderAdmPanel(admPanel);
     }
-  },3000);
+  },4000);
 }
 
-// ═══════════ DB WRAPPERS ═══════════
+// ═══════════════════════════════════════════════
+// DB OPERATIONS
+// ═══════════════════════════════════════════════
 async function dbAddOrder(order){
   if(fbOK&&db){
-    const ref=await db.collection('orders').add({
-      ...order, createdAt:firebase.firestore.FieldValue.serverTimestamp()
-    });
+    const ref=await db.collection('orders').add({...order,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
     return ref.id;
   }
-  // Offline fallback
   order._id=order.id;
   const arr=JSON.parse(localStorage.getItem('cc_orders')||'[]');
   arr.unshift(order); localStorage.setItem('cc_orders',JSON.stringify(arr));
-  liveOrders=arr; renderOrders(); updateLiveBadge();
-  if(adminIn) renderAdmPanel(admPanel);
-  return order.id;
+  liveOrders=arr; renderOrders(); updateLiveBadge(); return order.id;
 }
 
 async function dbUpdateStatus(id,status){
   if(fbOK&&db){
-    await db.collection('orders').doc(id).update({
-      status, updatedAt:firebase.firestore.FieldValue.serverTimestamp()
-    });
+    await db.collection('orders').doc(id).update({status,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
     return;
   }
   const arr=JSON.parse(localStorage.getItem('cc_orders')||'[]');
@@ -644,14 +665,16 @@ async function dbDeleteOrder(id){
 }
 
 async function dbAddCustomer(u){
-  if(fbOK&&db) await db.collection('customers').doc(u.email.replace(/\./g,'_')).set(u);
-  else { const arr=JSON.parse(localStorage.getItem('cc_users')||'[]'); arr.push(u); localStorage.setItem('cc_users',JSON.stringify(arr)); }
+  const key=u.email.replace(/\./g,'_').replace(/@/g,'_at_');
+  if(fbOK&&db) await db.collection('customers').doc(key).set(u);
+  else{ const arr=JSON.parse(localStorage.getItem('cc_users')||'[]'); arr.push(u); localStorage.setItem('cc_users',JSON.stringify(arr)); }
   liveCustomers=liveCustomers.filter(x=>x.email!==u.email); liveCustomers.push(u);
 }
 
 async function dbFindCustomer(email,pass){
+  const key=email.replace(/\./g,'_').replace(/@/g,'_at_');
   if(fbOK&&db){
-    const snap=await db.collection('customers').doc(email.replace(/\./g,'_')).get();
+    const snap=await db.collection('customers').doc(key).get();
     if(!snap.exists) return null;
     const u=snap.data(); return u.password===pass?u:null;
   }
@@ -659,12 +682,14 @@ async function dbFindCustomer(email,pass){
 }
 
 async function dbEmailExists(email){
-  if(fbOK&&db) return (await db.collection('customers').doc(email.replace(/\./g,'_')).get()).exists;
+  const key=email.replace(/\./g,'_').replace(/@/g,'_at_');
+  if(fbOK&&db) return (await db.collection('customers').doc(key).get()).exists;
   return JSON.parse(localStorage.getItem('cc_users')||'[]').some(u=>u.email===email);
 }
 
 async function dbDeleteCustomer(email){
-  if(fbOK&&db) await db.collection('customers').doc(email.replace(/\./g,'_')).delete();
+  const key=email.replace(/\./g,'_').replace(/@/g,'_at_');
+  if(fbOK&&db) await db.collection('customers').doc(key).delete();
   else localStorage.setItem('cc_users',JSON.stringify(JSON.parse(localStorage.getItem('cc_users')||'[]').filter(u=>u.email!==email)));
   liveCustomers=liveCustomers.filter(u=>u.email!==email);
 }
@@ -679,26 +704,374 @@ async function dbSaveSettings(s){
 async function dbSaveMenu(m){
   menuData=m; localStorage.setItem('cc_menu',JSON.stringify(m));
   if(fbOK&&db) await db.collection('config').doc('menu').set({categories:JSON.stringify(m)});
-  else { renderMenuFilters(); renderMenu(activeCat); }
+  else{ renderMenuFilters(); renderMenu(activeCat); }
 }
 
-// ═══════════ ADMIN AUTH (simple — no Firebase Auth needed) ═══════════
-function openAdminLogin(){
-  // Restore session on page reload
-  if(adminIn||sessionStorage.getItem('cc_admin_in')==='true'){
-    adminIn=true; openAdminDashboard(); return;
+// ═══════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════
+function toast(msg,dur=3200){
+  const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+  $('toastC').appendChild(t);
+  setTimeout(()=>{ t.classList.add('out'); setTimeout(()=>t.remove(),320); },dur);
+}
+
+function applySettings(s){
+  document.title=(s.cafeName||'Cold Corner')+' — Premium Ice Cream';
+  const h=$('heroSub'); if(h&&s.tagline) h.textContent=s.tagline;
+  const fa=$('footerAddr');
+  if(fa) fa.innerHTML=(s.address||'').replace(/,\s*/g,'<br>')+'<br><br>'+(s.email||'')+(s.phone?'<br>'+s.phone:'');
+}
+
+function fileToBase64(f){
+  return new Promise((r,j)=>{ const rd=new FileReader(); rd.onload=()=>r(rd.result); rd.onerror=j; rd.readAsDataURL(f); });
+}
+
+function gstRate(){ return (liveSettings.gstRate||GST_RATE); }
+
+// ═══════════════════════════════════════════════
+// CART
+// ═══════════════════════════════════════════════
+function saveCart(){ localStorage.setItem('cc_cart',JSON.stringify(cart)); }
+function toggleCart(){ $('cartOverlay').classList.toggle('open'); $('cartPanel').classList.toggle('open'); }
+function updateCartBadge(){
+  const n=cart.reduce((s,i)=>s+i.qty,0);
+  $('cartCount').textContent=n; $('cartCount').classList.toggle('show',n>0);
+  renderCartItems();
+}
+function renderCartItems(){
+  const body=$('cartBody'),foot=$('cartFoot');
+  if(!cart.length){
+    body.innerHTML='<div class="cart-empty"><div class="ei">🍦</div><p>Aapka cart khali hai.</p></div>';
+    foot.style.display='none'; return;
   }
+  foot.style.display='block';
+  body.innerHTML=cart.map(i=>`<div class="cart-item">
+    <div class="ci-img">${i.img?`<img src="${i.img}" alt="">`:`<span>${i.emoji||'🍦'}</span>`}</div>
+    <div class="ci-info">
+      <div class="ci-name">${i.name}</div>
+      <div class="ci-price">${fp(i.price)}</div>
+      <div class="ci-qty">
+        <button class="qty-btn" onclick="changeQty('${i.id}',-1)">−</button>
+        <span class="qty-val">${i.qty}</span>
+        <button class="qty-btn" onclick="changeQty('${i.id}',1)">+</button>
+      </div>
+    </div>
+    <button class="ci-del" onclick="removeFromCart('${i.id}')">✕</button>
+  </div>`).join('');
+  const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const tax=Math.round(sub*gstRate()/100);
+  $('cartSub').textContent=fp(sub);
+  $('cartTax').textContent=fp(tax);
+  $('cartTotal').textContent=fp(sub+tax);
+}
+function addToCart(id,cat){
+  const item=menuData[cat]?.find(i=>i.id===id); if(!item) return;
+  const ex=cart.find(i=>i.id===id);
+  ex?ex.qty++:cart.push({id:item.id,name:item.name,price:item.price,emoji:item.emoji,img:item.img||'',qty:1});
+  saveCart(); updateCartBadge(); toast(item.name+' cart mein add ✓');
+}
+function removeFromCart(id){ cart=cart.filter(i=>i.id!==id); saveCart(); updateCartBadge(); }
+function changeQty(id,d){
+  const item=cart.find(i=>i.id===id); if(!item) return;
+  item.qty+=d; if(item.qty<=0){ removeFromCart(id); return; }
+  saveCart(); updateCartBadge();
+}
+
+// ═══════════════════════════════════════════════
+// MENU
+// ═══════════════════════════════════════════════
+function renderMenuFilters(){
+  const cats=Object.keys(menuData);
+  const labels={coffee:'Coffee',icecream:'Ice Cream'};
+  $('menuFilters').innerHTML=cats.map((c,i)=>`<button class="filter-btn${i===0?' active':''}" data-cat="${c}" onclick="switchCat('${c}',this)">${labels[c]||c.charAt(0).toUpperCase()+c.slice(1)}</button>`).join('');
+}
+function switchCat(cat,btn){
+  activeCat=cat;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderMenu(cat);
+}
+function renderMenu(cat){
+  const items=menuData[cat]||[];
+  $('menuGrid').innerHTML=!items.length
+    ?`<div style="text-align:center;padding:60px;color:var(--text-dim)">Is category mein koi item nahi hai.</div>`
+    :items.map((item,idx)=>`
+    <div class="menu-item" style="animation-delay:${idx*.06}s">
+      <div class="item-img">${item.img?`<img src="${item.img}" alt="${item.name}">`:`<div class="fallback-emoji">${item.emoji||'🍦'}</div>`}</div>
+      <div class="item-body">
+        <div class="item-cat">${cat==='icecream'?'Ice Cream':cat}</div>
+        <div class="item-name">${item.name}</div>
+        <div class="item-desc">${item.desc}</div>
+        <div class="item-foot">
+          <div class="item-price">${fp(item.price)}<sub>/item</sub></div>
+          <button class="add-btn" id="ab-${item.id}" onclick="addToCart('${item.id}','${cat}');flashAdd('${item.id}')">Add</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function flashAdd(id){
+  const b=$('ab-'+id); if(!b) return;
+  b.textContent='✓'; b.classList.add('added');
+  setTimeout(()=>{ if($('ab-'+id)){ b.textContent='Add'; b.classList.remove('added'); }},1500);
+}
+
+// ═══════════════════════════════════════════════
+// CUSTOMER AUTH
+// ═══════════════════════════════════════════════
+function openUserModal(){ $('userModal').classList.add('open'); renderUserModal(); }
+function closeUserModal(){ $('userModal').classList.remove('open'); }
+function renderUserModal(){
+  if(currentUser){
+    $('userModalBody').innerHTML=`
+      <div class="m-eyebrow">Account</div><div class="m-title">Welcome <em>Back</em></div>
+      <div class="welcome-box"><div class="welcome-icon">🧊</div>
+      <h3>${currentUser.name}</h3><p>${currentUser.email}</p>
+      <button class="logout-btn" onclick="doLogout()">Sign Out</button></div>`;
+  } else {
+    $('userModalBody').innerHTML=`
+      <div class="m-eyebrow">Account</div><div class="m-title">Your <em>Account</em></div>
+      <div class="tabs">
+        <button class="tab-btn active" id="tabLogin" onclick="switchAuthTab('login')">Sign In</button>
+        <button class="tab-btn" id="tabSignup" onclick="switchAuthTab('signup')">Register</button>
+      </div><div id="authForm"></div>`;
+    buildAuthForm('login');
+  }
+}
+function switchAuthTab(t){
+  $('tabLogin')?.classList.toggle('active',t==='login');
+  $('tabSignup')?.classList.toggle('active',t==='signup');
+  buildAuthForm(t);
+}
+function buildAuthForm(t){
+  $('authForm').innerHTML=t==='login'?`
+    <div class="fg"><label class="fl">Email</label><input class="fi" id="liEmail" type="email" placeholder="aapka@email.com" autocomplete="email"></div>
+    <div class="fg"><label class="fl">Password</label><input class="fi" id="liPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="current-password"></div>
+    <div class="ferr" id="authErr"></div><button class="fsub" onclick="doLogin()">Sign In</button>`:`
+    <div class="fg"><label class="fl">Full Name</label><input class="fi" id="siName" placeholder="Aapka Naam" autocomplete="name"></div>
+    <div class="fg"><label class="fl">Email</label><input class="fi" id="siEmail" type="email" placeholder="aapka@email.com" autocomplete="email"></div>
+    <div class="fg"><label class="fl">Phone (optional)</label><input class="fi" id="siPhone" type="tel" placeholder="+91 9876543210" autocomplete="tel"></div>
+    <div class="fg"><label class="fl">Password</label><input class="fi" id="siPass" type="password" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignup()" autocomplete="new-password"></div>
+    <div class="ferr" id="authErr"></div><button class="fsub" onclick="doSignup()">Create Account</button>`;
+}
+async function doLogin(){
+  const email=($('liEmail')||{}).value?.trim().toLowerCase();
+  const pass=($('liPass')||{}).value;
+  const err=$('authErr');
+  if(!email||!pass){ err.textContent='Please fill all fields.'; return; }
+  const btn=document.querySelector('#authForm .fsub');
+  if(btn){ btn.disabled=true; btn.textContent='Signing in…'; }
+  const u=await dbFindCustomer(email,pass);
+  if(!u){
+    err.textContent='Invalid email or password.';
+    if(btn){ btn.disabled=false; btn.textContent='Sign In'; }
+    return;
+  }
+  currentUser={name:u.name,email:u.email,phone:u.phone||''};
+  localStorage.setItem('cc_user',JSON.stringify(currentUser));
+  $('userNavBtn').textContent=currentUser.name.split(' ')[0];
+  toast('Welcome back, '+currentUser.name.split(' ')[0]+'! 🍦');
+  closeUserModal(); renderOrders(); checkReadyOrders();
+}
+async function doSignup(){
+  const name=($('siName')||{}).value?.trim();
+  const email=($('siEmail')||{}).value?.trim().toLowerCase();
+  const phone=($('siPhone')||{}).value?.trim()||'';
+  const pass=($('siPass')||{}).value;
+  const err=$('authErr');
+  if(!name||!email||!pass){ err.textContent='Name, email aur password zaroori hai.'; return; }
+  if(pass.length<6){ err.textContent='Password kam se kam 6 characters ka hona chahiye.'; return; }
+  const btn=document.querySelector('#authForm .fsub');
+  if(btn){ btn.disabled=true; btn.textContent='Creating…'; }
+  if(await dbEmailExists(email)){
+    err.textContent='Yeh email already registered hai.';
+    if(btn){ btn.disabled=false; btn.textContent='Create Account'; }
+    return;
+  }
+  await dbAddCustomer({name,email,phone,password:pass,createdAt:new Date().toISOString()});
+  currentUser={name,email,phone};
+  localStorage.setItem('cc_user',JSON.stringify(currentUser));
+  $('userNavBtn').textContent=name.split(' ')[0];
+  toast('Welcome, '+name.split(' ')[0]+'! 🍦');
+  closeUserModal(); renderOrders(); checkReadyOrders();
+}
+function doLogout(){
+  currentUser=null; localStorage.removeItem('cc_user');
+  $('userNavBtn').textContent='Sign In';
+  closeUserModal(); renderOrders(); closeReadyPopup();
+  toast('Signed out. Phir milenge!');
+}
+
+// ═══════════════════════════════════════════════
+// CHECKOUT
+// ═══════════════════════════════════════════════
+function openCheckout(){
+  if(!currentUser){ toggleCart(); toast('Pehle sign in karein'); setTimeout(openUserModal,400); return; }
+  if(!liveSettings.ordersOpen){ toast('Abhi orders band hain. Thodi der baad try karein.'); return; }
+  toggleCart(); $('checkoutModal').classList.add('open'); renderCheckout();
+}
+function closeCheckout(){ $('checkoutModal').classList.remove('open'); }
+function renderCheckout(){
+  const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const tax=Math.round(sub*gstRate()/100);
+  $('checkoutBody').innerHTML=`
+    <div class="m-eyebrow">Checkout</div><div class="m-title">Your <em>Order</em></div>
+    <div class="pickup-notice"><div style="font-size:22px;flex-shrink:0">🧊</div>
+    <div><strong>PICK UP ONLY</strong><br>Yeh order aapko hamare counter se collect karna hoga. Home delivery available nahi hai.</div></div>
+    ${cart.map(i=>`<div class="os-row"><span>${i.img?'🍦':i.emoji||'🍦'} ${i.name} ×${i.qty}</span><span>${fp(i.price*i.qty)}</span></div>`).join('')}
+    <div class="os-row" style="color:var(--text-dim)"><span>GST (${gstRate()}%)</span><span>${fp(tax)}</span></div>
+    <div class="os-total"><span>Total</span><span>${fp(sub+tax)}</span></div><br>
+    <div class="fg"><label class="fl">Aapka Naam *</label><input class="fi" id="coName" value="${currentUser?.name||''}" placeholder="Order ke liye naam"></div>
+    <div class="fg"><label class="fl">Phone Number</label><input class="fi" id="coPhone" value="${currentUser?.phone||''}" placeholder="+91 9876543210" type="tel"></div>
+    <div class="fg"><label class="fl">Special Instructions</label><input class="fi" id="coNote" placeholder="Allergies, extra toppings…"></div>
+    <div class="ferr" id="coErr"></div>
+    <button class="fsub" id="coBtn" onclick="submitOrder()">🍦 Place Pick Up Order</button>`;
+}
+async function submitOrder(){
+  const name=($('coName')||{}).value?.trim();
+  const phone=($('coPhone')||{}).value?.trim()||'';
+  const note=($('coNote')||{}).value?.trim()||'';
+  const err=$('coErr');
+  if(!name){ err.textContent='Kripya apna naam darj karein.'; return; }
+  const btn=$('coBtn'); btn.textContent='Order place ho raha hai…'; btn.disabled=true;
+  const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const tax=Math.round(sub*gstRate()/100);
+  const total=sub+tax;
+  const orderId='CC'+Date.now().toString().slice(-6);
+  const order={
+    id:orderId, date:new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'}),
+    items:cart.map(i=>({name:i.name,emoji:i.emoji,img:i.img||'',qty:i.qty,price:i.price})),
+    total, sub, tax, gstRate:gstRate(),
+    pickupName:name, phone, note, status:'Confirmed',
+    customer:currentUser.name, email:currentUser.email
+  };
+  // Formspree email notification
+  try{
+    await fetch('https://formspree.io/f/xzzbbkwa',{
+      method:'POST', headers:{'Accept':'application/json','Content-Type':'application/json'},
+      body:JSON.stringify({
+        _subject:'🍦 New Order #'+orderId+' — Cold Corner',
+        Order_ID:orderId, Customer:currentUser.name+' ('+currentUser.email+')',
+        Phone:phone||'—', Name:name, Date:order.date,
+        Items:cart.map(i=>`${i.emoji||'🍦'} ${i.name} x${i.qty} — ${fp(i.price*i.qty)}`).join(' | '),
+        Note:note||'—', GST:fp(tax), TOTAL:fp(total)
+      })
+    });
+  }catch(e){}
+  await dbAddOrder(order);
+  cart=[]; saveCart(); updateCartBadge();
+  $('checkoutBody').innerHTML=`<div class="success-box">
+    <div class="success-icon-wrap">✓</div><h3>Order Placed!</h3>
+    <p>Order <span class="oid">#${orderId}</span> confirm ho gaya <strong>${name}</strong> ke liye.<br>
+    <strong style="color:var(--blue-light)">🧊 PICK UP ONLY</strong> — counter par aake collect karein.<br>
+    Jab order ready hoga, yahan popup aayega!</p><br>
+    <button class="fsub" onclick="closeCheckout();document.getElementById('orders').scrollIntoView({behavior:'smooth'});renderOrders()">My Orders Dekhein</button>
+  </div>`;
+  renderOrders();
+}
+
+// ═══════════════════════════════════════════════
+// MY ORDERS
+// ═══════════════════════════════════════════════
+function renderOrders(){
+  const c=$('ordersContainer');
+  if(!currentUser){
+    c.innerHTML='<div class="no-orders"><div class="ni">🔐</div><p>Apne orders dekhne ke liye sign in karein.</p><br><button class="btn-outline" style="font-size:11px;padding:10px 24px" onclick="openUserModal()">Sign In</button></div>';
+    return;
+  }
+  // Filter orders only for this customer (by email)
+  const mine=liveOrders.filter(o=>o.email===currentUser.email);
+  if(!mine.length){
+    c.innerHTML='<div class="no-orders"><div class="ni">🍦</div><p>Abhi tak koi order nahi. Menu explore karein!</p></div>';
+    return;
+  }
+  c.innerHTML=mine.map(o=>`<div class="order-card">
+    <div class="oc-head">
+      <div><div class="oc-id">Order #${o.id}</div><div class="oc-date">${o.date}</div></div>
+      <div class="oc-status status-${(o.status||'confirmed').toLowerCase().replace(/\s+/g,'')}">${o.status}</div>
+    </div>
+    <div class="oc-items">${o.items.map(i=>`${i.img?'🍦':i.emoji||'🍦'} ${i.name} ×${i.qty}`).join(' · ')}</div>
+    <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px">🧊 Pick Up — ${o.pickupName||o.customer}</div>
+    ${o.phone?`<div style="font-size:11px;color:var(--text-dim);margin-bottom:8px">📞 ${o.phone}</div>`:''}
+    ${o.note?`<div style="font-size:11px;color:var(--text-dim);margin-bottom:8px">📝 ${o.note}</div>`:''}
+    <div class="oc-foot"><span class="oc-total-lbl">Total (incl. GST)</span><span class="oc-total">${fp(o.total)}</span></div>
+  </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════
+// ORDER READY POPUP
+// ═══════════════════════════════════════════════
+function checkReadyOrders(){
+  if(!currentUser || adminIn) return;
+  const readyOrder=liveOrders.find(o=>o.email===currentUser.email&&o.status==='Ready');
+  if(readyOrder){
+    const rid=readyOrder._id||readyOrder.id;
+    if(currentReadyId!==rid){
+      currentReadyId=rid;
+      $('readyOrderId').textContent='Order #'+readyOrder.id+' — '+(readyOrder.pickupName||readyOrder.customer);
+      $('readyOverlay').classList.add('open');
+      renderOrders();
+    }
+  } else if(currentReadyId){
+    const was=liveOrders.find(o=>(o._id||o.id)===currentReadyId);
+    if(!was||['Picked Up','Cancelled'].includes(was.status)) closeReadyPopup();
+  }
+}
+function closeReadyPopup(){ $('readyOverlay').classList.remove('open'); currentReadyId=null; }
+
+// ═══════════════════════════════════════════════
+// REFRESH ORDERS
+// ═══════════════════════════════════════════════
+async function refreshOrders(){
+  const btn=$('refreshBtn'); if(btn){ btn.disabled=true; btn.textContent='Refreshing…'; }
+  if(fbOK&&db){
+    try{
+      const snap=await db.collection('orders').orderBy('createdAt','desc').get();
+      liveOrders=snap.docs.map(d=>({...d.data(),_id:d.id}));
+      renderOrders(); updateLiveBadge();
+      if(!adminIn) checkReadyOrders();
+      renderAdmPanel(admPanel);
+      toast('✓ '+liveOrders.length+' orders refreshed');
+    }catch(e){ toast('Refresh error: '+e.message); }
+  } else {
+    liveOrders=JSON.parse(localStorage.getItem('cc_orders')||'[]');
+    renderOrders(); updateLiveBadge(); renderAdmPanel(admPanel);
+    toast('✓ Refreshed (offline)');
+  }
+  if(btn){ btn.disabled=false; btn.textContent='🔄 Refresh Orders'; }
+}
+
+// ═══════════════════════════════════════════════
+// HIDDEN ADMIN ACCESS — Triple click on footer text
+// No visible "Admin" button on the public site
+// ═══════════════════════════════════════════════
+function handleSecretClick(){
+  secretClicks++;
+  if(secretTimer) clearTimeout(secretTimer);
+  secretTimer=setTimeout(()=>{ secretClicks=0; },800);
+  if(secretClicks>=3){
+    secretClicks=0;
+    openAdminLogin();
+  }
+}
+
+// ═══════════════════════════════════════════════
+// ADMIN AUTH
+// ═══════════════════════════════════════════════
+function openAdminLogin(){
+  if(adminIn){ openAdminDashboard(); return; }
   $('adminLoginModal').classList.add('open');
   setTimeout(()=>$('admUser')?.focus(),200);
 }
 function closeAdminLogin(){
   $('adminLoginModal').classList.remove('open');
   $('admErr').textContent='';
-  if($('admUser'))$('admUser').value='';
-  if($('admPass'))$('admPass').value='';
+  if($('admUser')) $('admUser').value='';
+  if($('admPass')) $('admPass').value='';
 }
 function doAdminLogin(){
-  const u=$('admUser').value.trim(), p=$('admPass').value;
+  const u=$('admUser').value.trim();
+  const p=$('admPass').value;
   if(u===admCreds.user && p===admCreds.pass){
     adminIn=true;
     sessionStorage.setItem('cc_admin_in','true');
@@ -723,279 +1096,25 @@ function exitAdmin(){
   document.body.style.overflow='';
   toast('Admin logged out');
 }
-
-// ═══════════ UTILS ═══════════
-function toast(msg,dur=3200){
-  const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
-  $('toastC').appendChild(t);
-  setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),320);},dur);
-}
-function applySettings(s){
-  document.title=s.cafeName+' — Premium Ice Cream';
-  const h=$('heroSub'); if(h&&s.tagline) h.textContent=s.tagline;
-  const f=$('footerAddr'); if(f) f.innerHTML=s.address.replace(/,\s*/g,'<br>')+'<br><br>'+s.email;
-}
-function fileToBase64(file){ return new Promise((r,j)=>{const rd=new FileReader();rd.onload=()=>r(rd.result);rd.onerror=j;rd.readAsDataURL(file);}); }
-function showFBHelp(){ alert('Firebase Setup:\n\n1. Go to console.firebase.google.com\n2. New project → Add Web App → copy firebaseConfig\n3. Firestore → Create database (test mode)\n4. Open this HTML file in a text editor\n5. Find FB_CONFIG near the top of the <script> tag\n6. Replace all PASTE_YOUR_... values with your actual config\n\nAfter setup, orders sync in real time across ALL devices!'); }
-
-// ═══════════ CART ═══════════
-function saveCart(){ localStorage.setItem('cc_cart',JSON.stringify(cart)); }
-function toggleCart(){ $('cartOverlay').classList.toggle('open'); $('cartPanel').classList.toggle('open'); }
-function updateCartBadge(){
-  const n=cart.reduce((s,i)=>s+i.qty,0);
-  $('cartCount').textContent=n; $('cartCount').classList.toggle('show',n>0);
-  renderCartItems();
-}
-function renderCartItems(){
-  const body=$('cartBody'),foot=$('cartFoot');
-  if(!cart.length){ body.innerHTML='<div class="cart-empty"><div class="ei">🍦</div><p>Your cart is empty.</p></div>'; foot.style.display='none'; return; }
-  foot.style.display='block';
-  body.innerHTML=cart.map(i=>`<div class="cart-item">
-    <div class="ci-img">${i.img?`<img src="${i.img}">`:`<span>${i.emoji||'🍦'}</span>`}</div>
-    <div class="ci-info">
-      <div class="ci-name">${i.name}</div>
-      <div class="ci-price">${fp(i.price)}</div>
-      <div class="ci-qty">
-        <button class="qty-btn" onclick="changeQty('${i.id}',-1)">−</button>
-        <span class="qty-val">${i.qty}</span>
-        <button class="qty-btn" onclick="changeQty('${i.id}',1)">+</button>
-      </div>
-    </div>
-    <button class="ci-del" onclick="removeFromCart('${i.id}')">✕</button>
-  </div>`).join('');
-  const sub=cart.reduce((s,i)=>s+i.price*i.qty,0),tax=sub*(liveSettings.taxRate||8)/100;
-  $('cartSub').textContent=fp(sub); $('cartTax').textContent=fp(tax); $('cartTotal').textContent=fp(sub+tax);
-}
-function addToCart(id,cat){
-  const item=menuData[cat]?.find(i=>i.id===id); if(!item) return;
-  const ex=cart.find(i=>i.id===id);
-  ex?ex.qty++:cart.push({id:item.id,name:item.name,price:item.price,emoji:item.emoji,img:item.img||'',qty:1});
-  saveCart(); updateCartBadge(); toast(item.name+' added ✓');
-}
-function removeFromCart(id){ cart=cart.filter(i=>i.id!==id); saveCart(); updateCartBadge(); }
-function changeQty(id,d){ const item=cart.find(i=>i.id===id); if(!item)return; item.qty+=d; if(item.qty<=0){removeFromCart(id);return;} saveCart(); updateCartBadge(); }
-
-// ═══════════ MENU ═══════════
-function renderMenuFilters(){
-  const cats=Object.keys(menuData);
-  const labels={coffee:'Coffee',icecream:'Ice Cream'};
-  $('menuFilters').innerHTML=cats.map((c,i)=>`<button class="filter-btn${i===0?' active':''}" data-cat="${c}" onclick="switchCat('${c}',this)">${labels[c]||c.charAt(0).toUpperCase()+c.slice(1)}</button>`).join('');
-}
-function switchCat(cat,btn){ activeCat=cat; document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); if(btn)btn.classList.add('active'); renderMenu(cat); }
-function renderMenu(cat){
-  const items=menuData[cat]||[];
-  $('menuGrid').innerHTML=!items.length?`<div style="text-align:center;padding:60px;color:var(--text-dim)">No items in this category.</div>`:items.map((item,idx)=>`
-    <div class="menu-item" style="animation-delay:${idx*.06}s">
-      <div class="item-img">${item.img?`<img src="${item.img}" alt="${item.name}">`:`<div class="fallback-emoji">${item.emoji||'🍦'}</div>`}</div>
-      <div class="item-body">
-        <div class="item-cat">${cat==='icecream'?'Ice Cream':cat}</div>
-        <div class="item-name">${item.name}</div>
-        <div class="item-desc">${item.desc}</div>
-        <div class="item-foot">
-          <div class="item-price">${fp(item.price)}<sub>/item</sub></div>
-          <button class="add-btn" id="ab-${item.id}" onclick="addToCart('${item.id}','${cat}');flashAdd('${item.id}')">Add</button>
-        </div>
-      </div>
-    </div>`).join('');
-}
-function flashAdd(id){ const b=$('ab-'+id); if(!b)return; b.textContent='✓'; b.classList.add('added'); setTimeout(()=>{if($('ab-'+id)){b.textContent='Add';b.classList.remove('added');}},1500); }
-
-// ═══════════ AUTH ═══════════
-function openUserModal(){ $('userModal').classList.add('open'); renderUserModal(); }
-function closeUserModal(){ $('userModal').classList.remove('open'); }
-function renderUserModal(){
-  if(currentUser){
-    $('userModalBody').innerHTML=`<div class="m-eyebrow">Account</div><div class="m-title">Welcome <em>Back</em></div>
-    <div class="welcome-box"><div class="welcome-icon">🧊</div><h3>${currentUser.name}</h3><p>${currentUser.email}</p>
-    <button class="logout-btn" onclick="doLogout()">Sign Out</button></div>`;
-  } else {
-    $('userModalBody').innerHTML=`<div class="m-eyebrow">Account</div><div class="m-title">Your <em>Account</em></div>
-    <div class="tabs"><button class="tab-btn active" id="tabLogin" onclick="switchAuthTab('login')">Sign In</button>
-    <button class="tab-btn" id="tabSignup" onclick="switchAuthTab('signup')">Register</button></div><div id="authForm"></div>`;
-    buildAuthForm('login');
-  }
-}
-function switchAuthTab(t){ ['login','signup'].forEach(x=>{ const el=$(('tab'+x.charAt(0).toUpperCase()+x.slice(1))); if(el) el.classList.toggle('active',x===t); }); buildAuthForm(t); }
-function buildAuthForm(t){
-  $('authForm').innerHTML=t==='login'?`
-    <div class="fg"><label class="fl">Email</label><input class="fi" id="liEmail" type="email" placeholder="your@email.com"></div>
-    <div class="fg"><label class="fl">Password</label><input class="fi" id="liPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
-    <div class="ferr" id="authErr"></div><button class="fsub" onclick="doLogin()">Sign In</button>`:
-    `<div class="fg"><label class="fl">Full Name</label><input class="fi" id="siName" placeholder="Your Name"></div>
-    <div class="fg"><label class="fl">Email</label><input class="fi" id="siEmail" type="email" placeholder="your@email.com"></div>
-    <div class="fg"><label class="fl">Password</label><input class="fi" id="siPass" type="password" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignup()"></div>
-    <div class="ferr" id="authErr"></div><button class="fsub" onclick="doSignup()">Create Account</button>`;
-}
-async function doLogin(){
-  const email=($('liEmail')||{}).value?.trim(),pass=($('liPass')||{}).value,err=$('authErr');
-  if(!email||!pass){err.textContent='Please fill all fields.';return;}
-  const btn=document.querySelector('#authForm .fsub'); if(btn){btn.disabled=true;btn.textContent='Signing in…';}
-  const u=await dbFindCustomer(email,pass);
-  if(!u){ err.textContent='Invalid email or password.'; if(btn){btn.disabled=false;btn.textContent='Sign In';} return; }
-  currentUser={name:u.name,email:u.email};
-  localStorage.setItem('cc_user',JSON.stringify(currentUser));
-  $('userNavBtn').textContent=currentUser.name.split(' ')[0];
-  toast('Welcome back, '+currentUser.name.split(' ')[0]+'! 🍦');
-  closeUserModal(); renderOrders(); checkReadyOrders();
-}
-async function doSignup(){
-  const name=($('siName')||{}).value?.trim(),email=($('siEmail')||{}).value?.trim(),pass=($('siPass')||{}).value,err=$('authErr');
-  if(!name||!email||!pass){err.textContent='Please fill all fields.';return;}
-  if(pass.length<6){err.textContent='Password must be 6+ characters.';return;}
-  const btn=document.querySelector('#authForm .fsub'); if(btn){btn.disabled=true;btn.textContent='Creating…';}
-  if(await dbEmailExists(email)){ err.textContent='Email already registered.'; if(btn){btn.disabled=false;btn.textContent='Create Account';} return; }
-  await dbAddCustomer({name,email,password:pass});
-  currentUser={name,email}; localStorage.setItem('cc_user',JSON.stringify(currentUser));
-  $('userNavBtn').textContent=name.split(' ')[0];
-  toast('Welcome, '+name.split(' ')[0]+'! 🍦');
-  closeUserModal(); renderOrders(); checkReadyOrders();
-}
-function doLogout(){
-  currentUser=null; localStorage.removeItem('cc_user');
-  $('userNavBtn').textContent='Sign In';
-  closeUserModal(); renderOrders(); closeReadyPopup(); toast('Signed out. See you soon!');
+function updateLiveBadge(){
+  const n=liveOrders.filter(o=>!['Picked Up','Cancelled'].includes(o.status)).length;
+  const b=$('liveBadge');
+  if(b){ b.textContent=n; b.style.display=n?'':'none'; }
 }
 
-// ═══════════ CHECKOUT ═══════════
-function openCheckout(){
-  if(!currentUser){ toggleCart(); toast('Please sign in first'); setTimeout(openUserModal,400); return; }
-  if(!liveSettings.ordersOpen){ toast('Orders are currently closed.'); return; }
-  toggleCart(); $('checkoutModal').classList.add('open'); renderCheckout();
-}
-function closeCheckout(){ $('checkoutModal').classList.remove('open'); }
-function renderCheckout(){
-  const sub=cart.reduce((s,i)=>s+i.price*i.qty,0),tax=sub*(liveSettings.taxRate||8)/100;
-  $('checkoutBody').innerHTML=`
-    <div class="m-eyebrow">Checkout</div><div class="m-title">Your <em>Order</em></div>
-    <div class="pickup-notice"><div style="font-size:22px;flex-shrink:0">🧊</div>
-    <div><strong>PICK UP ONLY</strong><br>Come collect at our counter. No home delivery available.</div></div>
-    ${cart.map(i=>`<div class="os-row"><span>${i.img?'🍦':i.emoji||'🍦'} ${i.name} ×${i.qty}</span><span>${fp(i.price*i.qty)}</span></div>`).join('')}
-    <div class="os-row" style="color:var(--text-dim)"><span>Tax (${liveSettings.taxRate||8}%)</span><span>${fp(tax)}</span></div>
-    <div class="os-total"><span>Total</span><span>${fp(sub+tax)}</span></div><br>
-    <div class="fg"><label class="fl">Your Name *</label><input class="fi" id="coName" value="${currentUser?.name||''}" placeholder="Name for your order"></div>
-    <div class="fg"><label class="fl">Special Instructions</label><input class="fi" id="coNote" placeholder="Allergies, extra toppings…"></div>
-    <div class="ferr" id="coErr"></div>
-    <button class="fsub" id="coBtn" onclick="submitOrder()">🍦 Place Pick Up Order</button>`;
-}
-async function submitOrder(){
-  const name=($('coName')||{}).value?.trim(),note=($('coNote')||{}).value?.trim(),err=$('coErr');
-  if(!name){err.textContent='Please enter your name.';return;}
-  const btn=$('coBtn'); btn.textContent='Placing order…'; btn.disabled=true;
-  const sub=cart.reduce((s,i)=>s+i.price*i.qty,0),tax=sub*(liveSettings.taxRate||8)/100,total=sub+tax;
-  const orderId='CC'+Date.now().toString().slice(-6);
-  const order={id:orderId,_id:orderId,date:new Date().toLocaleString(),
-    items:cart.map(i=>({name:i.name,emoji:i.emoji,img:i.img||'',qty:i.qty,price:i.price})),
-    total,pickupName:name,note:note||'',status:'Confirmed',customer:currentUser.name,email:currentUser.email};
-  // Formspree email
-  try{ await fetch('https://formspree.io/f/xzzbbkwa',{method:'POST',headers:{'Accept':'application/json','Content-Type':'application/json'},
-    body:JSON.stringify({_subject:'🍦 New Order #'+orderId+' — Cold Corner',Order_ID:orderId,
-    Customer:currentUser.name+' ('+currentUser.email+')',Name:name,Date:order.date,
-    Items:cart.map(i=>`${i.emoji||'🍦'} ${i.name} x${i.qty} — ${fp(i.price*i.qty)}`).join(' | '),
-    Note:note||'—',TOTAL:fp(total)})}); }catch(e){}
-  await dbAddOrder(order);
-  cart=[]; saveCart(); updateCartBadge();
-  $('checkoutBody').innerHTML=`<div class="success-box">
-    <div class="success-icon-wrap">✓</div><h3>Order Placed!</h3>
-    <p>Order <span class="oid">#${orderId}</span> confirmed for <strong>${name}</strong>.<br>
-    <strong style="color:var(--blue-light)">🧊 PICK UP ONLY</strong> — collect at our counter.<br>
-    A popup will appear here when your order is ready!</p><br>
-    <button class="fsub" onclick="closeCheckout();document.getElementById('orders').scrollIntoView({behavior:'smooth'});renderOrders()">View My Orders</button>
-  </div>`;
-  renderOrders();
-}
-
-// ═══════════ MY ORDERS ═══════════
-function renderOrders(){
-  const c=$('ordersContainer');
-  if(!currentUser){ c.innerHTML='<div class="no-orders"><div class="ni">🔐</div><p>Sign in to view your orders.</p><br><button class="btn-outline" style="font-size:11px;padding:10px 24px" onclick="openUserModal()">Sign In</button></div>'; return; }
-  const mine=liveOrders.filter(o=>o.email===currentUser.email);
-  if(!mine.length){ c.innerHTML='<div class="no-orders"><div class="ni">🍦</div><p>No orders yet. Explore the menu!</p></div>'; return; }
-  c.innerHTML=mine.map(o=>`<div class="order-card">
-    <div class="oc-head"><div><div class="oc-id">Order #${o.id}</div><div class="oc-date">${o.date}</div></div>
-    <div class="oc-status status-${(o.status||'confirmed').toLowerCase().replace(/\s+/g,'')}">${o.status}</div></div>
-    <div class="oc-items">${o.items.map(i=>`${i.img?'🍦':i.emoji||'🍦'} ${i.name} ×${i.qty}`).join(' · ')}</div>
-    <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px">🧊 Pick Up — ${o.pickupName||o.customer}</div>
-    ${o.note?`<div style="font-size:11px;color:var(--text-dim);margin-bottom:8px">📝 ${o.note}</div>`:''}
-    <div class="oc-foot"><span class="oc-total-lbl">Total</span><span class="oc-total">${fp(o.total)}</span></div>
-  </div>`).join('');
-}
-
-// ═══════════ ORDER READY POPUP ═══════════
-function checkReadyOrders(){
-  // Admin ke liye kabhi Ready popup mat dikhao
-  if(!currentUser || adminIn) return;
-  const readyOrder=liveOrders.find(o=>o.email===currentUser.email&&o.status==='Ready');
-  if(readyOrder){
-    const rid=readyOrder._id||readyOrder.id;
-    if(currentReadyId!==rid){
-      currentReadyId=rid;
-      $('readyOrderId').textContent='Order #'+readyOrder.id+' — '+(readyOrder.pickupName||readyOrder.customer);
-      $('readyOverlay').classList.add('open');
-      renderOrders();
-    }
-  } else if(currentReadyId){
-    const was=liveOrders.find(o=>(o._id||o.id)===currentReadyId);
-    if(!was||['Picked Up','Cancelled'].includes(was.status)) closeReadyPopup();
-  }
-}
-function closeReadyPopup(){ $('readyOverlay').classList.remove('open'); currentReadyId=null; }
-
-// ═══════════ REFRESH ORDERS (manual) ═══════════
-async function refreshOrders(){
-  const btn=$('refreshBtn'); if(btn){btn.disabled=true;btn.textContent='Refreshing…';}
-  if(fbOK&&db){
-    try{
-      const snap=await db.collection('orders').orderBy('createdAt','desc').get();
-      liveOrders=snap.docs.map(d=>({...d.data(),_id:d.id}));
-      renderOrders(); updateLiveBadge(); checkReadyOrders();
-      renderAdmPanel(admPanel);
-      toast('✓ Orders refreshed from Firestore ('+liveOrders.length+' orders)');
-    }catch(e){ toast('Refresh error: '+e.message); }
-  } else {
-    const fresh=JSON.parse(localStorage.getItem('cc_orders')||'[]');
-    liveOrders=fresh; renderOrders(); updateLiveBadge();
-    renderAdmPanel(admPanel);
-    toast('✓ Refreshed (offline mode)');
-  }
-  if(btn){btn.disabled=false;btn.textContent='🔄 Refresh Orders';}
-}
-
-function showHostHelp(){
-  alert('To run Firebase, this file must be served over HTTP (not file://).\n\n── Easiest: Netlify Drop (free, 1 min) ──\n1. Go to app.netlify.com/drop\n2. Drag & drop this HTML file\n3. Open the generated URL → Firebase works!\n\n── VS Code Live Server ──\n1. Install "Live Server" extension\n2. Right-click file → Open with Live Server\n3. Opens at http://127.0.0.1:5500\n\n── GitHub Pages (permanent) ──\n1. Push to a GitHub repo\n2. Settings → Pages → Enable\n3. Opens at https://username.github.io/repo');
-}
-
-// ═══════════ ADMIN AUTH ═══════════
-function openAdminLogin(){ if(adminIn){openAdminDashboard();return;} $('adminLoginModal').classList.add('open'); setTimeout(()=>$('admUser')?.focus(),200); }
-function closeAdminLogin(){ $('adminLoginModal').classList.remove('open'); $('admErr').textContent=''; if($('admUser'))$('admUser').value=''; if($('admPass'))$('admPass').value=''; }
-function doAdminLogin(){
-  const u=$('admUser').value.trim(), p=$('admPass').value;
-  if(u===admCreds.user && p===admCreds.pass){
-    adminIn=true;
-    sessionStorage.setItem('cc_admin_in','true');
-    closeAdminLogin();
-    openAdminDashboard();
-    toast('Welcome Admin 👑');
-  } else {
-    $('admErr').textContent='Invalid username or password.';
-    $('admPass').value=''; $('admPass').focus();
-  }
-}
-function openAdminDashboard(){ $('admWho').textContent='Admin: '+admCreds.user; $('admScreen').classList.add('open'); document.body.style.overflow='hidden'; renderAdmPanel(admPanel); }
-function exitAdmin(){
-  adminIn=false;
-  sessionStorage.removeItem('cc_admin_in');
-  $('admScreen').classList.remove('open');
-  document.body.style.overflow='';
-  toast('Admin logged out');
-}
-function updateLiveBadge(){ const n=liveOrders.filter(o=>!['Picked Up','Cancelled'].includes(o.status)).length; const b=$('liveBadge'); if(b){b.textContent=n;b.style.display=n?'':'none';} }
-
+// Sidebar nav
 document.querySelectorAll('.sb-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{ admPanel=btn.dataset.panel; document.querySelectorAll('.sb-btn').forEach(b=>b.classList.toggle('active',b.dataset.panel===admPanel)); renderAdmPanel(admPanel); });
+  btn.addEventListener('click',()=>{
+    admPanel=btn.dataset.panel;
+    document.querySelectorAll('.sb-btn').forEach(b=>b.classList.toggle('active',b.dataset.panel===admPanel));
+    renderAdmPanel(admPanel);
+  });
 });
 
-// ═══════════ ADMIN PANELS ═══════════
-function greet(){ const h=new Date().getHours(); return h<12?'Morning':h<17?'Afternoon':'Evening'; }
+// ═══════════════════════════════════════════════
+// ADMIN PANELS
+// ═══════════════════════════════════════════════
+function greet(){ const h=new Date().getHours(); return h<12?'Good Morning':h<17?'Good Afternoon':'Good Evening'; }
 
 function renderAdmPanel(name){
   admPanel=name;
@@ -1007,38 +1126,41 @@ function renderAdmPanel(name){
     const rev=orders.reduce((s,o)=>s+o.total,0);
     const active=orders.filter(o=>!['Picked Up','Cancelled'].includes(o.status)).length;
     const allItems=Object.values(menuData).flat().length;
-    const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],sample=[220,380,290,460,620,790,540],mx=Math.max(...sample);
-    main.innerHTML=`<div class="adm-page-title">Good ${greet()}, <em>Admin</em></div>
-      <div class="adm-page-sub">${fbOK?'🟢 Firebase real-time sync active — orders from all devices appear here':'🔴 Offline mode — configure Firebase for multi-device sync'}</div>
+    const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],sample=[8800,14200,9600,17200,22400,28600,19400],mx=Math.max(...sample);
+    main.innerHTML=`
+      <div class="adm-page-title">${greet()}, <em>Admin</em></div>
+      <div class="adm-page-sub">${fbOK?'🟢 Firebase live — all device orders syncing in real-time':'🔴 Offline mode — only this device'}</div>
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-lbl">Total Orders</div><div class="stat-val">${orders.length}</div><div class="stat-sub">All time</div></div>
         <div class="stat-card"><div class="stat-lbl">Revenue</div><div class="stat-val">${fp(rev)}</div><div class="stat-sub">All time</div></div>
         <div class="stat-card"><div class="stat-lbl">Active</div><div class="stat-val">${active}</div><div class="stat-sub">In progress</div></div>
         <div class="stat-card"><div class="stat-lbl">Customers</div><div class="stat-val">${liveCustomers.length||JSON.parse(localStorage.getItem('cc_users')||'[]').length}</div><div class="stat-sub">Registered</div></div>
         <div class="stat-card"><div class="stat-lbl">Menu Items</div><div class="stat-val">${allItems}</div><div class="stat-sub">Active</div></div>
-        <div class="stat-card"><div class="stat-lbl">Avg Order</div><div class="stat-val">${orders.length?fp(rev/orders.length):'$0'}</div><div class="stat-sub">Per order</div></div>
+        <div class="stat-card"><div class="stat-lbl">Avg Order</div><div class="stat-val">${orders.length?fp(Math.round(rev/orders.length)):'₹0'}</div><div class="stat-sub">Per order</div></div>
       </div>
-      <div class="chart-wrap"><div class="chart-title">Weekly Revenue (Sample)</div>
+      <div class="chart-wrap"><div class="chart-title">Weekly Revenue Sample (INR)</div>
         <div class="chart-bars">${sample.map((v,i)=>`<div class="chart-bw"><div class="chart-b" style="height:${Math.round(v/mx*84)}px"></div><div class="chart-bl">${days[i]}</div></div>`).join('')}</div>
       </div>
-      <div class="tbl-wrap"><div class="tbl-head"><div class="tbl-title">Recent Orders</div><button class="act-btn" onclick="renderAdmPanel('allorders')">View All →</button></div>${ordersTable(orders.slice(0,6))}</div>
-      ${!fbOK?`<div style="background:rgba(212,164,74,.08);border:1px solid rgba(212,164,74,.3);padding:20px 24px;margin-top:20px;">
-        <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:12px">⚠️ Firebase Not Configured</div>
-        <p style="font-size:12px;color:var(--text-dim);line-height:1.7;margin-bottom:14px">Orders are only stored on this device. To sync across all devices:</p>
-        <button class="act-btn" onclick="showFBHelp()">📋 View Setup Instructions</button>
-      </div>`:''}`;
+      <div class="tbl-wrap">
+        <div class="tbl-head"><div class="tbl-title">Recent Orders</div>
+          <button class="act-btn" onclick="refreshOrders()">🔄 Refresh</button>
+          <button class="act-btn" onclick="renderAdmPanel('allorders')">View All →</button>
+        </div>
+        ${ordersTable(orders.slice(0,6))}
+      </div>`;
   }
 
   else if(name==='allorders'){
-    main.innerHTML=`<div class="adm-page-title">All <em>Orders</em></div>
-      <div class="adm-page-sub">Every order${fbOK?' from all devices — real-time Firestore':''}. Total: ${orders.length}</div>
+    main.innerHTML=`
+      <div class="adm-page-title">All <em>Orders</em></div>
+      <div class="adm-page-sub">${fbOK?'All devices — real-time Firestore':'Offline'}. Total: ${orders.length}</div>
       <div style="margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
         <button id="refreshBtn" class="save-btn" style="margin-top:0" onclick="refreshOrders()">🔄 Refresh Orders</button>
-        <span style="font-size:11px;color:var(--text-dim)">${fbOK?'Live sync active — also manually refresh if needed':'Offline mode'}</span>
+        <span style="font-size:11px;color:var(--text-dim)">${fbOK?'Auto-syncing + manual refresh available':'Offline — manual refresh only'}</span>
       </div>
       <div class="tbl-wrap">
         <div class="tbl-head"><div class="tbl-title">Orders (${orders.length})</div>
-          <input class="tbl-search" id="oSearch" placeholder="Search ID, name, email…" oninput="filterOrders(this.value)">
+          <input class="tbl-search" id="oSearch" placeholder="Search ID, naam, email…" oninput="filterOrders(this.value)">
         </div>
         <div id="oTableBody">${ordersTable(orders)}</div>
       </div>`;
@@ -1046,12 +1168,13 @@ function renderAdmPanel(name){
 
   else if(name==='livequeue'){
     const live=orders.filter(o=>!['Picked Up','Cancelled'].includes(o.status));
-    main.innerHTML=`<div class="adm-page-title">Live <em>Queue</em></div>
-      <div class="adm-page-sub">Setting "Ready" instantly notifies the customer on their device${fbOK?' via Firestore real-time listener':' (polling)'}.</div>
-      <div style="margin-bottom:16px;">
+    main.innerHTML=`
+      <div class="adm-page-title">Live <em>Queue</em></div>
+      <div class="adm-page-sub">"Ready" dabane se customer ke phone par turant popup aayega${fbOK?' (Firestore real-time)':' (3s polling)'}.</div>
+      <div style="margin-bottom:16px">
         <button id="refreshBtn" class="save-btn" style="margin-top:0" onclick="refreshOrders()">🔄 Refresh Queue</button>
       </div>
-      ${!live.length?'<div class="adm-empty"><div class="ei">✅</div><p>Queue is clear! No active orders.</p></div>':live.map(o=>lqCard(o)).join('')}`;
+      ${!live.length?'<div class="adm-empty"><div class="ei">✅</div><p>Queue saaf hai! Koi active order nahi.</p></div>':live.map(o=>lqCard(o)).join('')}`;
   }
 
   else if(name==='pickedup'){
@@ -1071,7 +1194,7 @@ function renderAdmPanel(name){
   else if(name==='editmenu'){
     const items=Object.entries(menuData).flatMap(([cat,arr])=>arr.map(i=>({...i,category:cat})));
     main.innerHTML=`<div class="adm-page-title">Edit <em>Menu Items</em></div>
-      <div class="adm-page-sub">Changes go live on the menu immediately${fbOK?' on all devices':''}.</div>
+      <div class="adm-page-sub">Changes instantly live on menu${fbOK?' on all devices':''}. Prices in INR (₹).</div>
       <div class="mec-grid">${items.map(item=>`
         <div class="mec" id="mec-${item.id}">
           <div class="mec-top">
@@ -1079,7 +1202,7 @@ function renderAdmPanel(name){
             <div><div class="mec-nm">${item.name}</div><div class="mec-cat">${item.category==='icecream'?'Ice Cream':item.category}</div></div>
           </div>
           <label class="il">Name</label><input class="ii" id="mn-${item.id}" value="${item.name}">
-          <label class="il">Price ($)</label><input class="ii" id="mp-${item.id}" type="number" step="0.01" value="${item.price.toFixed(2)}">
+          <label class="il">Price (₹)</label><input class="ii" id="mp-${item.id}" type="number" step="1" value="${Math.round(item.price)}">
           <label class="il">Description</label><input class="ii" id="md-${item.id}" value="${item.desc}">
           <label class="il">Emoji</label><input class="ii" id="me-${item.id}" value="${item.emoji||'🍦'}">
           <label class="il">Product Image</label>
@@ -1097,11 +1220,11 @@ function renderAdmPanel(name){
 
   else if(name==='additem'){
     main.innerHTML=`<div class="adm-page-title">Add Menu <em>Item</em></div>
-      <div class="adm-page-sub">New items appear on the customer menu instantly.</div>
+      <div class="adm-page-sub">New item turant menu par dikhega. Price INR (₹) mein.</div>
       <div class="tbl-wrap" style="padding:24px 28px">
         <div class="ai-grid">
           <div><label class="il">Name *</label><input class="ii" id="ni-name" placeholder="e.g. Mango Sorbet"></div>
-          <div><label class="il">Price ($) *</label><input class="ii" id="ni-price" type="number" step="0.01" placeholder="0.00"></div>
+          <div><label class="il">Price ₹ *</label><input class="ii" id="ni-price" type="number" step="1" placeholder="150"></div>
           <div><label class="il">Emoji</label><input class="ii" id="ni-emoji" placeholder="🍦"></div>
         </div>
         <div style="margin-bottom:12px"><label class="il">Description *</label><input class="ii" id="ni-desc" placeholder="Short description"></div>
@@ -1109,8 +1232,10 @@ function renderAdmPanel(name){
           <select class="ii" id="ni-cat">${Object.keys(menuData).map(c=>`<option value="${c}">${c==='icecream'?'Ice Cream':c.charAt(0).toUpperCase()+c.slice(1)}</option>`).join('')}</select>
         </div>
         <div style="margin-bottom:18px"><label class="il">Product Image</label>
-          <div class="img-upload-area"><input type="file" accept="image/*" id="ni-imgfile" onchange="previewNewImg(event)">
-          <img class="img-preview-mini" id="ni-imgprev"><span id="ni-imgspan">📷 Click to upload</span></div>
+          <div class="img-upload-area">
+            <input type="file" accept="image/*" id="ni-imgfile" onchange="previewNewImg(event)">
+            <img class="img-preview-mini" id="ni-imgprev"><span id="ni-imgspan">📷 Click to upload</span>
+          </div>
         </div>
         <button class="save-btn" onclick="addMenuItem()">+ Add to Menu</button>
         <div class="ferr" id="addErr" style="margin-top:10px"></div>
@@ -1118,7 +1243,8 @@ function renderAdmPanel(name){
   }
 
   else if(name==='categories'){
-    const cats=Object.keys(menuData),labels={coffee:'Coffee',icecream:'Ice Cream'};
+    const cats=Object.keys(menuData);
+    const labels={coffee:'Coffee',icecream:'Ice Cream'};
     main.innerHTML=`<div class="adm-page-title">Manage <em>Categories</em></div>
       <div class="adm-page-sub">Add or delete menu categories.</div>
       <div>${cats.map(c=>`<div class="cat-row">
@@ -1141,11 +1267,17 @@ function renderAdmPanel(name){
     main.innerHTML=`<div class="adm-page-title">Customer <em>Accounts</em></div>
       <div class="adm-page-sub">${users.length} registered customer${users.length!==1?'s':''}.</div>
       <div class="tbl-wrap">
-        <div class="tbl-head"><div class="tbl-title">Customers (${users.length})</div></div>
-        ${!users.length?'<div class="adm-empty"><div class="ei">👥</div><p>No customers yet.</p></div>':
-        `<div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Orders</th><th>Actions</th></tr></thead><tbody>
-        ${users.map((u,i)=>`<tr><td style="color:var(--text-dim)">${i+1}</td><td class="td-name">${u.name}</td>
+        <div class="tbl-head">
+          <div class="tbl-title">Customers (${users.length})</div>
+          <button class="act-btn" onclick="loadCustomers();setTimeout(()=>renderAdmPanel('customers'),600)">🔄 Refresh</button>
+        </div>
+        ${!users.length?'<div class="adm-empty"><div class="ei">👥</div><p>Abhi tak koi customer nahi.</p></div>':
+        `<div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Orders</th><th>Actions</th></tr></thead><tbody>
+        ${users.map((u,i)=>`<tr>
+          <td style="color:var(--text-dim)">${i+1}</td>
+          <td class="td-name">${u.name}</td>
           <td style="color:var(--text-dim)">${u.email}</td>
+          <td style="color:var(--text-dim)">${u.phone||'—'}</td>
           <td>${orders.filter(o=>o.email===u.email).length}</td>
           <td><button class="act-btn red" onclick="deleteCustomerAction('${u.email}')">Delete</button></td>
         </tr>`).join('')}</tbody></table></div>`}`;
@@ -1160,49 +1292,53 @@ function renderAdmPanel(name){
         <div class="srow"><div><div class="srow-lbl">Hero Tagline</div></div><input class="si" id="s-tag" value="${s.tagline}"></div>
         <div class="srow"><div><div class="srow-lbl">Address</div></div><input class="si" id="s-addr" value="${s.address}"></div>
         <div class="srow"><div><div class="srow-lbl">Email</div></div><input class="si" id="s-email" value="${s.email}"></div>
-        <div class="srow"><div><div class="srow-lbl">Phone</div></div><input class="si" id="s-phone" value="${s.phone||''}"></div>
+        <div class="srow"><div><div class="srow-lbl">Phone (India)</div></div><input class="si" id="s-phone" value="${s.phone||''}"></div>
       </div>
-      <div class="sgrp"><div class="sgrp-title">Order Settings</div>
-        <div class="srow"><div><div class="srow-lbl">Tax Rate (%)</div></div><input class="si" id="s-tax" type="number" value="${s.taxRate}" style="max-width:90px"></div>
-        <div class="srow"><div><div class="srow-lbl">Accept Orders</div><div class="srow-sub">Toggle ordering on/off</div></div>
+      <div class="sgrp"><div class="sgrp-title">Order & Tax Settings</div>
+        <div class="srow"><div><div class="srow-lbl">GST Rate (%)</div><div class="srow-sub">Applied at checkout (India GST)</div></div><input class="si" id="s-tax" type="number" value="${s.gstRate||5}" style="max-width:90px"></div>
+        <div class="srow"><div><div class="srow-lbl">Accept Orders</div><div class="srow-sub">Orders on/off toggle</div></div>
           <label class="tgl"><input type="checkbox" id="s-orders" ${s.ordersOpen?'checked':''}><span class="tgl-sl"></span></label>
         </div>
       </div>
       <div class="sgrp"><div class="sgrp-title">Admin Credentials</div>
-        <div class="srow"><div><div class="srow-lbl">Username</div></div><input class="si" id="s-auser" value="${admCreds.user}"></div>
-        <div class="srow"><div><div class="srow-lbl">New Password</div><div class="srow-sub">Leave blank to keep current</div></div><input class="si" id="s-apass" type="password" placeholder="New password (min 6)"></div>
+        <div class="srow"><div><div class="srow-lbl">Username</div></div><input class="si" id="s-auser" value="${admCreds.user}" autocomplete="off"></div>
+        <div class="srow"><div><div class="srow-lbl">New Password</div><div class="srow-sub">Blank rakhein to keep current</div></div><input class="si" id="s-apass" type="password" placeholder="New password (min 6)" autocomplete="new-password"></div>
       </div>
       <div class="sgrp"><div class="sgrp-title">Danger Zone</div>
         <div class="srow"><div><div class="srow-lbl">Clear All Orders</div></div><button class="danger-btn" onclick="clearAllOrders()">Clear All Orders</button></div>
         <div class="srow"><div><div class="srow-lbl">Clear All Customers</div></div><button class="danger-btn" onclick="clearAllCustomers()">Clear Customers</button></div>
         <div class="srow"><div><div class="srow-lbl">Reset Menu</div></div><button class="danger-btn" onclick="resetMenu()">Reset to Default</button></div>
-        ${!fbOK?`<div class="srow"><div><div class="srow-lbl">Firebase Setup</div><div class="srow-sub">Enable multi-device sync</div></div><button class="act-btn" onclick="showFBHelp()">View Instructions</button></div>`:''}
       </div>
-      <button class="save-btn" onclick="saveSettings()">✓ Save Settings</button>`;
+      <button class="save-btn" onclick="saveSettings()">✓ Save All Settings</button>`;
   }
 }
 
-// ═══════════ ADMIN TABLE HELPERS ═══════════
+// ═══════════════════════════════════════════════
+// ADMIN TABLE HELPERS
+// ═══════════════════════════════════════════════
 function ordersTable(list){
-  if(!list.length) return '<div class="adm-empty"><div class="ei">📋</div><p>No orders here.</p></div>';
-  return `<div style="overflow-x:auto"><table><thead><tr><th>ID</th><th>Date</th><th>Customer</th><th>Name</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead><tbody>
-  ${list.map(o=>{
+  if(!list.length) return '<div class="adm-empty"><div class="ei">📋</div><p>Koi orders nahi mili.</p></div>';
+  return `<div style="overflow-x:auto"><table><thead><tr>
+    <th>ID</th><th>Date</th><th>Customer</th><th>Name</th><th>Phone</th><th>Total</th><th>Status</th><th>Actions</th>
+  </tr></thead><tbody>${list.map(o=>{
     const oid=o._id||o.id;
     return `<tr>
       <td class="td-name">#${o.id}</td>
       <td style="color:var(--text-dim);font-size:10px;white-space:nowrap">${o.date}</td>
       <td style="color:var(--text-dim)">${o.customer||'Guest'}</td>
       <td>${o.pickupName||'—'}</td>
+      <td style="color:var(--text-dim)">${o.phone||'—'}</td>
       <td class="td-blue">${fp(o.total)}</td>
       <td><select class="status-sel" onchange="doUpdateStatus('${oid}',this.value)">
         ${['Confirmed','Preparing','Ready','Picked Up','Cancelled'].map(s=>`<option value="${s}"${o.status===s?' selected':''}>${s}</option>`).join('')}
       </select></td>
-      <td><button class="act-btn red" onclick="doDeleteOrder('${oid}')">✕ Del</button></td>
+      <td><button class="act-btn red" onclick="doDeleteOrder('${oid}')">✕</button></td>
     </tr>
     <tr style="background:var(--surface2)">
-      <td colspan="7" style="padding:5px 14px 10px;font-size:11px;color:var(--text-dim)">
-        ${o.items.map(i=>`${i.img?'🍦':i.emoji||'🍦'} <b style="color:var(--cream)">${i.name}</b> ×${i.qty}`).join(' | ')}
+      <td colspan="8" style="padding:5px 14px 10px;font-size:11px;color:var(--text-dim)">
+        ${o.items.map(i=>`${i.img?'🍦':i.emoji||'🍦'} <b style="color:var(--cream)">${i.name}</b> ×${i.qty} ${fp(i.price*i.qty)}`).join(' | ')}
         ${o.note?' — 📝 <i>'+o.note+'</i>':''}
+        ${o.tax?' | GST: '+fp(o.tax):''}
       </td>
     </tr>`;
   }).join('')}</tbody></table></div>`;
@@ -1210,16 +1346,18 @@ function ordersTable(list){
 
 function lqCard(o){
   const oid=o._id||o.id;
-  return `<div class="lq-card${o.status==='Ready'?' ready-glow':''}">
+  return `<div class="lq-card${o.status==='Ready'?' lq-ready-hl':''}">
     <div class="lq-top">
-      <div><div class="lq-id">#${o.id}</div><div class="lq-name">${o.pickupName||o.customer}</div><div class="lq-date">${o.date}</div></div>
+      <div><div class="lq-id">#${o.id}</div><div class="lq-name">${o.pickupName||o.customer}</div>
+      ${o.phone?`<div class="lq-date">📞 ${o.phone}</div>`:''}
+      <div class="lq-date">${o.date}</div></div>
       <div style="text-align:right">
         <div class="td-blue" style="margin-bottom:6px">${fp(o.total)}</div>
         <span class="oc-status status-${(o.status||'confirmed').toLowerCase().replace(/\s+/g,'')}">${o.status}</span>
       </div>
     </div>
     <div class="lq-items">${o.items.map(i=>`${i.img?'🍦':i.emoji||'🍦'} ${i.name} ×${i.qty}`).join(' · ')}</div>
-    ${o.note?`<div style="font-size:11px;color:var(--text-dim)">📝 ${o.note}</div>`:''}
+    ${o.note?`<div style="font-size:11px;color:var(--text-dim);margin-bottom:8px">📝 ${o.note}</div>`:''}
     <div class="lq-actions">
       <button class="lq-btn lq-prep"   onclick="doUpdateStatus('${oid}','Preparing')">🟡 Preparing</button>
       <button class="lq-btn lq-ready"  onclick="doUpdateStatus('${oid}','Ready')">🟢 Ready — Notify Customer</button>
@@ -1230,17 +1368,31 @@ function lqCard(o){
 }
 
 function filterOrders(val){
-  const f=val?liveOrders.filter(o=>o.id?.toLowerCase().includes(val.toLowerCase())||o.customer?.toLowerCase().includes(val.toLowerCase())||o.pickupName?.toLowerCase().includes(val.toLowerCase())||o.email?.toLowerCase().includes(val.toLowerCase())):liveOrders;
+  const f=val?liveOrders.filter(o=>
+    o.id?.toLowerCase().includes(val.toLowerCase())||
+    o.customer?.toLowerCase().includes(val.toLowerCase())||
+    o.pickupName?.toLowerCase().includes(val.toLowerCase())||
+    o.email?.toLowerCase().includes(val.toLowerCase())||
+    (o.phone||'').includes(val)
+  ):liveOrders;
   const b=$('oTableBody'); if(b) b.innerHTML=ordersTable(f);
 }
 
 async function doUpdateStatus(id,status){ await dbUpdateStatus(id,status); toast('Status → '+status); }
 async function doDeleteOrder(id){ if(!confirm('Delete this order?')) return; await dbDeleteOrder(id); toast('Order deleted'); }
 
-// ═══════════ MENU MANAGEMENT ═══════════
-function previewNewImg(evt){ const file=evt.target.files[0]; if(!file)return; const r=new FileReader(); r.onload=e=>{const p=$('ni-imgprev');if(p){p.src=e.target.result;p.style.display='block';}const s=$('ni-imgspan');if(s)s.textContent='Click to change';}; r.readAsDataURL(file); }
+// ═══════════════════════════════════════════════
+// ADMIN MENU MANAGEMENT
+// ═══════════════════════════════════════════════
+function previewNewImg(evt){
+  const file=evt.target.files[0]; if(!file) return;
+  const r=new FileReader();
+  r.onload=e=>{ const p=$('ni-imgprev'); if(p){p.src=e.target.result;p.style.display='block';} const s=$('ni-imgspan');if(s)s.textContent='Click to change'; };
+  r.readAsDataURL(file);
+}
 async function handleItemImg(evt,id,cat){
-  const file=evt.target.files[0]; if(!file)return;
+  const file=evt.target.files[0]; if(!file) return;
+  if(file.size>500000){ toast('Image too large — max 500KB'); return; }
   const b64=await fileToBase64(file);
   const item=menuData[cat]?.find(i=>i.id===id); if(item) item.img=b64;
   await dbSaveMenu(menuData);
@@ -1250,41 +1402,56 @@ async function handleItemImg(evt,id,cat){
   toast('Image updated ✓');
 }
 async function saveMenuItem(id,cat){
-  const name=($('mn-'+id)||{}).value?.trim(),price=parseFloat(($('mp-'+id)||{}).value),desc=($('md-'+id)||{}).value?.trim(),emoji=($('me-'+id)||{}).value?.trim();
-  if(!name||isNaN(price)){toast('Invalid name or price');return;}
+  const name=($('mn-'+id)||{}).value?.trim();
+  const price=parseFloat(($('mp-'+id)||{}).value);
+  const desc=($('md-'+id)||{}).value?.trim();
+  const emoji=($('me-'+id)||{}).value?.trim();
+  if(!name||isNaN(price)||price<0){ toast('Invalid name or price'); return; }
   const item=menuData[cat]?.find(i=>i.id===id);
-  if(item){item.name=name;item.price=price;if(desc)item.desc=desc;if(emoji)item.emoji=emoji;}
+  if(item){ item.name=name; item.price=price; if(desc) item.desc=desc; if(emoji) item.emoji=emoji; }
   await dbSaveMenu(menuData); toast('✓ "'+name+'" updated');
-  const mec=$('mec-'+id); if(mec){mec.style.borderColor='var(--green)';setTimeout(()=>{if(mec)mec.style.borderColor='';},1500);}
+  const mec=$('mec-'+id); if(mec){ mec.style.borderColor='var(--green)'; setTimeout(()=>{if(mec)mec.style.borderColor='';},1500); }
 }
 async function deleteMenuItem(id,cat){
-  if(!confirm('Remove this item?'))return;
+  if(!confirm('Remove this item?')) return;
   menuData[cat]=menuData[cat].filter(i=>i.id!==id);
   await dbSaveMenu(menuData); toast('Item removed'); renderAdmPanel('editmenu');
 }
 async function addMenuItem(){
-  const name=($('ni-name')||{}).value?.trim(),price=parseFloat(($('ni-price')||{}).value),emoji=($('ni-emoji')||{}).value?.trim()||'🍦',desc=($('ni-desc')||{}).value?.trim(),cat=($('ni-cat')||{}).value,err=$('addErr');
-  if(!name||isNaN(price)||!desc){err.textContent='Fill all required fields.';return;}
-  let img=''; const f=$('ni-imgfile'); if(f?.files[0]) img=await fileToBase64(f.files[0]);
+  const name=($('ni-name')||{}).value?.trim();
+  const price=parseFloat(($('ni-price')||{}).value);
+  const emoji=($('ni-emoji')||{}).value?.trim()||'🍦';
+  const desc=($('ni-desc')||{}).value?.trim();
+  const cat=($('ni-cat')||{}).value;
+  const err=$('addErr');
+  if(!name||isNaN(price)||price<0||!desc){ err.textContent='Fill all required fields.'; return; }
+  let img='';
+  const f=$('ni-imgfile');
+  if(f?.files[0]){
+    if(f.files[0].size>500000){ err.textContent='Image too large — max 500KB'; return; }
+    img=await fileToBase64(f.files[0]);
+  }
   const id=cat.slice(0,2)+Date.now().toString().slice(-5);
   if(!menuData[cat]) menuData[cat]=[];
   menuData[cat].push({id,name,price,emoji,img,desc});
   await dbSaveMenu(menuData); toast('✓ "'+name+'" added');
-  ['ni-name','ni-price','ni-emoji','ni-desc'].forEach(x=>{const e=$(x);if(e)e.value='';});
-  const p=$('ni-imgprev');if(p){p.src='';p.style.display='none';}
-  const s=$('ni-imgspan');if(s)s.textContent='📷 Click to upload';
+  ['ni-name','ni-price','ni-emoji','ni-desc'].forEach(x=>{ const e=$(x); if(e) e.value=''; });
+  const p=$('ni-imgprev'); if(p){p.src='';p.style.display='none';}
+  const s=$('ni-imgspan'); if(s) s.textContent='📷 Click to upload';
   err.textContent='';
 }
 async function addCategory(){
-  const idVal=($('nc-id')||{}).value?.trim().toLowerCase().replace(/\s+/g,''),nameVal=($('nc-name')||{}).value?.trim(),err=$('catErr');
-  if(!idVal||!nameVal){err.textContent='Both fields required.';return;}
-  if(menuData[idVal]){err.textContent='Category already exists.';return;}
+  const idVal=($('nc-id')||{}).value?.trim().toLowerCase().replace(/\s+/g,'');
+  const nameVal=($('nc-name')||{}).value?.trim();
+  const err=$('catErr');
+  if(!idVal||!nameVal){ err.textContent='Both fields required.'; return; }
+  if(menuData[idVal]){ err.textContent='Category already exists.'; return; }
   menuData[idVal]=[];
   await dbSaveMenu(menuData); toast('Category "'+nameVal+'" added'); renderAdmPanel('categories');
 }
 async function deleteCategory(cat){
   const n=menuData[cat]?.length||0;
-  if(!confirm('Delete "'+cat+'" and its '+n+' items?'))return;
+  if(!confirm('Delete "'+cat+'" and its '+n+' items?')) return;
   delete menuData[cat];
   if(!menuData[activeCat]) activeCat=Object.keys(menuData)[0]||'';
   await dbSaveMenu(menuData);
@@ -1292,60 +1459,91 @@ async function deleteCategory(cat){
   toast('Category deleted'); renderAdmPanel('categories');
 }
 async function deleteCustomerAction(email){
-  if(!confirm('Delete customer '+email+'?'))return;
+  if(!confirm('Delete customer '+email+'?')) return;
   await dbDeleteCustomer(email); toast('Customer deleted'); renderAdmPanel('customers');
 }
 async function saveSettings(){
-  const newUser=($('s-auser')||{}).value?.trim(),newPass=($('s-apass')||{}).value||'';
-  if(newPass&&newPass.length<6){toast('Password must be 6+ chars');return;}
+  const newUser=($('s-auser')||{}).value?.trim();
+  const newPass=($('s-apass')||{}).value||'';
+  if(newPass&&newPass.length<6){ toast('Password must be 6+ chars'); return; }
   if(newUser) admCreds.user=newUser;
   if(newPass) admCreds.pass=newPass;
   localStorage.setItem('cc_admin_creds',JSON.stringify(admCreds));
-  await dbSaveSettings({cafeName:($('s-name')||{}).value||'Cold Corner',tagline:($('s-tag')||{}).value||'',address:($('s-addr')||{}).value||'',email:($('s-email')||{}).value||'',phone:($('s-phone')||{}).value||'',taxRate:parseFloat(($('s-tax')||{}).value)||8,ordersOpen:($('s-orders')||{}).checked!==false});
-  $('admWho').textContent='admin: '+admCreds.user;
+  await dbSaveSettings({
+    cafeName:($('s-name')||{}).value||'Cold Corner',
+    tagline:($('s-tag')||{}).value||'',
+    address:($('s-addr')||{}).value||'',
+    email:($('s-email')||{}).value||'',
+    phone:($('s-phone')||{}).value||'',
+    gstRate:parseFloat(($('s-tax')||{}).value)||5,
+    ordersOpen:($('s-orders')||{}).checked!==false
+  });
+  $('admWho').textContent='Admin: '+admCreds.user;
   toast('✓ Settings saved!');
 }
 async function clearAllOrders(){
-  if(!confirm('Delete ALL orders permanently?'))return;
-  for(const o of liveOrders) await dbDeleteOrder(o._id||o.id);
-  toast('All orders cleared'); renderOrders();
+  if(!confirm('Delete ALL orders permanently? This cannot be undone.')) return;
+  const toDelete=[...liveOrders];
+  for(const o of toDelete) await dbDeleteOrder(o._id||o.id);
+  liveOrders=[]; renderOrders(); updateLiveBadge();
+  toast('All orders cleared');
 }
 async function clearAllCustomers(){
-  if(!confirm('Delete ALL customer accounts?'))return;
-  const users=liveCustomers.length?liveCustomers:JSON.parse(localStorage.getItem('cc_users')||'[]');
+  if(!confirm('Delete ALL customer accounts?')) return;
+  const users=liveCustomers.length?[...liveCustomers]:JSON.parse(localStorage.getItem('cc_users')||'[]');
   for(const u of users) await dbDeleteCustomer(u.email);
   liveCustomers=[]; localStorage.removeItem('cc_users');
-  if(currentUser){currentUser=null;localStorage.removeItem('cc_user');$('userNavBtn').textContent='Sign In';renderOrders();}
+  if(currentUser){ currentUser=null; localStorage.removeItem('cc_user'); $('userNavBtn').textContent='Sign In'; renderOrders(); }
   toast('All customers cleared'); renderAdmPanel('customers');
 }
 async function resetMenu(){
-  if(!confirm('Reset menu to defaults? All custom items lost.'))return;
-  menuData=JSON.parse(JSON.stringify(DEFAULT_MENU)); activeCat=Object.keys(menuData)[0];
-  await dbSaveMenu(menuData); renderMenuFilters(); renderMenu(activeCat);
+  if(!confirm('Reset menu to defaults? All custom items lost.')) return;
+  menuData=JSON.parse(JSON.stringify(DEFAULT_MENU));
+  activeCat=Object.keys(menuData)[0];
+  await dbSaveMenu(menuData);
+  renderMenuFilters(); renderMenu(activeCat);
   toast('Menu reset to defaults'); renderAdmPanel('editmenu');
 }
 
-// ═══════════ NAV / SCROLL / REVEAL ═══════════
+// ═══════════════════════════════════════════════
+// NAV / SCROLL / REVEAL
+// ═══════════════════════════════════════════════
 let mobileOpen=false;
 function toggleMobileNav(){ mobileOpen=!mobileOpen; $('mobileNav').classList.toggle('open',mobileOpen); }
 function closeMobileNav(){ mobileOpen=false; $('mobileNav').classList.remove('open'); }
 window.addEventListener('scroll',()=>$('mainNav').classList.toggle('scrolled',scrollY>60));
-const ro=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:.12});
-document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+const revObs=new IntersectionObserver(
+  e=>e.forEach(x=>{ if(x.isIntersecting) x.target.classList.add('visible'); }),
+  {threshold:.12}
+);
+document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
 
-// ═══════════ INIT ═══════════
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
 (function init(){
+  // Apply saved settings immediately
   applySettings(liveSettings);
+  // Render menu from localStorage cache (fast initial load)
   renderMenuFilters();
   renderMenu(activeCat);
+  // Cart
   updateCartBadge();
-  // Restore admin session (persists within same browser tab session)
+  // Restore admin session (tab session only — sessionStorage)
   if(sessionStorage.getItem('cc_admin_in')==='true'){
     adminIn=true;
   }
+  // Restore customer nav
   if(currentUser) $('userNavBtn').textContent=currentUser.name.split(' ')[0];
+  // Badge
   updateLiveBadge();
-  initFirebase(); // connects Firestore, then renders orders
+  // Connect Firebase — this will trigger all real-time listeners
+  initFirebase();
+  // If admin was in session, open dashboard after Firebase connects
+  if(adminIn){
+    // Small delay to let Firebase connect first
+    setTimeout(()=>{ if(adminIn) openAdminDashboard(); },800);
+  }
 })();
 </script>
 </body>
