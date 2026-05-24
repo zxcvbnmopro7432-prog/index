@@ -967,35 +967,23 @@ function showHostHelp(){
 // ═══════════ ADMIN AUTH ═══════════
 function openAdminLogin(){ if(adminIn){openAdminDashboard();return;} $('adminLoginModal').classList.add('open'); setTimeout(()=>$('admUser')?.focus(),200); }
 function closeAdminLogin(){ $('adminLoginModal').classList.remove('open'); $('admErr').textContent=''; if($('admUser'))$('admUser').value=''; if($('admPass'))$('admPass').value=''; }
-async function doAdminLogin(){
-  const u=$('admUser').value.trim(),p=$('admPass').value;
-  if(u!==admCreds.user){ $('admErr').textContent='Invalid username.'; return; }
-  const btn=document.querySelector('#adminLoginModal .fsub');
-  if(btn){btn.disabled=true;btn.textContent='Logging in…';}
-  // Try Firebase Auth first, fallback to simple check
-  let ok=false;
-  if(fbOK&&auth){
-    ok=await doAdminFirebaseLogin(p);
-  } else {
-    ok=(p===admCreds.pass);
-  }
-  if(ok){
+function doAdminLogin(){
+  const u=$('admUser').value.trim(), p=$('admPass').value;
+  if(u===admCreds.user && p===admCreds.pass){
     adminIn=true;
-    admCreds.pass=p; // keep in sync
-    localStorage.setItem('cc_admin_creds',JSON.stringify(admCreds));
+    sessionStorage.setItem('cc_admin_in','true');
     closeAdminLogin();
     openAdminDashboard();
     toast('Welcome Admin 👑');
   } else {
-    $('admErr').textContent='Invalid password.';
-    if(btn){btn.disabled=false;btn.textContent='🔐 Enter Dashboard';}
+    $('admErr').textContent='Invalid username or password.';
     $('admPass').value=''; $('admPass').focus();
   }
 }
 function openAdminDashboard(){ $('admWho').textContent='Admin: '+admCreds.user; $('admScreen').classList.add('open'); document.body.style.overflow='hidden'; renderAdmPanel(admPanel); }
-async function exitAdmin(){
-  await doAdminFirebaseLogout();
+function exitAdmin(){
   adminIn=false;
+  sessionStorage.removeItem('cc_admin_in');
   $('admScreen').classList.remove('open');
   document.body.style.overflow='';
   toast('Admin logged out');
