@@ -527,7 +527,12 @@ function initFirebase(){
     db=firebase.firestore();
     auth=firebase.auth();
     // Force long polling — works in all environments including mobile
-    db.settings({experimentalForceLongPolling:true,merge:true});
+    // Firebase connection settings
+try{
+      db.settings({experimentalForceLongPolling:true});
+    }catch(e){
+      console.log('Firestore settings fallback');
+    }
     // Set auth persistence to LOCAL so admin stays logged in after refresh
     auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
     fbOK=true;
