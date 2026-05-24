@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cold Corner — Premium Ice Cream</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
-<!-- Firebase SDK v8 compat (works in all browsers without bundler) -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<!-- Firebase SDK v9 compat - reliable CDN -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <style>
 :root{--black:#07090f;--dark:#0d1018;--surface:#141820;--surface2:#1c2130;--blue:#4a7fd4;--blue-light:#89b4f0;--blue-dim:#2a4a80;--cream:#dce8f5;--text:#b8c8e0;--text-dim:#5a6a80;--border:#1e2840;--green:#3db882;--amber:#d4a44a;--red:#d96060;}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
@@ -474,30 +475,29 @@ const DEFAULT_MENU={
   ]
 };
 const DEFAULT_SETTINGS={cafeName:'Cold Corner',tagline:'Crafted with the finest ingredients. Served with elegance.',address:'12 Frost Street, New York, NY 10001',email:'hello@coldcorner.com',phone:'+1 (212) 555-0191',taxRate:8,ordersOpen:true};
+// Admin email used with Firebase Auth (anonymous sign-in for customers, email/pass for admin)
+const ADMIN_EMAIL='admin@coldcorner.app';
+const ADMIN_PASS_KEY='cc_admin_pass'; // stored locally only
 
 // ═══════════ STATE ═══════════
 const $=id=>document.getElementById(id);
 const fp=n=>'$'+Number(n).toFixed(2);
 let menuData=JSON.parse(localStorage.getItem('cc_menu')||'null')||JSON.parse(JSON.stringify(DEFAULT_MENU));
 let cart=JSON.parse(localStorage.getItem('cc_cart')||'[]');
-let currentUser=JSON.parse(localStorage.getItem('cc_user')||'null');
+let currentUser=JSON.parse(localStorage.getItem('cc_user')||'null'); // customer session (localStorage)
 let admCreds=JSON.parse(localStorage.getItem('cc_admin_creds')||'{"user":"admin","pass":"cold2024"}');
-let adminIn=JSON.parse(sessionStorage.getItem('cc_admin_in')||'false');
+let adminIn=false; // set by Firebase Auth state
 let activeCat=Object.keys(menuData)[0];
 let admPanel='dashboard';
 let liveOrders=[];
 let liveSettings={...DEFAULT_SETTINGS,...JSON.parse(localStorage.getItem('cc_settings')||'{}')};
 let liveCustomers=[];
 let currentReadyId=null;
-let fbConfigured=false;
-let unsubOrders=null;
+let db=null, auth=null, fbOK=false;
+// Firestore unsubscribe handles
+let unsubOrders=null, unsubSettings=null, unsubMenu=null;
 
-// ═══════════ FIREBASE INIT ═══════════
-// HOW TO CONFIGURE:
-// 1. Go to console.firebase.google.com
-// 2. Create project → Add Web App → Copy config
-// 3. Firestore Database → Create in test mode
-// 4. Replace the config object below
+// ═══════════ FIREBASE CONFIG ═══════════
 const FB_CONFIG={
   apiKey:"AIzaSyAbKGZKW3OMFdZxfOJ1PprBlsPVxzhu6CE",
   authDomain:"coldcornerstore-fdb62.firebaseapp.com",
@@ -507,87 +507,117 @@ const FB_CONFIG={
   appId:"1:913362358296:web:511aec265741a82303336d"
 };
 
-async function initFirebase(){
-  if(FB_CONFIG.apiKey.includes('PASTE')){
-    $('dbBanner').style.display='block';
-    $('liveDot').style.background='var(--amber)';
-    loadOrdersOffline();
-    return;
-  }
-  // Wait for Firebase SDK to load from <script> tags in <head>
-  let attempts=0;
-  while(typeof firebase==='undefined'&&attempts<30){
-    await new Promise(r=>setTimeout(r,200));
-    attempts++;
-  }
-  if(typeof firebase==='undefined'){
-    console.error('Firebase SDK not loaded');
+// ═══════════ FIREBASE INIT ═══════════
+function initFirebase(){
+  // Must be hosted (not file://) for Firebase to work
+  if(location.protocol==='file:'){
+    $('dbBanner').innerHTML='⚠️ <b>Open this file via a web server</b> — Firebase does not work with file:// protocol. Use <a onclick="showHostHelp()" style="color:var(--blue-light);cursor:pointer;text-decoration:underline">Netlify Drop</a> or VS Code Live Server.';
     $('dbBanner').style.display='block';
     $('liveDot').style.background='var(--red)';
-    toast('Firebase SDK load failed — running offline');
-    loadOrdersOffline();
-    return;
+    fallbackOffline(); return;
+  }
+  if(typeof firebase==='undefined'){
+    $('dbBanner').innerHTML='⚠️ Firebase SDK failed to load — check internet connection. Running offline.';
+    $('dbBanner').style.display='block';
+    $('liveDot').style.background='var(--red)';
+    fallbackOffline(); return;
   }
   try{
-    const app=firebase.initializeApp(FB_CONFIG);
-    const db=firebase.firestore();
+    firebase.initializeApp(FB_CONFIG);
+    db=firebase.firestore();
+    auth=firebase.auth();
+    // Force long polling — works in all environments including mobile
     db.settings({experimentalForceLongPolling:true,merge:true});
-    fbConfigured=true;
-    $('liveDot').style.background='var(--green)';
+    // Set auth persistence to LOCAL so admin stays logged in after refresh
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
+    fbOK=true;
     $('dbBanner').style.display='none';
-    toast('🟢 Connected — real-time sync active');
 
-    // Real-time orders
-    db.collection('orders').orderBy('createdAt','desc').onSnapshot(snap=>{
-      liveOrders=snap.docs.map(d=>({...d.data(),_id:d.id}));
-      renderOrders(); updateLiveBadge(); checkReadyOrders();
-      if(adminIn) renderAdmPanel(admPanel);
-    },err=>{ console.error(err); loadOrdersOffline(); });
-
-    // Real-time settings
-    db.collection('config').doc('settings').onSnapshot(snap=>{
-      if(snap.exists){ liveSettings={...DEFAULT_SETTINGS,...snap.data()}; applySettings(liveSettings); }
-    });
-
-    // Real-time menu
-    db.collection('config').doc('menu').onSnapshot(snap=>{
-      if(snap.exists){
-        const m=JSON.parse(snap.data().categories);
-        menuData=m; localStorage.setItem('cc_menu',JSON.stringify(m));
-        renderMenuFilters(); renderMenu(activeCat);
-        if(adminIn&&admPanel==='editmenu') renderAdmPanel('editmenu');
+    // ── Firebase Auth state observer ──
+    // This fires on every page load — if admin was logged in, it auto-restores
+    auth.onAuthStateChanged(user=>{
+      if(user&&!user.isAnonymous){
+        // Admin is authenticated
+        adminIn=true;
+        $('liveDot').style.background='var(--green)';
+        $('admWho').textContent='Admin: '+admCreds.user;
+        // If admin dashboard is already open, refresh panel
+        if($('admScreen').classList.contains('open')) renderAdmPanel(admPanel);
+      } else if(!user){
+        // Not logged in — sign in anonymously for Firestore access
+        auth.signInAnonymously().catch(e=>{
+          console.warn('Anon auth failed, proceeding without auth',e);
+        });
+        adminIn=false;
+        $('liveDot').style.background='var(--green)';
       }
     });
 
-    // Load customers once
-    db.collection('customers').get().then(s=>{ liveCustomers=s.docs.map(d=>d.data()); });
+    // ── Real-time Firestore listeners ──
+    startFirestoreListeners();
+    toast('🟢 Firebase connected — real-time sync active');
 
-    window.DB={
-      async addOrder(o){ return (await db.collection('orders').add({...o,createdAt:firebase.firestore.FieldValue.serverTimestamp()})).id; },
-      async updateStatus(id,status){ await db.collection('orders').doc(id).update({status,updatedAt:firebase.firestore.FieldValue.serverTimestamp()}); },
-      async deleteOrder(id){ await db.collection('orders').doc(id).delete(); },
-      async addCustomer(u){ await db.collection('customers').doc(u.email.replace(/\./g,'_')).set(u); },
-      async findCustomer(email,pass){ const s=await db.collection('customers').doc(email.replace(/\./g,'_')).get(); if(!s.exists)return null; const u=s.data(); return u.password===pass?u:null; },
-      async emailExists(email){ return (await db.collection('customers').doc(email.replace(/\./g,'_')).get()).exists; },
-      async deleteCustomer(email){ await db.collection('customers').doc(email.replace(/\./g,'_')).delete(); },
-      async saveSettings(s){ await db.collection('config').doc('settings').set(s); },
-      async saveMenu(m){ await db.collection('config').doc('menu').set({categories:JSON.stringify(m)}); },
-      async getCustomers(){ const s=await db.collection('customers').get(); return s.docs.map(d=>d.data()); }
-    };
   }catch(e){
-    console.error('Firebase init failed:',e);
+    console.error('Firebase init error:',e);
+    $('dbBanner').innerHTML='⚠️ Firebase init error: '+e.message+' — running offline.';
     $('dbBanner').style.display='block';
     $('liveDot').style.background='var(--red)';
-    toast('Firebase error — running offline');
-    loadOrdersOffline();
+    fallbackOffline();
   }
 }
 
-function loadOrdersOffline(){
+function startFirestoreListeners(){
+  if(!db) return;
+
+  // ORDERS — real-time, all devices see all orders instantly
+  if(unsubOrders) unsubOrders();
+  unsubOrders=db.collection('orders').orderBy('createdAt','desc')
+    .onSnapshot(snap=>{
+      liveOrders=snap.docs.map(d=>({...d.data(),_id:d.id}));
+      renderOrders();
+      updateLiveBadge();
+      checkReadyOrders();
+      if(adminIn&&$('admScreen').classList.contains('open')) renderAdmPanel(admPanel);
+    },err=>{ console.error('Orders listener:',err); });
+
+  // SETTINGS — real-time
+  if(unsubSettings) unsubSettings();
+  unsubSettings=db.collection('config').doc('settings')
+    .onSnapshot(snap=>{
+      if(snap.exists){ liveSettings={...DEFAULT_SETTINGS,...snap.data()}; applySettings(liveSettings); }
+    },err=>console.warn('Settings listener:',err));
+
+  // MENU — real-time
+  if(unsubMenu) unsubMenu();
+  unsubMenu=db.collection('config').doc('menu')
+    .onSnapshot(snap=>{
+      if(snap.exists){
+        try{
+          const m=JSON.parse(snap.data().categories);
+          menuData=m; localStorage.setItem('cc_menu',JSON.stringify(m));
+          renderMenuFilters(); renderMenu(activeCat);
+          if(adminIn&&admPanel==='editmenu') renderAdmPanel('editmenu');
+        }catch(e){ console.warn('Menu parse error',e); }
+      }
+    },err=>console.warn('Menu listener:',err));
+
+  // CUSTOMERS — load once, refresh on demand
+  refreshCustomers();
+}
+
+function refreshCustomers(){
+  if(!db) return;
+  db.collection('customers').get()
+    .then(s=>{ liveCustomers=s.docs.map(d=>d.data()); })
+    .catch(e=>console.warn('Customers load:',e));
+}
+
+// ═══════════ OFFLINE FALLBACK ═══════════
+function fallbackOffline(){
   liveOrders=JSON.parse(localStorage.getItem('cc_orders')||'[]');
   renderOrders(); updateLiveBadge(); checkReadyOrders();
   if(adminIn) renderAdmPanel(admPanel);
-  // Poll every 3s for same-device updates
+  // Lightweight poll for same-device updates
   setInterval(()=>{
     const fresh=JSON.parse(localStorage.getItem('cc_orders')||'[]');
     if(JSON.stringify(fresh)!==JSON.stringify(liveOrders)){
@@ -597,9 +627,15 @@ function loadOrdersOffline(){
   },3000);
 }
 
-// ═══════════ DB WRAPPERS (online + offline) ═══════════
+// ═══════════ DB WRAPPERS ═══════════
 async function dbAddOrder(order){
-  if(fbConfigured&&window.DB){ const id=await window.DB.addOrder(order); return id; }
+  if(fbOK&&db){
+    const ref=await db.collection('orders').add({
+      ...order, createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    return ref.id;
+  }
+  // Offline fallback
   order._id=order.id;
   const arr=JSON.parse(localStorage.getItem('cc_orders')||'[]');
   arr.unshift(order); localStorage.setItem('cc_orders',JSON.stringify(arr));
@@ -607,48 +643,102 @@ async function dbAddOrder(order){
   if(adminIn) renderAdmPanel(admPanel);
   return order.id;
 }
+
 async function dbUpdateStatus(id,status){
-  if(fbConfigured&&window.DB){ await window.DB.updateStatus(id,status); return; }
+  if(fbOK&&db){
+    await db.collection('orders').doc(id).update({
+      status, updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    return;
+  }
   const arr=JSON.parse(localStorage.getItem('cc_orders')||'[]');
   const o=arr.find(o=>o._id===id||o.id===id); if(o) o.status=status;
   localStorage.setItem('cc_orders',JSON.stringify(arr)); liveOrders=arr;
   renderOrders(); updateLiveBadge(); checkReadyOrders();
   if(adminIn) renderAdmPanel(admPanel);
 }
+
 async function dbDeleteOrder(id){
-  if(fbConfigured&&window.DB){ await window.DB.deleteOrder(id); return; }
+  if(fbOK&&db){ await db.collection('orders').doc(id).delete(); return; }
   let arr=JSON.parse(localStorage.getItem('cc_orders')||'[]');
   arr=arr.filter(o=>o._id!==id&&o.id!==id);
   localStorage.setItem('cc_orders',JSON.stringify(arr)); liveOrders=arr;
   renderOrders(); if(adminIn) renderAdmPanel(admPanel);
 }
+
 async function dbAddCustomer(u){
-  if(fbConfigured&&window.DB) await window.DB.addCustomer(u);
+  if(fbOK&&db) await db.collection('customers').doc(u.email.replace(/\./g,'_')).set(u);
   else { const arr=JSON.parse(localStorage.getItem('cc_users')||'[]'); arr.push(u); localStorage.setItem('cc_users',JSON.stringify(arr)); }
   liveCustomers=liveCustomers.filter(x=>x.email!==u.email); liveCustomers.push(u);
 }
+
 async function dbFindCustomer(email,pass){
-  if(fbConfigured&&window.DB) return await window.DB.findCustomer(email,pass);
+  if(fbOK&&db){
+    const snap=await db.collection('customers').doc(email.replace(/\./g,'_')).get();
+    if(!snap.exists) return null;
+    const u=snap.data(); return u.password===pass?u:null;
+  }
   return JSON.parse(localStorage.getItem('cc_users')||'[]').find(u=>u.email===email&&u.password===pass)||null;
 }
+
 async function dbEmailExists(email){
-  if(fbConfigured&&window.DB) return await window.DB.emailExists(email);
+  if(fbOK&&db) return (await db.collection('customers').doc(email.replace(/\./g,'_')).get()).exists;
   return JSON.parse(localStorage.getItem('cc_users')||'[]').some(u=>u.email===email);
 }
+
 async function dbDeleteCustomer(email){
-  if(fbConfigured&&window.DB) await window.DB.deleteCustomer(email);
-  else { localStorage.setItem('cc_users',JSON.stringify(JSON.parse(localStorage.getItem('cc_users')||'[]').filter(u=>u.email!==email))); }
+  if(fbOK&&db) await db.collection('customers').doc(email.replace(/\./g,'_')).delete();
+  else localStorage.setItem('cc_users',JSON.stringify(JSON.parse(localStorage.getItem('cc_users')||'[]').filter(u=>u.email!==email)));
   liveCustomers=liveCustomers.filter(u=>u.email!==email);
 }
+
 async function dbSaveSettings(s){
-  liveSettings={...liveSettings,...s}; localStorage.setItem('cc_settings',JSON.stringify(liveSettings));
-  if(fbConfigured&&window.DB) await window.DB.saveSettings(liveSettings);
+  liveSettings={...liveSettings,...s};
+  localStorage.setItem('cc_settings',JSON.stringify(liveSettings));
+  if(fbOK&&db) await db.collection('config').doc('settings').set(liveSettings);
   else applySettings(liveSettings);
 }
+
 async function dbSaveMenu(m){
   menuData=m; localStorage.setItem('cc_menu',JSON.stringify(m));
-  if(fbConfigured&&window.DB) await window.DB.saveMenu(m);
+  if(fbOK&&db) await db.collection('config').doc('menu').set({categories:JSON.stringify(m)});
   else { renderMenuFilters(); renderMenu(activeCat); }
+}
+
+// ═══════════ ADMIN FIREBASE AUTH ═══════════
+// Admin login uses Firebase Email/Password Auth for persistent sessions
+async function doAdminFirebaseLogin(pass){
+  if(!fbOK||!auth) return simpleAdminLogin(pass); // fallback
+  try{
+    // Use a deterministic email for the admin account
+    await auth.signInWithEmailAndPassword(ADMIN_EMAIL, pass);
+    return true;
+  }catch(e){
+    if(e.code==='auth/user-not-found'||e.code==='auth/invalid-credential'){
+      // First time — create the admin account in Firebase Auth
+      try{
+        await auth.createUserWithEmailAndPassword(ADMIN_EMAIL, pass);
+        return true;
+      }catch(ce){ console.warn('Create admin account:',ce); }
+    }
+    if(e.code==='auth/wrong-password'||e.code==='auth/invalid-login-credentials') return false;
+    console.warn('Admin auth error:',e);
+    return simpleAdminLogin(pass);
+  }
+}
+
+function simpleAdminLogin(pass){
+  return pass===admCreds.pass;
+}
+
+async function doAdminFirebaseLogout(){
+  if(fbOK&&auth){
+    await auth.signOut();
+    // Re-sign in anonymously so Firestore listeners keep working
+    auth.signInAnonymously().catch(()=>{});
+  }
+  adminIn=false;
+  sessionStorage.removeItem('cc_admin_in');
 }
 
 // ═══════════ UTILS ═══════════
@@ -851,28 +941,81 @@ function renderOrders(){
 function checkReadyOrders(){
   if(!currentUser) return;
   const readyOrder=liveOrders.find(o=>o.email===currentUser.email&&o.status==='Ready');
-  if(readyOrder&&currentReadyId!==(readyOrder._id||readyOrder.id)){
-    currentReadyId=readyOrder._id||readyOrder.id;
-    $('readyOrderId').textContent='Order #'+readyOrder.id+' — '+(readyOrder.pickupName||readyOrder.customer);
-    $('readyOverlay').classList.add('open');
-    renderOrders();
-  } else if(!readyOrder&&currentReadyId){
+  if(readyOrder){
+    const rid=readyOrder._id||readyOrder.id;
+    if(currentReadyId!==rid){
+      currentReadyId=rid;
+      $('readyOrderId').textContent='Order #'+readyOrder.id+' — '+(readyOrder.pickupName||readyOrder.customer);
+      $('readyOverlay').classList.add('open');
+      renderOrders();
+    }
+  } else if(currentReadyId){
     const was=liveOrders.find(o=>(o._id||o.id)===currentReadyId);
     if(!was||['Picked Up','Cancelled'].includes(was.status)) closeReadyPopup();
   }
 }
 function closeReadyPopup(){ $('readyOverlay').classList.remove('open'); currentReadyId=null; }
 
+// ═══════════ REFRESH ORDERS (manual) ═══════════
+async function refreshOrders(){
+  const btn=$('refreshBtn'); if(btn){btn.disabled=true;btn.textContent='Refreshing…';}
+  if(fbOK&&db){
+    try{
+      const snap=await db.collection('orders').orderBy('createdAt','desc').get();
+      liveOrders=snap.docs.map(d=>({...d.data(),_id:d.id}));
+      renderOrders(); updateLiveBadge(); checkReadyOrders();
+      renderAdmPanel(admPanel);
+      toast('✓ Orders refreshed from Firestore ('+liveOrders.length+' orders)');
+    }catch(e){ toast('Refresh error: '+e.message); }
+  } else {
+    const fresh=JSON.parse(localStorage.getItem('cc_orders')||'[]');
+    liveOrders=fresh; renderOrders(); updateLiveBadge();
+    renderAdmPanel(admPanel);
+    toast('✓ Refreshed (offline mode)');
+  }
+  if(btn){btn.disabled=false;btn.textContent='🔄 Refresh Orders';}
+}
+
+function showHostHelp(){
+  alert('To run Firebase, this file must be served over HTTP (not file://).\n\n── Easiest: Netlify Drop (free, 1 min) ──\n1. Go to app.netlify.com/drop\n2. Drag & drop this HTML file\n3. Open the generated URL → Firebase works!\n\n── VS Code Live Server ──\n1. Install "Live Server" extension\n2. Right-click file → Open with Live Server\n3. Opens at http://127.0.0.1:5500\n\n── GitHub Pages (permanent) ──\n1. Push to a GitHub repo\n2. Settings → Pages → Enable\n3. Opens at https://username.github.io/repo');
+}
+
 // ═══════════ ADMIN AUTH ═══════════
 function openAdminLogin(){ if(adminIn){openAdminDashboard();return;} $('adminLoginModal').classList.add('open'); setTimeout(()=>$('admUser')?.focus(),200); }
 function closeAdminLogin(){ $('adminLoginModal').classList.remove('open'); $('admErr').textContent=''; if($('admUser'))$('admUser').value=''; if($('admPass'))$('admPass').value=''; }
-function doAdminLogin(){
+async function doAdminLogin(){
   const u=$('admUser').value.trim(),p=$('admPass').value;
-  if(u===admCreds.user&&p===admCreds.pass){ adminIn=true; sessionStorage.setItem('cc_admin_in','true'); closeAdminLogin(); openAdminDashboard(); toast('Welcome Admin 👑'); }
-  else { $('admErr').textContent='Invalid username or password.'; $('admPass').value=''; $('admPass').focus(); }
+  if(u!==admCreds.user){ $('admErr').textContent='Invalid username.'; return; }
+  const btn=document.querySelector('#adminLoginModal .fsub');
+  if(btn){btn.disabled=true;btn.textContent='Logging in…';}
+  // Try Firebase Auth first, fallback to simple check
+  let ok=false;
+  if(fbOK&&auth){
+    ok=await doAdminFirebaseLogin(p);
+  } else {
+    ok=(p===admCreds.pass);
+  }
+  if(ok){
+    adminIn=true;
+    admCreds.pass=p; // keep in sync
+    localStorage.setItem('cc_admin_creds',JSON.stringify(admCreds));
+    closeAdminLogin();
+    openAdminDashboard();
+    toast('Welcome Admin 👑');
+  } else {
+    $('admErr').textContent='Invalid password.';
+    if(btn){btn.disabled=false;btn.textContent='🔐 Enter Dashboard';}
+    $('admPass').value=''; $('admPass').focus();
+  }
 }
-function openAdminDashboard(){ $('admWho').textContent='admin: '+admCreds.user; $('admScreen').classList.add('open'); document.body.style.overflow='hidden'; renderAdmPanel(admPanel); }
-function exitAdmin(){ $('admScreen').classList.remove('open'); document.body.style.overflow=''; }
+function openAdminDashboard(){ $('admWho').textContent='Admin: '+admCreds.user; $('admScreen').classList.add('open'); document.body.style.overflow='hidden'; renderAdmPanel(admPanel); }
+async function exitAdmin(){
+  await doAdminFirebaseLogout();
+  adminIn=false;
+  $('admScreen').classList.remove('open');
+  document.body.style.overflow='';
+  toast('Admin logged out');
+}
 function updateLiveBadge(){ const n=liveOrders.filter(o=>!['Picked Up','Cancelled'].includes(o.status)).length; const b=$('liveBadge'); if(b){b.textContent=n;b.style.display=n?'':'none';} }
 
 document.querySelectorAll('.sb-btn').forEach(btn=>{
@@ -894,7 +1037,7 @@ function renderAdmPanel(name){
     const allItems=Object.values(menuData).flat().length;
     const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],sample=[220,380,290,460,620,790,540],mx=Math.max(...sample);
     main.innerHTML=`<div class="adm-page-title">Good ${greet()}, <em>Admin</em></div>
-      <div class="adm-page-sub">${fbConfigured?'🟢 Firebase real-time sync active — orders from all devices appear here':'🔴 Offline mode — configure Firebase for multi-device sync'}</div>
+      <div class="adm-page-sub">${fbOK?'🟢 Firebase real-time sync active — orders from all devices appear here':'🔴 Offline mode — configure Firebase for multi-device sync'}</div>
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-lbl">Total Orders</div><div class="stat-val">${orders.length}</div><div class="stat-sub">All time</div></div>
         <div class="stat-card"><div class="stat-lbl">Revenue</div><div class="stat-val">${fp(rev)}</div><div class="stat-sub">All time</div></div>
@@ -907,7 +1050,7 @@ function renderAdmPanel(name){
         <div class="chart-bars">${sample.map((v,i)=>`<div class="chart-bw"><div class="chart-b" style="height:${Math.round(v/mx*84)}px"></div><div class="chart-bl">${days[i]}</div></div>`).join('')}</div>
       </div>
       <div class="tbl-wrap"><div class="tbl-head"><div class="tbl-title">Recent Orders</div><button class="act-btn" onclick="renderAdmPanel('allorders')">View All →</button></div>${ordersTable(orders.slice(0,6))}</div>
-      ${!fbConfigured?`<div style="background:rgba(212,164,74,.08);border:1px solid rgba(212,164,74,.3);padding:20px 24px;margin-top:20px;">
+      ${!fbOK?`<div style="background:rgba(212,164,74,.08);border:1px solid rgba(212,164,74,.3);padding:20px 24px;margin-top:20px;">
         <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:12px">⚠️ Firebase Not Configured</div>
         <p style="font-size:12px;color:var(--text-dim);line-height:1.7;margin-bottom:14px">Orders are only stored on this device. To sync across all devices:</p>
         <button class="act-btn" onclick="showFBHelp()">📋 View Setup Instructions</button>
@@ -916,7 +1059,11 @@ function renderAdmPanel(name){
 
   else if(name==='allorders'){
     main.innerHTML=`<div class="adm-page-title">All <em>Orders</em></div>
-      <div class="adm-page-sub">Every order${fbConfigured?' from all devices':''}. Total: ${orders.length}</div>
+      <div class="adm-page-sub">Every order${fbOK?' from all devices — real-time Firestore':''}. Total: ${orders.length}</div>
+      <div style="margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+        <button id="refreshBtn" class="save-btn" style="margin-top:0" onclick="refreshOrders()">🔄 Refresh Orders</button>
+        <span style="font-size:11px;color:var(--text-dim)">${fbOK?'Live sync active — also manually refresh if needed':'Offline mode'}</span>
+      </div>
       <div class="tbl-wrap">
         <div class="tbl-head"><div class="tbl-title">Orders (${orders.length})</div>
           <input class="tbl-search" id="oSearch" placeholder="Search ID, name, email…" oninput="filterOrders(this.value)">
@@ -928,7 +1075,10 @@ function renderAdmPanel(name){
   else if(name==='livequeue'){
     const live=orders.filter(o=>!['Picked Up','Cancelled'].includes(o.status));
     main.innerHTML=`<div class="adm-page-title">Live <em>Queue</em></div>
-      <div class="adm-page-sub">Setting "Ready" instantly notifies the customer${fbConfigured?' via Firebase real-time':', polling every 3s'}.</div>
+      <div class="adm-page-sub">Setting "Ready" instantly notifies the customer on their device${fbOK?' via Firestore real-time listener':' (polling)'}.</div>
+      <div style="margin-bottom:16px;">
+        <button id="refreshBtn" class="save-btn" style="margin-top:0" onclick="refreshOrders()">🔄 Refresh Queue</button>
+      </div>
       ${!live.length?'<div class="adm-empty"><div class="ei">✅</div><p>Queue is clear! No active orders.</p></div>':live.map(o=>lqCard(o)).join('')}`;
   }
 
@@ -949,7 +1099,7 @@ function renderAdmPanel(name){
   else if(name==='editmenu'){
     const items=Object.entries(menuData).flatMap(([cat,arr])=>arr.map(i=>({...i,category:cat})));
     main.innerHTML=`<div class="adm-page-title">Edit <em>Menu Items</em></div>
-      <div class="adm-page-sub">Changes go live on the menu immediately${fbConfigured?' on all devices':''}.</div>
+      <div class="adm-page-sub">Changes go live on the menu immediately${fbOK?' on all devices':''}.</div>
       <div class="mec-grid">${items.map(item=>`
         <div class="mec" id="mec-${item.id}">
           <div class="mec-top">
@@ -1032,7 +1182,7 @@ function renderAdmPanel(name){
   else if(name==='settings'){
     const s=liveSettings;
     main.innerHTML=`<div class="adm-page-title">Website <em>Settings</em></div>
-      <div class="adm-page-sub">Changes sync ${fbConfigured?'to all devices via Firebase':'locally'}.</div>
+      <div class="adm-page-sub">Changes sync ${fbOK?'to all devices via Firebase':'locally'}.</div>
       <div class="sgrp"><div class="sgrp-title">Store Information</div>
         <div class="srow"><div><div class="srow-lbl">Store Name</div></div><input class="si" id="s-name" value="${s.cafeName}"></div>
         <div class="srow"><div><div class="srow-lbl">Hero Tagline</div></div><input class="si" id="s-tag" value="${s.tagline}"></div>
@@ -1054,7 +1204,7 @@ function renderAdmPanel(name){
         <div class="srow"><div><div class="srow-lbl">Clear All Orders</div></div><button class="danger-btn" onclick="clearAllOrders()">Clear All Orders</button></div>
         <div class="srow"><div><div class="srow-lbl">Clear All Customers</div></div><button class="danger-btn" onclick="clearAllCustomers()">Clear Customers</button></div>
         <div class="srow"><div><div class="srow-lbl">Reset Menu</div></div><button class="danger-btn" onclick="resetMenu()">Reset to Default</button></div>
-        ${!fbConfigured?`<div class="srow"><div><div class="srow-lbl">Firebase Setup</div><div class="srow-sub">Enable multi-device sync</div></div><button class="act-btn" onclick="showFBHelp()">View Instructions</button></div>`:''}
+        ${!fbOK?`<div class="srow"><div><div class="srow-lbl">Firebase Setup</div><div class="srow-sub">Enable multi-device sync</div></div><button class="act-btn" onclick="showFBHelp()">View Instructions</button></div>`:''}
       </div>
       <button class="save-btn" onclick="saveSettings()">✓ Save Settings</button>`;
   }
