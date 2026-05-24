@@ -8,7 +8,7 @@
 <!-- Firebase SDK v9 compat - reliable CDN -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
 <style>
 :root{--black:#07090f;--dark:#0d1018;--surface:#141820;--surface2:#1c2130;--blue:#4a7fd4;--blue-light:#89b4f0;--blue-dim:#2a4a80;--cream:#dce8f5;--text:#b8c8e0;--text-dim:#5a6a80;--border:#1e2840;--green:#3db882;--amber:#d4a44a;--red:#d96060;}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
@@ -157,7 +157,7 @@ section{padding:96px 40px;}
 .ready-overlay{position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.93);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .4s;}
 .ready-overlay.open{opacity:1;pointer-events:all;}
 .ready-card{background:var(--surface);border:2px solid var(--green);max-width:480px;width:100%;padding:52px 44px;text-align:center;animation:popIn .5s cubic-bezier(.16,1,.3,1);}
-.ready-glow{width:96px;height:96px;background:rgba(61,184,130,.12);border:2px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:44px;animation:pg 2s ease-in-out infinite;}
+.ready-pulse-circle{width:96px;height:96px;background:rgba(61,184,130,.12);border:2px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:44px;animation:pg 2s ease-in-out infinite;}
 @keyframes pg{0%,100%{box-shadow:0 0 0 0 rgba(61,184,130,.3);}50%{box-shadow:0 0 0 18px rgba(61,184,130,0);}}
 .ready-card h2{font-family:'Cormorant Garamond',serif;font-size:42px;color:var(--cream);margin-bottom:6px;}
 .ready-card h2 em{color:var(--green);font-style:italic;}
@@ -255,14 +255,15 @@ tbody td{padding:11px 14px;font-size:12px;color:var(--text);vertical-align:middl
 .status-sel:focus{border-color:var(--blue-dim);}
 .lq-card{background:var(--surface);border:1px solid var(--border);padding:20px 24px;margin-bottom:14px;transition:all .3s;}
 .lq-card:hover{border-color:var(--blue-dim);}
-.lq-card.ready-glow{border-color:var(--green);box-shadow:0 0 20px rgba(61,184,130,.15);}
+.lq-card.ready-glow{border-color:var(--green);}
+.lq-card.ready-glow .lq-id{color:var(--green);}
 .lq-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
 .lq-id{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--blue);margin-bottom:3px;}
 .lq-name{font-size:15px;color:var(--cream);font-family:'Cormorant Garamond',serif;}
 .lq-date{font-size:11px;color:var(--text-dim);}
 .lq-items{font-size:12px;color:var(--text-dim);line-height:1.8;margin:8px 0;}
-.lq-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
-.lq-btn{background:none;border:1px solid;padding:8px 16px;font-family:'Jost',sans-serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .25s;}
+.lq-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;}
+.lq-btn{background:none;border:1px solid;padding:7px 14px;font-family:'Jost',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .25s;white-space:nowrap;}
 .lq-prep{border-color:rgba(212,164,74,.5);color:var(--amber);}.lq-prep:hover{background:rgba(212,164,74,.15);}
 .lq-ready{border-color:rgba(61,184,130,.5);color:var(--green);}.lq-ready:hover{background:rgba(61,184,130,.15);}
 .lq-pickup{border-color:rgba(74,127,212,.5);color:var(--blue);}.lq-pickup:hover{background:rgba(74,127,212,.15);}
@@ -442,7 +443,7 @@ body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;o
 </div>
 <div class="ready-overlay" id="readyOverlay">
   <div class="ready-card">
-    <div class="ready-glow">🍦</div>
+    <div class="ready-pulse-circle">🍦</div>
     <h2>Order <em>Ready!</em></h2>
     <div class="ready-order-id" id="readyOrderId"></div>
     <p class="ready-msg">Your order is ready at our counter!<br>Please come collect it now.</p>
@@ -476,7 +477,6 @@ const DEFAULT_MENU={
 };
 const DEFAULT_SETTINGS={cafeName:'Cold Corner',tagline:'Crafted with the finest ingredients. Served with elegance.',address:'12 Frost Street, New York, NY 10001',email:'hello@coldcorner.com',phone:'+1 (212) 555-0191',taxRate:8,ordersOpen:true};
 // Admin email used with Firebase Auth (anonymous sign-in for customers, email/pass for admin)
-const ADMIN_EMAIL='admin@coldcorner.app';
 const ADMIN_PASS_KEY='cc_admin_pass'; // stored locally only
 
 // ═══════════ STATE ═══════════
@@ -486,14 +486,14 @@ let menuData=JSON.parse(localStorage.getItem('cc_menu')||'null')||JSON.parse(JSO
 let cart=JSON.parse(localStorage.getItem('cc_cart')||'[]');
 let currentUser=JSON.parse(localStorage.getItem('cc_user')||'null'); // customer session (localStorage)
 let admCreds=JSON.parse(localStorage.getItem('cc_admin_creds')||'{"user":"admin","pass":"cold2024"}');
-let adminIn=false; // set by Firebase Auth state
+let adminIn=false; // restored from sessionStorage on load
 let activeCat=Object.keys(menuData)[0];
 let admPanel='dashboard';
 let liveOrders=[];
 let liveSettings={...DEFAULT_SETTINGS,...JSON.parse(localStorage.getItem('cc_settings')||'{}')};
 let liveCustomers=[];
 let currentReadyId=null;
-let db=null, auth=null, fbOK=false;
+let db=null, fbOK=false;
 // Firestore unsubscribe handles
 let unsubOrders=null, unsubSettings=null, unsubMenu=null;
 
@@ -525,35 +525,12 @@ function initFirebase(){
   try{
     firebase.initializeApp(FB_CONFIG);
     db=firebase.firestore();
-    auth=firebase.auth();
-    // Force long polling — works in all environments including mobile
     db.settings({merge:true});
-    // Set auth persistence to LOCAL so admin stays logged in after refresh
-    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
     fbOK=true;
     $('dbBanner').style.display='none';
+    $('liveDot').style.background='var(--green)';
 
-    // ── Firebase Auth state observer ──
-    // This fires on every page load — if admin was logged in, it auto-restores
-    auth.onAuthStateChanged(user=>{
-      if(user&&!user.isAnonymous){
-        // Admin is authenticated
-        adminIn=true;
-        $('liveDot').style.background='var(--green)';
-        $('admWho').textContent='Admin: '+admCreds.user;
-        // If admin dashboard is already open, refresh panel
-        if($('admScreen').classList.contains('open')) renderAdmPanel(admPanel);
-      } else if(!user){
-        // Not logged in — sign in anonymously for Firestore access
-        auth.signInAnonymously().catch(e=>{
-          console.warn('Anon auth failed, proceeding without auth',e);
-        });
-        adminIn=false;
-        $('liveDot').style.background='var(--green)';
-      }
-    });
-
-    // ── Real-time Firestore listeners ──
+    // Start real-time listeners immediately
     startFirestoreListeners();
     toast('🟢 Firebase connected — real-time sync active');
 
@@ -705,40 +682,46 @@ async function dbSaveMenu(m){
   else { renderMenuFilters(); renderMenu(activeCat); }
 }
 
-// ═══════════ ADMIN FIREBASE AUTH ═══════════
-// Admin login uses Firebase Email/Password Auth for persistent sessions
-async function doAdminFirebaseLogin(pass){
-  if(!fbOK||!auth) return simpleAdminLogin(pass); // fallback
-  try{
-    // Use a deterministic email for the admin account
-    await auth.signInWithEmailAndPassword(ADMIN_EMAIL, pass);
-    return true;
-  }catch(e){
-    if(e.code==='auth/user-not-found'||e.code==='auth/invalid-credential'){
-      // First time — create the admin account in Firebase Auth
-      try{
-        await auth.createUserWithEmailAndPassword(ADMIN_EMAIL, pass);
-        return true;
-      }catch(ce){ console.warn('Create admin account:',ce); }
-    }
-    if(e.code==='auth/wrong-password'||e.code==='auth/invalid-login-credentials') return false;
-    console.warn('Admin auth error:',e);
-    return simpleAdminLogin(pass);
+// ═══════════ ADMIN AUTH (simple — no Firebase Auth needed) ═══════════
+function openAdminLogin(){
+  // Restore session on page reload
+  if(adminIn||sessionStorage.getItem('cc_admin_in')==='true'){
+    adminIn=true; openAdminDashboard(); return;
+  }
+  $('adminLoginModal').classList.add('open');
+  setTimeout(()=>$('admUser')?.focus(),200);
+}
+function closeAdminLogin(){
+  $('adminLoginModal').classList.remove('open');
+  $('admErr').textContent='';
+  if($('admUser'))$('admUser').value='';
+  if($('admPass'))$('admPass').value='';
+}
+function doAdminLogin(){
+  const u=$('admUser').value.trim(), p=$('admPass').value;
+  if(u===admCreds.user && p===admCreds.pass){
+    adminIn=true;
+    sessionStorage.setItem('cc_admin_in','true');
+    closeAdminLogin();
+    openAdminDashboard();
+    toast('Welcome Admin 👑');
+  } else {
+    $('admErr').textContent='Invalid username or password.';
+    $('admPass').value=''; $('admPass').focus();
   }
 }
-
-function simpleAdminLogin(pass){
-  return pass===admCreds.pass;
+function openAdminDashboard(){
+  $('admWho').textContent='Admin: '+admCreds.user;
+  $('admScreen').classList.add('open');
+  document.body.style.overflow='hidden';
+  renderAdmPanel(admPanel);
 }
-
-async function doAdminFirebaseLogout(){
-  if(fbOK&&auth){
-    await auth.signOut();
-    // Re-sign in anonymously so Firestore listeners keep working
-    auth.signInAnonymously().catch(()=>{});
-  }
+function exitAdmin(){
   adminIn=false;
   sessionStorage.removeItem('cc_admin_in');
+  $('admScreen').classList.remove('open');
+  document.body.style.overflow='';
+  toast('Admin logged out');
 }
 
 // ═══════════ UTILS ═══════════
@@ -939,7 +922,8 @@ function renderOrders(){
 
 // ═══════════ ORDER READY POPUP ═══════════
 function checkReadyOrders(){
-  if(!currentUser) return;
+  // Admin ke liye kabhi Ready popup mat dikhao
+  if(!currentUser || adminIn) return;
   const readyOrder=liveOrders.find(o=>o.email===currentUser.email&&o.status==='Ready');
   if(readyOrder){
     const rid=readyOrder._id||readyOrder.id;
@@ -1367,11 +1351,13 @@ document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
   renderMenuFilters();
   renderMenu(activeCat);
   updateCartBadge();
-  renderOrders();
+  // Restore admin session (persists within same browser tab session)
+  if(sessionStorage.getItem('cc_admin_in')==='true'){
+    adminIn=true;
+  }
   if(currentUser) $('userNavBtn').textContent=currentUser.name.split(' ')[0];
-  if(adminIn) openAdminDashboard();
   updateLiveBadge();
-  initFirebase();
+  initFirebase(); // connects Firestore, then renders orders
 })();
 </script>
 </body>
